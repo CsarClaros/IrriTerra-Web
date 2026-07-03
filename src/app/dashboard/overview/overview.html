@@ -1,0 +1,143 @@
+<div class="space-y-8">
+
+    <!-- HEADER -->
+    <div>
+        <h1 class="text-3xl mb-2">
+            {{ t('Dashboard', 'Dashboard') }}
+        </h1>
+        <p class="text-gray-600">
+            {{ t('Resumen general de ventas y métricas', 'General sales and metrics overview') }}
+        </p>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        @for (stat of stats; track stat) {
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+
+            <div class="flex items-center justify-between mb-4">
+
+                <div class="p-3 rounded-lg" [ngClass]="stat.color">
+                    <lucide-icon [img]="stat.icon" class="w-6 h-6 text-white"></lucide-icon>
+                </div>
+
+                <span class="text-green-600 text-sm">
+                    {{ stat.change }}
+                </span>
+
+            </div>
+
+            <h3 class="text-gray-600 text-sm mb-1">
+                {{ t(stat.label.es, stat.label.en) }}
+            </h3>
+
+            <p class="text-2xl">
+                {{ stat.value }}
+            </p>
+
+        </div>
+        }
+
+    </div>
+
+    <!-- CHARTS GRID -->
+    <div class="grid lg:grid-cols-2 gap-8">
+
+        <!-- SALES BAR CHART -->
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl mb-6">
+                {{ t('Ventas Mensuales', 'Monthly Sales') }}
+            </h3>
+
+            <div echarts [options]="salesChart" class="h-[300px] w-full"></div>
+        </div>
+
+        <!-- PIE CHART -->
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl mb-6">
+                {{ t('Productos Más Vendidos', 'Best Selling Products') }}
+            </h3>
+
+            <div echarts [options]="productChart" class="h-[300px] w-full"></div>
+        </div>
+
+        <!-- LINE CHART -->
+        <div class="bg-white rounded-xl p-6 shadow-lg lg:col-span-2">
+            <h3 class="text-xl mb-6">
+                {{ t('Crecimiento de Ventas', 'Sales Growth') }}
+            </h3>
+
+            <div echarts [options]="growthChart" class="h-[300px] w-full"></div>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="bg-white rounded-xl p-6 shadow-lg">
+
+        <h3 class="text-xl mb-6">
+            {{ t('Ventas por Vendedor', 'Sales by Seller') }}
+        </h3>
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
+                            {{ t('Vendedor', 'Seller') }}
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
+                            {{ t('Ventas', 'Sales') }}
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
+                            {{ t('Productos', 'Products') }}
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
+                            {{ t('Total', 'Total') }}
+                        </th>
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-gray-200">
+
+                    @for (seller of sellers; track seller.seller) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="px-6 py-4">
+                            {{ seller.seller }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            {{ seller.sales }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            {{ seller.products }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            {{ seller.total }}
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

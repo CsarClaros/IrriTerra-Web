@@ -1,1 +1,108 @@
-<p>dashboard-layout works!</p>
+<div class="min-h-screen bg-muted flex">
+
+    <!-- SIDEBAR -->
+    <aside
+        class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300"
+        [class.translate-x-0]="isSidebarOpen" [class.-translate-x-full]="!isSidebarOpen"
+        [class.lg:translate-x-0]="true">
+
+        <div class="h-full flex flex-col">
+
+            <!-- LOGO -->
+            <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200">
+
+                <a routerLink="/" class="text-2xl text-primary font-bold">
+                    IRRITERRA
+                </a>
+
+                <button class="lg:hidden p-2 rounded-lg hover:bg-gray-100" (click)="closeSidebar()">
+                    <lucide-icon [img]="X" class="w-6 h-6"></lucide-icon>
+                </button>
+
+            </div>
+
+            <!-- MENU -->
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+
+                @for (item of menuItems; track item.path) {
+
+                <a [routerLink]="item.path" routerLinkActive="bg-primary text-white"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
+                    (click)="closeSidebar()">
+
+                    <lucide-icon [img]="item.icon" class="w-5 h-5"></lucide-icon>
+
+                    <span>{{ t(item.label.es, item.label.en) }}</span>
+
+                </a>
+
+                }
+
+            </nav>
+
+            <!-- LOGOUT -->
+            <div class="p-4 border-t border-gray-200">
+
+                <button (click)="logout()"
+                    class="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <lucide-icon [img]="LogOut" class="w-5 h-5"></lucide-icon>
+                    <span>{{ t('Cerrar sesión', 'Logout') }}</span>
+                </button>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col min-h-screen">
+
+        <!-- TOP BAR -->
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-4 lg:px-8">
+
+            <button class="lg:hidden p-2 rounded-lg hover:bg-gray-100" (click)="toggleSidebar()">
+                <lucide-icon [img]="Menu" class="w-6 h-6"></lucide-icon>
+            </button>
+
+            <div class="flex-1"></div>
+
+            <div class="flex items-center space-x-4">
+
+                <!-- NOTIFICATIONS -->
+                <button class="relative p-2 rounded-lg hover:bg-gray-100">
+                    <lucide-icon [img]="Bell" class="w-6 h-6 text-gray-600"></lucide-icon>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+
+                <!-- USER -->
+                <div class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <lucide-icon [img]="User" class="w-5 h-5 text-white"></lucide-icon>
+                    </div>
+
+                    <div class="hidden sm:block">
+                        <p class="text-sm">Admin</p>
+                        <p class="text-xs text-gray-500">admin@irriterra.com</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="flex-1 p-4 lg:p-8">
+            <router-outlet></router-outlet>
+        </main>
+
+    </div>
+
+    <!-- OVERLAY -->
+    @if (isSidebarOpen) {
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" (click)="closeSidebar()"></div>
+    }
+
+</div>

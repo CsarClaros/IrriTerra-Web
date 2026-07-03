@@ -36,7 +36,7 @@ DASHBOARD
 =========================
 */
 
-import { DashboardHome } from './dashboard/dashboard-home/dashboard-home';
+import { Overview } from './dashboard/overview/overview';
 
 /* SALES */
 
@@ -105,7 +105,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
 
-            { path: '', component: DashboardHome },
+            { path: '', component: Overview },
 
             /*
             =========================

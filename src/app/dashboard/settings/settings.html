@@ -1,1 +1,188 @@
-<p>settings works!</p>
+<div class="space-y-6">
+
+    <!-- HEADER -->
+    <div>
+        <h1 class="text-3xl mb-2">
+            {{ t('Configuración', 'Settings') }}
+        </h1>
+        <p class="text-gray-600">
+            {{ t('Configuración general de la empresa', 'General company settings') }}
+        </p>
+    </div>
+
+    <!-- COMPANY FORM -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+
+        <h2 class="text-2xl mb-6">
+            {{ t('Información de la Empresa', 'Company Information') }}
+        </h2>
+
+        <form (ngSubmit)="handleSubmit()" class="space-y-6">
+
+            <!-- LOGO -->
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">
+                    {{ t('Logo de la Empresa', 'Company Logo') }}
+                </label>
+
+                <div class="flex items-center space-x-4">
+
+                    <div class="w-24 h-24 bg-primary rounded-lg flex items-center justify-center text-white text-2xl">
+                        IT
+                    </div>
+
+                    <button type="button"
+                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center">
+
+                        <lucide-icon [img]="Upload" class="w-4 h-4 mr-2"></lucide-icon>
+
+                        {{ t('Subir Logo', 'Upload Logo') }}
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- FIELDS -->
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block mb-2 text-sm text-gray-600">
+                        {{ t('Nombre de la Empresa', 'Company Name') }}
+                    </label>
+
+                    <input type="text" [(ngModel)]="config.nombreEmpresa" name="nombreEmpresa"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm text-gray-600">
+                        {{ t('Correo', 'Email') }}
+                    </label>
+
+                    <input type="email" [(ngModel)]="config.correo" name="correo"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm text-gray-600">
+                        {{ t('Teléfono', 'Phone') }}
+                    </label>
+
+                    <input type="tel" [(ngModel)]="config.telefono" name="telefono"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm text-gray-600">
+                        {{ t('Idioma', 'Language') }}
+                    </label>
+
+                    <select [(ngModel)]="config.idioma" name="idioma"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                    </select>
+
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm text-gray-600">
+                        {{ t('Dirección', 'Address') }}
+                    </label>
+
+                    <input type="text" [(ngModel)]="config.direccion" name="direccion"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+
+            </div>
+
+            <!-- SAVE -->
+            <div class="pt-6 border-t border-gray-200">
+
+                <button type="submit"
+                    class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center">
+                    <lucide-icon [img]="Save" class="w-5 h-5 mr-2"></lucide-icon>
+                    {{ t('Guardar Cambios', 'Save Changes') }}
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+
+    <!-- SYSTEM SETTINGS -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+
+        <h2 class="text-2xl mb-6">
+            {{ t('Configuración del Sistema', 'System Settings') }}
+        </h2>
+
+        <div class="space-y-6">
+
+            <!-- SWITCH 1 -->
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h3 class="mb-1">{{ t('Notificaciones por Email', 'Email Notifications') }}</h3>
+                    <p class="text-sm text-gray-600">
+                        {{ t('Recibir notificaciones de ventas y stock', 'Receive sales and stock notifications') }}
+                    </p>
+                </div>
+
+                <input type="checkbox" class="w-5 h-5 accent-primary" checked />
+
+            </div>
+
+            <!-- SWITCH 2 -->
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h3 class="mb-1">{{ t('Alertas de Stock Bajo', 'Low Stock Alerts') }}</h3>
+                    <p class="text-sm text-gray-600">
+                        {{ t('Notificar cuando el stock esté bajo', 'Notify when stock is low') }}
+                    </p>
+                </div>
+
+                <input type="checkbox" class="w-5 h-5 accent-primary" checked />
+
+            </div>
+
+            <!-- SWITCH 3 -->
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h3 class="mb-1">{{ t('Modo Oscuro', 'Dark Mode') }}</h3>
+                    <p class="text-sm text-gray-600">
+                        {{ t('Activar tema oscuro', 'Enable dark theme') }}
+                    </p>
+                </div>
+
+                <input type="checkbox" class="w-5 h-5 accent-primary" />
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+
+        <h2 class="text-2xl mb-6">
+            {{ t('Seguridad', 'Security') }}
+        </h2>
+
+        <div class="space-y-4">
+
+            <button class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                {{ t('Cambiar Contraseña', 'Change Password') }}
+            </button>
+
+            <button
+                class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors ml-0 md:ml-4">
+                {{ t('Configurar 2FA', 'Setup 2FA') }}
+            </button>
+
+        </div>
+    </div>
+
+</div>
