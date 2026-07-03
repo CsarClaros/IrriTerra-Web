@@ -1,1 +1,362 @@
-<p>home works!</p>
+    <div class="min-h-screen">
+    <!-- Hero Section -->
+
+    <section
+        class="relative h-[600px] flex items-center justify-center text-white"
+        style="
+        background-image:
+            linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+            url('https://images.unsplash.com/photo-1760574852599-bef55b050231?w=1600');
+        background-size: cover;
+        background-position: center;
+        "
+    >
+        <div class="max-w-4xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl mb-6">
+            {{
+            t(
+                'Soluciones Inteligentes de Riego para una Agricultura Más Eficiente',
+                'Smart Irrigation Solutions for More Efficient Agriculture'
+            )
+            }}
+        </h1>
+
+        <p class="text-xl md:text-2xl mb-8 text-gray-200">
+            {{
+            t(
+                'Tecnología moderna para optimizar el uso del agua y maximizar la productividad agrícola.',
+                'Modern technology to optimize water use and maximize agricultural productivity.'
+            )
+            }}
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+            routerLink="/productos"
+            class="px-8 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center justify-center"
+            >
+            {{ t('Ver Productos', 'View Products') }}
+
+            <lucide-angular [img]="ArrowRightIcon" class="ml-2 w-5 h-5"> </lucide-angular>
+            </a>
+
+
+
+            <a
+            routerLink="/contactos"
+            class="px-8 py-3 bg-white text-primary rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+            >
+            {{ t('Contactar Asesor', 'Contact Advisor') }}
+            </a>
+        </div>
+        </div>
+    </section>
+
+    <!-- About Preview -->
+
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+            <h2 class="text-3xl md:text-4xl mb-6">
+                {{ t('Sobre Irriterra', 'About Irriterra') }}
+            </h2>
+
+            <p class="text-lg text-gray-600 mb-6">
+                {{
+                t(
+                    'Irriterra es una empresa dedicada al desarrollo e implementación de soluciones modernas de riego agrícola, combinando tecnología, eficiencia y sostenibilidad.',
+                    'Irriterra is a company dedicated to the development and implementation of modern agricultural irrigation solutions, combining technology, efficiency and sustainability.'
+                )
+                }}
+            </p>
+
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="text-center">
+                <lucide-angular [img]="DropletsIcon" class="w-12 h-12 mx-auto mb-2 text-accent">
+                </lucide-angular>
+
+                <p class="text-sm text-gray-600">
+                    {{ t('Eficiencia', 'Efficiency') }}
+                </p>
+                </div>
+
+                <div class="text-center">
+                <lucide-angular [img]="SettingsIcon" class="w-12 h-12 mx-auto mb-2 text-primary">
+                </lucide-angular>
+
+                <p class="text-sm text-gray-600">
+                    {{ t('Tecnología', 'Technology') }}
+                </p>
+                </div>
+
+                <div class="text-center">
+                <lucide-angular [img]="AwardIcon" class="w-12 h-12 mx-auto mb-2 text-secondary">
+                </lucide-angular>
+
+                <p class="text-sm text-gray-600">
+                    {{ t('Calidad', 'Quality') }}
+                </p>
+                </div>
+            </div>
+
+            <a
+                routerLink="/empresa"
+                class="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+            >
+                {{ t('Conocer la Empresa', 'Learn About Company') }}
+
+                <lucide-angular [img]="ArrowRightIcon" class="ml-2 w-5 h-5"> </lucide-angular>
+            </a>
+            </div>
+
+            <div class="rounded-xl overflow-hidden shadow-lg">
+            <app-image-with-fallback
+                src="https://images.unsplash.com/photo-1738598665698-7fd7af4b5e0c?w=800"
+                alt="Irrigation System"
+                class="w-full h-[400px] object-cover"
+            >
+            </app-image-with-fallback>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Nuestras Marcas Aliadas -->
+
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl mb-4">
+            {{ t('Nuestras Marcas Aliadas', 'Our Partner Brands') }}
+            </h2>
+
+            <p class="text-lg text-gray-600">
+            {{
+                t(
+                'Trabajamos con las mejores marcas del mercado',
+                'We work with the best brands in the market'
+                )
+            }}
+            </p>
+        </div>
+
+        <div class="relative overflow-hidden">
+            <div class="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+            @for (brand of partnerBrands; track brand) {
+                <div
+                class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gray-100 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow border-4 border-white"
+                >
+                <div class="text-center p-4">
+                    <span class="text-xs md:text-sm text-gray-600">
+                    {{ brand }}
+                    </span>
+                </div>
+                </div>
+            }
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+
+    <section class="py-16 bg-muted">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl mb-4">
+            {{ t('Productos Destacados', 'Featured Products') }}
+            </h2>
+
+            <p class="text-lg text-gray-600">
+            {{
+                t(
+                'Descubre nuestras soluciones más innovadoras',
+                'Discover our most innovative solutions'
+                )
+            }}
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            @for (product of products; track $index) {
+            <div
+                class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+            >
+                <div class="h-48 overflow-hidden">
+                <app-image-with-fallback
+                    [src]="product.image"
+                    [alt]="product.name.es"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                >
+                </app-image-with-fallback>
+                </div>
+
+                <div class="p-6">
+                <h3 class="text-xl mb-2">
+                    {{ t(product.name.es, product.name.en) }}
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    {{ t(product.description.es, product.description.en) }}
+                </p>
+
+                <a
+                    routerLink="/productos"
+                    class="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+                >
+                    {{ t('Ver más', 'Learn more') }}
+
+                    <lucide-angular [img]="ArrowRightIcon" class="ml-2 w-4 h-4"> </lucide-angular>
+                </a>
+                </div>
+            </div>
+            }
+        </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl mb-4">
+            {{ t('Próximos Eventos', 'Upcoming Events') }}
+            </h2>
+
+            <p class="text-lg text-gray-600">
+            {{
+                t(
+                'Participa en nuestras capacitaciones y ferias',
+                'Participate in our trainings and fairs'
+                )
+            }}
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            @for (event of events; track $index) {
+            <div
+                class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+            >
+                <div class="h-48 overflow-hidden">
+                <app-image-with-fallback
+                    [src]="event.image"
+                    [alt]="event.title.es"
+                    class="w-full h-full object-cover"
+                >
+                </app-image-with-fallback>
+                </div>
+
+                <div class="p-6">
+                <h3 class="text-xl mb-2">
+                    {{ t(event.title.es, event.title.en) }}
+                </h3>
+
+                <p class="text-gray-600 mb-2">
+                    {{ event.date }}
+                </p>
+
+                <p class="text-gray-600 mb-4">
+                    {{ event.location }}
+                </p>
+
+                <a
+                    routerLink="/eventos"
+                    class="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+                >
+                    {{ t('Ver evento', 'View event') }}
+
+                    <lucide-angular [img]="ArrowRightIcon" class="ml-2 w-4 h-4"> </lucide-angular>
+                </a>
+                </div>
+            </div>
+            }
+        </div>
+        </div>
+    </section>
+
+    <!-- Este Mayo en Irriterra -->
+
+    <section class="py-16 bg-gradient-to-r from-primary to-secondary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl mb-4">
+            {{ t('Este Mayo en Irriterra', 'This May at Irriterra') }}
+            </h2>
+
+            <p class="text-xl text-gray-100">
+            {{
+                t(
+                'Conoce nuestras últimas instalaciones, entregas y novedades del mes',
+                'Discover our latest installations, deliveries and news of the month'
+                )
+            }}
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            @for (item of monthlyNews; track $index) {
+            <div
+                class="bg-white text-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow"
+            >
+                <div class="h-48 overflow-hidden">
+                <app-image-with-fallback
+                    [src]="item.image"
+                    [alt]="item.title.es"
+                    class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                >
+                </app-image-with-fallback>
+                </div>
+
+                <div class="p-6">
+                <h3 class="text-xl mb-2">
+                    {{ t(item.title.es, item.title.en) }}
+                </h3>
+
+                <p class="text-gray-600">
+                    {{ t(item.description.es, item.description.en) }}
+                </p>
+                </div>
+            </div>
+            }
+        </div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+
+    <section class="py-16 bg-primary text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-4xl mb-6">
+            {{
+            t(
+                '¿Necesitas asesoramiento en sistemas de riego?',
+                'Do you need advice on irrigation systems?'
+            )
+            }}
+        </h2>
+
+        <p class="text-xl mb-8">
+            {{ t('Nuestros expertos están listos para ayudarte', 'Our experts are ready to help you') }}
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+            routerLink="/contactos"
+            class="px-8 py-3 bg-white text-primary rounded-lg hover:bg-gray-100 transition-colors"
+            >
+            {{ t('Contactar ahora', 'Contact now') }}
+            </a>
+
+            <a
+            routerLink="/productos"
+            class="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg hover:bg-white hover:text-primary transition-colors"
+            >
+            {{ t('Ver productos', 'View products') }}
+            </a>
+        </div>
+        </div>
+    </section>
+    </div>

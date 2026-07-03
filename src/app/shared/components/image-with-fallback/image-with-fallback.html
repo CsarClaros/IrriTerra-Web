@@ -1,0 +1,24 @@
+@if (!hasError) {
+
+    <img
+      [src]="src"
+      [alt]="alt"
+      [class]="className"
+      (error)="onError()"
+    />
+    
+    } @else {
+    
+    <div
+      class="inline-block bg-gray-100 text-center align-middle"
+      [class]="className"
+    >
+      <div class="flex items-center justify-center w-full h-full">
+        <img
+          [src]="ERROR_IMG_SRC"
+          alt="Error loading image"
+        />
+      </div>
+    </div>
+    
+    }

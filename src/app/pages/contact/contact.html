@@ -1,1 +1,160 @@
-<p>contact works!</p>
+<div class="min-h-screen bg-muted">
+
+    <!-- Hero -->
+    <section class="bg-primary text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl mb-4">
+                {{ t('Contáctanos', 'Contact Us') }}
+            </h1>
+            <p class="text-xl max-w-3xl mx-auto">
+                {{ t(
+                'Estamos aquí para ayudarte con tus proyectos de riego',
+                'We are here to help you with your irrigation projects'
+                ) }}
+            </p>
+        </div>
+    </section>
+
+    <!-- Content -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="grid lg:grid-cols-2 gap-12">
+
+                <!-- FORM -->
+                <div class="bg-white rounded-xl p-8 shadow-lg">
+
+                    <h2 class="text-3xl mb-6">
+                        {{ t('Envíanos un mensaje', 'Send us a message') }}
+                    </h2>
+
+                    <form (ngSubmit)="handleSubmit()" class="space-y-6">
+
+                        <!-- Nombre -->
+                        <div>
+                            <label class="block mb-2 text-gray-700">
+                                {{ t('Nombre', 'Name') }}
+                            </label>
+
+                            <input type="text" name="nombre" [(ngModel)]="formData.nombre"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                                [placeholder]="t('Tu nombre completo', 'Your full name')" />
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block mb-2 text-gray-700">
+                                {{ t('Correo', 'Email') }}
+                            </label>
+
+                            <input type="email" name="correo" [(ngModel)]="formData.correo"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                                [placeholder]="t('tu@correo.com', 'your@email.com')" />
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div>
+                            <label class="block mb-2 text-gray-700">
+                                {{ t('Teléfono', 'Phone') }}
+                            </label>
+
+                            <input type="tel" name="telefono" [(ngModel)]="formData.telefono"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                                placeholder="+591 XXX XXXXX" />
+                        </div>
+
+                        <!-- Mensaje -->
+                        <div>
+                            <label class="block mb-2 text-gray-700">
+                                {{ t('Mensaje', 'Message') }}
+                            </label>
+
+                            <textarea name="mensaje" [(ngModel)]="formData.mensaje" rows="5"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                                [placeholder]="t('Cuéntanos sobre tu proyecto...', 'Tell us about your project...')"></textarea>
+                        </div>
+
+                        <!-- BUTTON -->
+                        <button type="submit"
+                            class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center justify-center">
+                            <lucide-angular [img]="Send" class="mr-2 w-5 h-5"></lucide-angular>
+                            {{ t('Enviar mensaje', 'Send message') }}
+                        </button>
+
+                    </form>
+                </div>
+
+                <!-- INFO -->
+                <div>
+
+                    <div class="bg-white rounded-xl p-8 shadow-lg mb-8">
+
+                        <h2 class="text-3xl mb-6">
+                            {{ t('Información de contacto', 'Contact Information') }}
+                        </h2>
+
+                        <!-- Phone -->
+                        <div class="flex items-start space-x-4 mb-6">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <lucide-angular [img]="Phone" class="w-6 h-6 text-primary"></lucide-angular>
+                            </div>
+                            <div>
+                                <h3 class="mb-1">{{ t('Teléfono', 'Phone') }}</h3>
+                                <p class="text-gray-600">+591 2 234 5678</p>
+                                <p class="text-gray-600">+591 3 345 6789</p>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="flex items-start space-x-4 mb-6">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <lucide-angular [img]="Mail" class="w-6 h-6 text-primary"></lucide-angular>
+                            </div>
+                            <div>
+                                <h3 class="mb-1">{{ t('Correo', 'Email') }}</h3>
+                                <p class="text-gray-600">info@irriterra.com</p>
+                                <p class="text-gray-600">ventas@irriterra.com</p>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="flex items-start space-x-4 mb-6">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <lucide-angular [img]="MapPin" class="w-6 h-6 text-primary"></lucide-angular>
+                            </div>
+                            <div>
+                                <h3 class="mb-1">{{ t('Dirección', 'Address') }}</h3>
+                                <p class="text-gray-600">
+                                    {{ t('Av. Principal 123, La Paz, Bolivia', 'Main Ave 123, La Paz, Bolivia') }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Hours -->
+                        <div class="mt-8">
+                            <h3 class="mb-4">
+                                {{ t('Horario de atención', 'Business Hours') }}
+                            </h3>
+
+                            <div class="space-y-2 text-gray-600">
+                                <p>{{ t('Lunes - Viernes', 'Monday - Friday') }}: 08:00 - 18:00</p>
+                                <p>{{ t('Sábado', 'Saturday') }}: 09:00 - 13:00</p>
+                                <p>{{ t('Domingo', 'Sunday') }}: {{ t('Cerrado', 'Closed') }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- MAP -->
+                    <div class="rounded-xl overflow-hidden shadow-lg h-80">
+                        <iframe class="w-full h-full"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30602.36728!2d-68.119!3d-16.5!2m3!1f0!2f0!2f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDMwJzAwLjAiUyA2OMKwMDcnMTIuNCJX!5e0!3m2!1sen!2sbo!4v1234567890"
+                            style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                            allowfullscreen></iframe>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

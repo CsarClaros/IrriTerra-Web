@@ -1,1 +1,141 @@
-<p>footer works!</p>
+<footer class="bg-[#1F2937] text-white">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <!-- Company -->
+            <div>
+                <h3 class="text-2xl mb-4">IRRITERRA</h3>
+
+                <p class="text-gray-300 mb-4">
+                    {{ t(
+                    'Soluciones modernas de riego agrícola, combinando tecnología, eficiencia y sostenibilidad.',
+                    'Modern agricultural irrigation solutions, combining technology, efficiency and sustainability.'
+                    ) }}
+                </p>
+            </div>
+
+            <!-- Links -->
+            <div>
+
+                <h4 class="mb-4">{{ t('Enlaces Rápidos','Quick Links') }}</h4>
+
+                <ul class="space-y-2">
+
+                    <li>
+                        <a routerLink="/" class="text-gray-300 hover:text-accent transition-colors">
+                            {{ t('Inicio','Home') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a routerLink="/productos" class="text-gray-300 hover:text-accent transition-colors">
+                            {{ t('Productos','Products') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a routerLink="/empresa" class="text-gray-300 hover:text-accent transition-colors">
+                            {{ t('Empresa','Company') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a routerLink="/eventos" class="text-gray-300 hover:text-accent transition-colors">
+                            {{ t('Eventos','Events') }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a routerLink="/contactos" class="text-gray-300 hover:text-accent transition-colors">
+                            {{ t('Contactos','Contact') }}
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <!-- Contact -->
+            <div>
+
+                <h4 class="mb-4">{{ t('Contacto','Contact') }}</h4>
+
+                <ul class="space-y-3">
+
+                    <li class="flex items-start space-x-2">
+                        <span class="text-accent">📞</span>
+                        <span class="text-gray-300">+591 2 234 5678</span>
+                    </li>
+
+                    <li class="flex items-start space-x-2">
+                        <span class="text-accent">✉️</span>
+                        <span class="text-gray-300">info@irriterra.com</span>
+                    </li>
+
+                    <li class="flex items-start space-x-2">
+                        <span class="text-accent">📍</span>
+                        <span class="text-gray-300">
+                            {{ t('Av. Principal 123, La Paz, Bolivia','Main Ave 123, La Paz, Bolivia') }}
+                        </span>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <!-- Social + Map -->
+            <div>
+
+                <h4 class="mb-4">{{ t('Síguenos','Follow Us') }}</h4>
+
+                <div class="flex space-x-4 mb-4">
+
+                    <a href="https://facebook.com" target="_blank"
+                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+                        F
+                    </a>
+
+                    <a href="https://twitter.com" target="_blank"
+                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+                        T
+                    </a>
+
+                    <a href="https://instagram.com" target="_blank"
+                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+                        I
+                    </a>
+
+                    <a href="https://linkedin.com" target="_blank"
+                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+                        L
+                    </a>
+
+                </div>
+
+                <div class="rounded-lg overflow-hidden h-32">
+
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30602.36728!2d-68.119!3d-16.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDMwJzAwLjAiUyA2OMKwMDcnMTIuNCJX!5e0!3m2!1sen!2sbo!4v1234567890"
+                        width="100%" height="100%" style="border:0" loading="lazy">
+                    </iframe>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+
+            <p>
+                © Irriterra 2026 —
+                {{ t('Todos los derechos reservados','All rights reserved') }}
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>

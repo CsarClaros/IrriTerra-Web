@@ -1,1 +1,225 @@
-<p>navbar works!</p>
+<nav class="sticky top-0 z-50 bg-white shadow-md">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="flex justify-between items-center h-16">
+
+      <!-- Logo -->
+
+      <a routerLink="/" class="flex items-center space-x-2">
+        <div class="text-2xl text-primary">
+          <span class="font-bold">IRRITERRA</span>
+        </div>
+      </a>
+
+      <!-- Desktop -->
+
+      <div class="hidden md:flex items-center space-x-6">
+
+        <a routerLink="/" [class.text-primary]="isActive('/')" [class.text-gray-700]="!isActive('/')"
+          class="transition-colors hover:text-primary">
+          {{ t('Inicio', 'Home') }}
+        </a>
+
+        <!-- Productos -->
+
+        <!-- <div
+            class="relative"
+            (mouseenter)="isProductsOpen = true"
+            (mouseleave)="isProductsOpen = false"
+          >
+  
+            <button
+              class="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors"
+            >
+              <span>{{ t('Productos', 'Products') }}</span>
+  
+              <lucide-angular
+                [img]="ChevronDownIcon"
+                class="w-4 h-4">
+              </lucide-angular>
+            </button>
+  
+            @if (isProductsOpen) {
+  
+              <div
+                class="absolute top-full left-0 top-full pt-2-2 w-56 bg-white rounded-lg shadow-lg py-2 border border-gray-100"
+              >
+  
+                @for (product of products; track $index) {
+  
+                  <a
+                    routerLink="/productos"
+                    class="block px-4 py-2 text-gray-700 hover:bg-muted hover:text-primary transition-colors"
+                  >
+                    {{ language === 'es' ? product.es : product.en }}
+                  </a>
+  
+                }
+  
+              </div>
+  
+            }
+  
+          </div> -->
+
+        <div class="relative" (mouseenter)="isProductsOpen = true" (mouseleave)="isProductsOpen = false">
+
+          <a routerLink="/productos" class="flex items-center space-x-1 text-gray-700 hover:text-primary">
+
+            <span>{{ t('Productos', 'Products') }}</span>
+
+            <lucide-angular [img]="ChevronDownIcon" class="w-4 h-4">
+            </lucide-angular>
+
+          </a>
+
+          @if (isProductsOpen) {
+
+            <div class="absolute left-0 top-full w-56 bg-white rounded-lg shadow-lg border border-gray-100">
+
+            @for(product of products; track $index){
+
+            <a routerLink="/productos" class="block px-4 py-2 hover:bg-muted">
+              {{ language === 'es' ? product.es : product.en }}
+            </a>
+
+            }
+
+          </div>
+
+          }
+
+        </div>
+
+        <a routerLink="/empresa" [class.text-primary]="isActive('/empresa')"
+          [class.text-gray-700]="!isActive('/empresa')" class="transition-colors hover:text-primary">
+          {{ t('Empresa', 'Company') }}
+        </a>
+
+        <a routerLink="/eventos" [class.text-primary]="isActive('/eventos')"
+          [class.text-gray-700]="!isActive('/eventos')" class="transition-colors hover:text-primary">
+          {{ t('Eventos', 'Events') }}
+        </a>
+
+        <a routerLink="/contactos" [class.text-primary]="isActive('/contactos')"
+          [class.text-gray-700]="!isActive('/contactos')" class="transition-colors hover:text-primary">
+          {{ t('Contactos', 'Contact') }}
+        </a>
+
+        <a routerLink="/login" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+          Login
+        </a>
+
+        <!-- Idioma -->
+
+        <button (click)="toggleLanguage()"
+          class="px-3 py-1 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+          {{ language.toUpperCase() }}
+        </button>
+
+      </div>
+
+      <!-- Mobile Button -->
+
+      <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" (click)="isMenuOpen = !isMenuOpen">
+
+        @if (isMenuOpen) {
+
+        <lucide-angular [img]="XIcon" class="w-6 h-6">
+        </lucide-angular>
+
+        } @else {
+
+        <lucide-angular [img]="MenuIcon" class="w-6 h-6">
+        </lucide-angular>
+
+        }
+
+      </button>
+
+    </div>
+
+    <!-- Mobile Menu -->
+
+    @if (isMenuOpen) {
+
+    <div class="md:hidden py-4 border-t border-gray-200">
+
+      <div class="flex flex-col space-y-3">
+
+        <a routerLink="/" class="px-4 py-2 text-gray-700 hover:bg-muted rounded-lg transition-colors"
+          (click)="closeMobileMenu()">
+          {{ t('Inicio', 'Home') }}
+        </a>
+
+        <!-- Productos -->
+
+        <div>
+
+          <button (click)="isProductsOpen = !isProductsOpen"
+            class="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-muted rounded-lg transition-colors">
+
+            <span>
+              {{ t('Productos', 'Products') }}
+            </span>
+
+            <lucide-angular [img]="ChevronDownIcon" class="w-4 h-4 transition-transform"
+              [class.rotate-180]="isProductsOpen">
+            </lucide-angular>
+
+          </button>
+
+          @if (isProductsOpen) {
+
+          <div class="ml-4 mt-2 space-y-2">
+
+            @for (product of products; track $index) {
+
+            <a routerLink="/productos" class="block px-4 py-2 text-gray-600 hover:bg-muted rounded-lg transition-colors"
+              (click)="closeMobileMenu()">
+              {{ language === 'es' ? product.es : product.en }}
+            </a>
+
+            }
+
+          </div>
+
+          }
+
+        </div>
+
+        <a routerLink="/empresa" class="px-4 py-2 text-gray-700 hover:bg-muted rounded-lg transition-colors"
+          (click)="closeMobileMenu()">
+          {{ t('Empresa', 'Company') }}
+        </a>
+
+        <a routerLink="/eventos" class="px-4 py-2 text-gray-700 hover:bg-muted rounded-lg transition-colors"
+          (click)="closeMobileMenu()">
+          {{ t('Eventos', 'Events') }}
+        </a>
+
+        <a routerLink="/contactos" class="px-4 py-2 text-gray-700 hover:bg-muted rounded-lg transition-colors"
+          (click)="closeMobileMenu()">
+          {{ t('Contactos', 'Contact') }}
+        </a>
+
+        <a routerLink="/login" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          (click)="closeMobileMenu()">
+          Login
+        </a>
+
+        <button (click)="toggleLanguage()"
+          class="mx-4 px-3 py-1 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+          {{ language === 'es' ? 'ES' : 'EN' }}
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+</nav>

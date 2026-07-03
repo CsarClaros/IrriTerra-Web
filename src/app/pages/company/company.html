@@ -1,1 +1,192 @@
-<p>company works!</p>
+<!-- empresa-page.component.html -->
+
+<div class="min-h-screen bg-white">
+
+    <!-- Hero Section -->
+    <section class="bg-primary text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl mb-4">
+                {{ t('Sobre Nosotros', 'About Us') }}
+            </h1>
+            <p class="text-xl max-w-3xl mx-auto">
+                {{ t('Líderes en tecnología de riego agrícola en Bolivia', 'Leaders in agricultural irrigation
+                technology in Bolivia') }}
+            </p>
+        </div>
+    </section>
+
+    <!-- Historia -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+
+                <div>
+                    <h2 class="text-3xl mb-6">
+                        {{ t('Acerca de Nosotros', 'About Us') }}
+                    </h2>
+
+                    <p class="text-gray-600 mb-4">
+                        {{ t(
+                        'Fundada en la gestión 2023, IRRITERRA SRL se fundó con el propósito de tecnificar y optimizar
+                        el uso de recursos hídricos y productivos en Bolivia. A pesar de nuestra trayectoria reciente,
+                        nos hemos consolidado rápidamente como un aliado estratégico fundamental.',
+                        'Founded in 2023, IRRITERRA SRL was established with the purpose of modernizing and optimizing
+                        the use of water and productive resources in Bolivia. Despite our recent trajectory, we have
+                        quickly consolidated ourselves as a fundamental strategic ally.'
+                        ) }}
+                    </p>
+
+                    <p class="text-gray-600">
+                        {{ t(
+                        'Nuestra capacidad operativa nos ha permitido ser adjudicatarios de proyectos de gran
+                        envergadura junto a Ministerios del Gobierno Nacional, abarcando la provisión, instalación y
+                        mantenimiento de sistemas integrales a lo largo de todo el territorio boliviano.',
+                        'Our operational capacity has allowed us to be awarded large-scale projects together with
+                        National Government Ministries, covering the provision, installation and maintenance of
+                        comprehensive systems throughout the Bolivian territory.'
+                        ) }}
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-primary text-white p-6 rounded-xl text-center">
+                        <div class="text-4xl mb-2">100+</div>
+                        <div>{{ t('Proyectos completados', 'Completed projects') }}</div>
+                    </div>
+
+                    <div class="bg-secondary text-white p-6 rounded-xl text-center">
+                        <div class="text-4xl mb-2">3</div>
+                        <div>{{ t('Años de trayectoria', 'Years of experience') }}</div>
+                    </div>
+
+                    <div class="bg-accent text-white p-6 rounded-xl text-center">
+                        <div class="text-4xl mb-2">3</div>
+                        <div>{{ t('Áreas especializadas', 'Specialized areas') }}</div>
+                    </div>
+
+                    <div class="bg-[#1F2937] text-white p-6 rounded-xl text-center">
+                        <div class="text-4xl mb-2">100%</div>
+                        <div>{{ t('Compromiso', 'Commitment') }}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Misión, Visión, Valores -->
+    <section class="py-16 bg-muted">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl mb-4 text-primary">
+                        {{ t('Misión', 'Mission') }}
+                    </h3>
+                    <p class="text-gray-600">
+                        {{ t(
+                        'Proveer soluciones tecnológicas integrales en sistemas de riego, geomembranas y maquinaria
+                        agrícola, garantizando la optimización y eficiencia en el uso de los recursos de nuestros
+                        clientes. Nos comprometemos a entregar productos de alta calidad y un servicio técnico
+                        especializado que asegure la operatividad y sostenibilidad de cada proyecto que ejecutamos.',
+                        'Provide comprehensive technological solutions in irrigation systems, geomembranes and
+                        agricultural machinery, guaranteeing the optimization and efficiency in the use of our clients\'
+                        resources. We are committed to delivering high-quality products and specialized technical
+                        service that ensures the operability and sustainability of each project we execute.'
+                        ) }}
+                    </p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl mb-4 text-primary">
+                        {{ t('Visión', 'Vision') }}
+                    </h3>
+                    <p class="text-gray-600">
+                        {{ t(
+                        'Convertirnos en el referente líder a nivel nacional en el suministro e instalación de
+                        soluciones para el sector agroindustrial y de infraestructura hídrica, siendo reconocidos por
+                        nuestra solidez técnica, capacidad de respuesta ante proyectos de gran escala y nuestra
+                        contribución al desarrollo productivo de los diferentes sectores que integran nuestro país.',
+                        'Become the leading reference at the national level in the supply and installation of solutions
+                        for the agro-industrial sector and water infrastructure, being recognized for our technical
+                        solidity, response capacity for large-scale projects and our contribution to the productive
+                        development of the different sectors that make up our country.'
+                        ) }}
+                    </p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl mb-4 text-primary">
+                        {{ t('Valores Empresariales', 'Corporate Values') }}
+                    </h3>
+
+                    <ul class="text-gray-600 space-y-2">
+                        <li>• {{ t('Excelencia Operativa', 'Operational Excellence') }}</li>
+                        <li>• {{ t('Compromiso Institucional', 'Institutional Commitment') }}</li>
+                        <li>• {{ t('Innovación en Riego', 'Innovation in Irrigation') }}</li>
+                        <li>• {{ t('Integridad', 'Integrity') }}</li>
+                        <li>• {{ t('Responsabilidad', 'Responsibility') }}</li>
+                        <li>• {{ t('Colaboración', 'Collaboration') }}</li>
+                        <li>• {{ t('Practicidad', 'Practicality') }}</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Sucursales -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl mb-4">
+                    {{ t('Nuestras Sucursales', 'Our Branches') }}
+                </h2>
+                <p class="text-lg text-gray-600">
+                    {{ t('Estamos presentes en las principales ciudades del país', 'We are present in the main cities of
+                    the country') }}
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+
+                <!-- Selector -->
+                <div class="space-y-4">
+                    <button *ngFor="let branch of branches" (click)="setBranch(branch.id)"
+                        class="w-full text-left p-6 rounded-xl transition-all" [ngClass]="{
+                'bg-primary text-white shadow-lg': selectedBranch === branch.id,
+                'bg-gray-100 hover:bg-gray-200': selectedBranch !== branch.id
+              }">
+                        <div class="flex items-start space-x-3">
+                            <lucide-angular [img]="MapPin" class="w-6 h-6 mt-1"></lucide-angular>
+
+                            <div>
+                                <h3 class="text-xl mb-2">{{ branch.name }}</h3>
+
+                                <p [ngClass]="selectedBranch === branch.id ? 'text-gray-200' : 'text-gray-600'">
+                                    {{ branch.address }}
+                                </p>
+
+                                <p [ngClass]="selectedBranch === branch.id ? 'text-gray-200' : 'text-gray-600'">
+                                    {{ branch.phone }}
+                                </p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Map -->
+                <div class="lg:col-span-2">
+                    <div class="rounded-xl overflow-hidden shadow-lg h-[500px]">
+                        <iframe class="w-full h-full" [src]="currentBranch.mapEmbed" style="border: 0;" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+</div>

@@ -80,13 +80,13 @@ export const routes: Routes = [
 
             { path: '', component: Home },
 
-            { path: 'products', component: Products },
+            { path: 'productos', component: Products },
 
-            { path: 'company', component: Company },
+            { path: 'empresa', component: Company },
 
-            { path: 'events', component: Events },
+            { path: 'eventos', component: Events },
 
-            { path: 'contact', component: Contact },
+            { path: 'contactos', component: Contact },
 
             { path: 'login', component: Login }
 

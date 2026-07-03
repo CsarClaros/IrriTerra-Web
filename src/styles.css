@@ -2,3 +2,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root{
+    --primary: #2E7D32;
+    --secondary: #66BB6A;
+    --accent: #4FC3F7;
+    --muted: #F5F7FA;
+}
