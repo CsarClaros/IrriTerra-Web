@@ -1,1 +1,111 @@
-<p>sales works!</p>
+<div class="space-y-6">
+
+    <!-- HEADER -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl mb-2">Ventas</h1>
+            <p class="text-gray-600">
+                Gestión de ventas y registros
+            </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+            <button (click)="exportPDF()"
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 inline-flex items-center">
+                <lucide-icon [img]="Download" class="w-4 h-4 mr-2"></lucide-icon>
+                PDF
+            </button>
+
+            <button (click)="exportExcel()"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 inline-flex items-center">
+                <lucide-icon [img]="Download" class="w-4 h-4 mr-2"></lucide-icon>
+                Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="bg-white rounded-xl p-6 shadow-lg">
+        <div class="flex items-center space-x-2 mb-4">
+            <lucide-icon [img]="Filter" class="w-5 h-5 text-primary"></lucide-icon>
+            <h3 class="text-lg">Filtros</h3>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4">
+
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">Fecha</label>
+                <input type="date" [(ngModel)]="filters.fecha"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300" />
+            </div>
+
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">Vendedor</label>
+                <select [(ngModel)]="filters.vendedor" class="w-full px-4 py-2 rounded-lg border border-gray-300">
+                    <option value="">Todos</option>
+                    <option value="juan">Juan Pérez</option>
+                    <option value="maria">María González</option>
+                    <option value="carlos">Carlos Mamani</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">Producto</label>
+                <select [(ngModel)]="filters.producto" class="w-full px-4 py-2 rounded-lg border border-gray-300">
+                    <option value="">Todos</option>
+                    <option value="goteo">Sistema Goteo</option>
+                    <option value="aspersor">Aspersor</option>
+                    <option value="controlador">Controlador</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Fecha</th>
+                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Producto</th>
+                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Vendedor</th>
+                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Cantidad</th>
+                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Precio</th>
+                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (venta of ventas; track venta.id) {
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">{{ venta.fecha }}</td>
+                        <td class="px-6 py-4">{{ venta.producto }}</td>
+                        <td class="px-6 py-4">{{ venta.vendedor }}</td>
+                        <td class="px-6 py-4">{{ venta.cantidad }}</td>
+                        <td class="px-6 py-4">Bs. {{ venta.precio }}</td>
+                        <td class="px-6 py-4 text-green-600">
+                            Bs. {{ venta.total }}
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+
+                <tfoot class="bg-gray-50">
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-right">
+                            <strong>Total General:</strong>
+                        </td>
+                        <td class="px-6 py-4 text-green-600">
+                            <strong>Bs. {{ totalGeneral | number }}</strong>
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    </div>
+
+</div>
