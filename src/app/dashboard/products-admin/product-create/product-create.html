@@ -1,1 +1,76 @@
-<p>product-create works!</p>
+<div class="max-w-3xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div>
+        <h1 class="text-3xl mb-2">Crear producto</h1>
+        <p class="text-gray-600">
+            Registro de nuevo producto en inventario
+        </p>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+
+        <form (ngSubmit)="save()" class="space-y-6">
+
+            <!-- Nombre -->
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">Nombre</label>
+                <input type="text" [(ngModel)]="formData.nombre" name="nombre" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+
+            <!-- Categoria -->
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">Categoría</label>
+                <select [(ngModel)]="formData.categoria" name="categoria" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Seleccionar</option>
+                    <option *ngFor="let cat of categorias" [value]="cat">
+                        {{ cat }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Precio y Stock -->
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block mb-2 text-sm text-gray-600">Precio</label>
+                    <input type="number" [(ngModel)]="formData.precio" name="precio" required
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm text-gray-600">Stock</label>
+                    <input type="number" [(ngModel)]="formData.stock" name="stock" required
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+
+            </div>
+
+            <!-- Imagen -->
+            <div>
+                <label class="block mb-2 text-sm text-gray-600">URL Imagen</label>
+                <input type="text" [(ngModel)]="formData.imagen" name="imagen"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end space-x-4 pt-4 border-t">
+
+                <button type="button" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Cancelar
+                </button>
+
+                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                    Guardar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

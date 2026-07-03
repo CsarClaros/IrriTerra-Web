@@ -60,6 +60,10 @@ import { UserList } from './dashboard/users/user-list/user-list';
 import { UserCreate } from './dashboard/users/user-create/user-create';
 import { Roles } from './dashboard/users/roles/roles';
 
+/* REPORT */
+
+import { Reports } from './dashboard/reports/reports';
+
 /* SETTINGS */
 
 import { Settings } from './dashboard/settings/settings';
@@ -167,6 +171,12 @@ export const routes: Routes = [
                     { path: 'roles', component: Roles }
 
                 ]
+            },
+
+
+            {
+                path: 'reports',
+                component: Reports
             },
 
             /*

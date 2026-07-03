@@ -1,1 +1,70 @@
-<p>stock-report works!</p>
+<div class="space-y-6">
+
+    <!-- Header -->
+    <div>
+        <h1 class="text-3xl mb-2">Reporte de Stock</h1>
+        <p class="text-gray-600">
+            Productos con inventario bajo
+        </p>
+    </div>
+
+    <!-- Alert -->
+    <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+        <div class="flex items-start space-x-3">
+
+            <lucide-icon name="alert-triangle" class="w-6 h-6 text-red-600 mt-0.5"></lucide-icon>
+
+            <div>
+                <h3 class="text-red-900 mb-1">Atención</h3>
+                <p class="text-red-800">
+                    Estos productos necesitan reposición urgente
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+
+        <table class="w-full">
+
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">
+                        Producto
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">
+                        Stock actual
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">
+                        Estado
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-200">
+
+                <tr *ngFor="let p of productos" class="hover:bg-gray-50">
+
+                    <td class="px-6 py-4">{{ p.nombre }}</td>
+
+                    <td class="px-6 py-4">
+                        {{ p.stock }}
+                    </td>
+
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700">
+                            Bajo
+                        </span>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
