@@ -1,1 +1,46 @@
-<p>users works!</p>
+<div class="space-y-6">
+
+    <!-- HEADER -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+        <div>
+            <h1 class="text-3xl mb-2">Usuarios</h1>
+            <p class="text-gray-600">Gestión de usuarios y roles</p>
+        </div>
+
+        <button (click)="openCreate()"
+            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 inline-flex items-center">
+            Crear usuario
+        </button>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-600 text-sm mb-1">Total Usuarios</h3>
+            <p class="text-3xl text-primary">5</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-600 text-sm mb-1">Usuarios Activos</h3>
+            <p class="text-3xl text-green-600">4</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-gray-600 text-sm mb-1">Administradores</h3>
+            <p class="text-3xl text-blue-600">1</p>
+        </div>
+
+    </div>
+
+    <!-- LIST -->
+    <app-user-list (edit)="openEdit($event)"></app-user-list>
+
+    <!-- MODAL -->
+    @if (showModal) {
+    <app-user-create [user]="selectedUser" [editMode]="editMode" (close)="closeModal()"></app-user-create>
+    }
+
+</div>

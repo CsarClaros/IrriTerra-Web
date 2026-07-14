@@ -1,1 +1,50 @@
-<p>user-list works!</p>
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+
+        <table class="w-full">
+
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs text-gray-500">Nombre</th>
+                    <th class="px-6 py-3 text-left text-xs text-gray-500">Email</th>
+                    <th class="px-6 py-3 text-left text-xs text-gray-500">Rol</th>
+                    <th class="px-6 py-3 text-left text-xs text-gray-500">Estado</th>
+                    <th class="px-6 py-3 text-left text-xs text-gray-500">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (user of usuarios; track user.id) {
+                <tr class="hover:bg-gray-50">
+
+                    <td class="px-6 py-4">{{ user.nombre }}</td>
+                    <td class="px-6 py-4">{{ user.email }}</td>
+
+                    <td class="px-6 py-4">
+                        <span>{{ user.rol }}</span>
+                    </td>
+
+                    <td class="px-6 py-4">
+                        <span>{{ user.estado }}</span>
+                    </td>
+
+                    <td class="px-6 py-4 flex gap-2">
+
+                        <button (click)="edit.emit(user)" class="text-blue-600">
+                            Editar
+                        </button>
+
+                        <button (click)="deactivate(user.id)" class="text-red-600">
+                            Desactivar
+                        </button>
+
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
