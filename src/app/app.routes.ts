@@ -1,207 +1,590 @@
-import { Routes } from '@angular/router';
+import {
+    Routes
+} from '@angular/router';
+
 
 /*
-=========================
-LAYOUTS
-=========================
+|--------------------------------------------------------------------------
+| Layouts
+|--------------------------------------------------------------------------
 */
 
-import { MainLayout } from './layouts/main-layout/main-layout';
-import { DashboardLayout } from './layouts/dashboard-layout/dashboard-layout';
+import {
+    MainLayout
+} from './layouts/main-layout/main-layout';
+
+import {
+    DashboardLayout
+} from './layouts/dashboard-layout/dashboard-layout';
+
 
 /*
-=========================
-PAGES PUBLICAS
-=========================
+|--------------------------------------------------------------------------
+| Páginas públicas
+|--------------------------------------------------------------------------
 */
 
-import { Home } from './pages/home/home';
-import { Products } from './pages/products/products';
-import { Company } from './pages/company/company';
-import { Events } from './pages/events/events';
-import { Contact } from './pages/contact/contact';
-import { Login } from './pages/login/login';
+import {
+    Home
+} from './pages/home/home';
+
+import {
+    Products
+} from './pages/products/products';
+
+import {
+    Company
+} from './pages/company/company';
+
+import {
+    Events
+} from './pages/events/events';
+
+import {
+    Contact
+} from './pages/contact/contact';
+
+import {
+    Login
+} from './pages/login/login';
+
 
 /*
-=========================
-GUARDS
-=========================
+|--------------------------------------------------------------------------
+| Guards
+|--------------------------------------------------------------------------
 */
 
-import { authGuard } from './core/guards/auth.guard';
+import {
+    authGuard
+} from './core/guards/auth.guard';
+
+import {
+    anyPermissionGuard,
+    permissionGuard
+} from './core/guards/permission-guard';
+
 
 /*
-=========================
-DASHBOARD
-=========================
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
 */
 
-import { Overview } from './dashboard/overview/overview';
-
-/* SALES */
-
-import { Sales } from './dashboard/sales/sales';
-import { SalesList } from './dashboard/sales/sales-list/sales-list';
-import { SalesReports } from './dashboard/sales/sales-reports/sales-reports';
-import { SalesExport } from './dashboard/sales/sales-export/sales-export';
-
-/* PRODUCTS ADMIN */
-
-import { ProductsAdmin } from './dashboard/products-admin/products-admin';
-import { ProductList } from './dashboard/products-admin/product-list/product-list';
-import { ProductCreate } from './dashboard/products-admin/product-create/product-create';
-import { ProductEdit } from './dashboard/products-admin/product-edit/product-edit';
-import { StockReport } from './dashboard/products-admin/stock-report/stock-report';
-
-/* USERS */
-
-import { Users } from './dashboard/users/users';
-import { UserList } from './dashboard/users/user-list/user-list';
-import { UserCreate } from './dashboard/users/user-create/user-create';
-import { Roles } from './dashboard/users/roles/roles';
-
-/* REPORT */
-
-import { Reports } from './dashboard/reports/reports';
-
-/* SETTINGS */
-
-import { Settings } from './dashboard/settings/settings';
+import {
+    Overview
+} from './dashboard/overview/overview';
 
 
-export const routes: Routes = [
+/*
+|--------------------------------------------------------------------------
+| Ventas
+|--------------------------------------------------------------------------
+*/
 
-    /*
-    =========================
-    RUTAS PUBLICAS
-    =========================
-    */
+import {
+    Sales
+} from './dashboard/sales/sales';
 
-    {
-        path: '',
-        component: MainLayout,
-        children: [
+import {
+    SalesList
+} from './dashboard/sales/sales-list/sales-list';
 
-            { path: '', component: Home },
+import {
+    SalesReports
+} from './dashboard/sales/sales-reports/sales-reports';
 
-            { path: 'productos', component: Products },
-
-            { path: 'empresa', component: Company },
-
-            { path: 'eventos', component: Events },
-
-            { path: 'contactos', component: Contact },
-
-            { path: 'login', component: Login }
-
-        ]
-    },
-
-    /*
-    =========================
-    DASHBOARD PRIVADO
-    =========================
-    */
-
-    {
-        path: 'dashboard',
-        component: DashboardLayout,
-        canActivate: [authGuard],
-        children: [
-
-            { path: '', component: Overview },
-
-            /*
-            =========================
-            SALES
-            =========================
-            */
-
-            {
-                path: 'sales',
-                component: Sales,
-                children: [
-
-                    { path: '', component: SalesList },
-
-                    { path: 'reports', component: SalesReports },
-
-                    { path: 'export', component: SalesExport }
-
-                ]
-            },
-
-            /*
-            =========================
-            PRODUCTS ADMIN
-            =========================
-            */
-
-            {
-                path: 'products',
-                component: ProductsAdmin,
-                children: [
-
-                    { path: '', component: ProductList },
-
-                    { path: 'create', component: ProductCreate },
-
-                    { path: 'edit/:id', component: ProductEdit },
-
-                    { path: 'stock-report', component: StockReport }
-
-                ]
-            },
-
-            /*
-            =========================
-            USERS
-            =========================
-            */
-
-            {
-                path: 'users',
-                component: Users,
-                children: [
-
-                    { path: '', component: UserList },
-
-                    { path: 'create', component: UserCreate },
-
-                    { path: 'roles', component: Roles }
-
-                ]
-            },
+import {
+    SalesExport
+} from './dashboard/sales/sales-export/sales-export';
 
 
-            {
-                path: 'reports',
-                component: Reports
-            },
+/*
+|--------------------------------------------------------------------------
+| Productos
+|--------------------------------------------------------------------------
+*/
 
-            /*
-            =========================
-            SETTINGS
-            =========================
-            */
+import {
+    ProductsAdmin
+} from './dashboard/products-admin/products-admin';
 
-            {
-                path: 'settings',
-                component: Settings
-            }
+import {
+    ProductList
+} from './dashboard/products-admin/product-list/product-list';
 
-        ]
-    },
+import {
+    ProductCreate
+} from './dashboard/products-admin/product-create/product-create';
 
-    /*
-    =========================
-    REDIRECCION GLOBAL
-    =========================
-    */
+import {
+    ProductEdit
+} from './dashboard/products-admin/product-edit/product-edit';
 
-    {
-        path: '**',
-        redirectTo: ''
-    }
+import {
+    StockReport
+} from './dashboard/products-admin/stock-report/stock-report';
 
-];
+
+/*
+|--------------------------------------------------------------------------
+| Usuarios
+|--------------------------------------------------------------------------
+*/
+
+import {
+    Users
+} from './dashboard/users/users';
+
+import {
+    UserList
+} from './dashboard/users/user-list/user-list';
+
+import {
+    UserCreate
+} from './dashboard/users/user-create/user-create';
+
+import {
+    Roles
+} from './dashboard/users/roles/roles';
+
+
+/*
+|--------------------------------------------------------------------------
+| Reportes
+|--------------------------------------------------------------------------
+*/
+
+import {
+    Reports
+} from './dashboard/reports/reports';
+
+
+/*
+|--------------------------------------------------------------------------
+| Configuración
+|--------------------------------------------------------------------------
+*/
+
+import {
+    Settings
+} from './dashboard/settings/settings';
+
+
+/*
+|--------------------------------------------------------------------------
+| Rutas
+|--------------------------------------------------------------------------
+*/
+
+export const routes:
+    Routes = [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sitio público
+        |--------------------------------------------------------------------------
+        */
+
+        {
+
+            path: '',
+
+            component:
+                MainLayout,
+
+            children: [
+
+                {
+
+                    path: '',
+
+                    component:
+                        Home
+
+                },
+
+                {
+
+                    path: 'productos',
+
+                    component:
+                        Products
+
+                },
+
+                {
+
+                    path: 'empresa',
+
+                    component:
+                        Company
+
+                },
+
+                {
+
+                    path: 'eventos',
+
+                    component:
+                        Events
+
+                },
+
+                {
+
+                    path: 'contactos',
+
+                    component:
+                        Contact
+
+                },
+
+                {
+
+                    path: 'login',
+
+                    component:
+                        Login
+
+                }
+
+            ]
+
+        },
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard
+        |--------------------------------------------------------------------------
+        */
+
+        {
+
+            path: 'dashboard',
+
+            component:
+                DashboardLayout,
+
+            canActivate: [
+
+                authGuard
+
+            ],
+
+            children: [
+
+                /*
+                |--------------------------------------------------------------------------
+                | Inicio
+                |--------------------------------------------------------------------------
+                */
+
+                {
+
+                    path: '',
+
+                    component:
+                        Overview
+
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ventas
+                |--------------------------------------------------------------------------
+                */
+
+                {
+
+                    path: 'sales',
+
+                    component:
+                        Sales,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'venta.ver'
+                        )
+
+                    ],
+
+                    children: [
+
+                        {
+
+                            path: '',
+
+                            component:
+                                SalesList
+
+                        },
+
+                        {
+
+                            path: 'reports',
+
+                            component:
+                                SalesReports,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'reporte_ventas.ver'
+                                )
+
+                            ]
+
+                        },
+
+                        {
+
+                            path: 'export',
+
+                            component:
+                                SalesExport,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'reporte_ventas.ver'
+                                )
+
+                            ]
+
+                        }
+
+                    ]
+
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Productos e inventario
+                |--------------------------------------------------------------------------
+                */
+
+                {
+
+                    path: 'products',
+
+                    component:
+                        ProductsAdmin,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'producto.ver'
+                        )
+
+                    ],
+
+                    children: [
+
+                        {
+
+                            path: '',
+
+                            component:
+                                ProductList
+
+                        },
+
+                        {
+
+                            path: 'create',
+
+                            component:
+                                ProductCreate,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'producto.crear'
+                                )
+
+                            ]
+
+                        },
+
+                        {
+
+                            path: 'edit/:id',
+
+                            component:
+                                ProductEdit,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'producto.editar'
+                                )
+
+                            ]
+
+                        },
+
+                        {
+
+                            path: 'stock-report',
+
+                            component:
+                                StockReport,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'reporte_inventario.ver'
+                                )
+
+                            ]
+
+                        }
+
+                    ]
+
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Usuarios
+                |--------------------------------------------------------------------------
+                */
+
+                {
+
+                    path: 'users',
+
+                    component:
+                        Users,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'usuario.ver'
+                        )
+
+                    ],
+
+                    children: [
+
+                        {
+
+                            path: '',
+
+                            component:
+                                UserList
+
+                        },
+
+                        {
+
+                            path: 'create',
+
+                            component:
+                                UserCreate,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'usuario.crear'
+                                )
+
+                            ]
+
+                        },
+
+                        {
+
+                            path: 'roles',
+
+                            component:
+                                Roles,
+
+                            canActivate: [
+
+                                permissionGuard(
+                                    'rol.ver'
+                                )
+
+                            ]
+
+                        }
+
+                    ]
+
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Reportes generales
+                |--------------------------------------------------------------------------
+                */
+
+                {
+
+                    path: 'reports',
+
+                    component:
+                        Reports,
+
+                    canActivate: [
+
+                        anyPermissionGuard([
+
+                            'reporte_inventario.ver',
+
+                            'reporte_ventas.ver',
+
+                            'reporte_compras.ver',
+
+                            'reporte_transferencias.ver'
+
+                        ])
+
+                    ]
+
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Configuración
+                |--------------------------------------------------------------------------
+                */
+
+                {
+
+                    path: 'settings',
+
+                    component:
+                        Settings
+
+                }
+
+            ]
+
+        },
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Ruta desconocida
+        |--------------------------------------------------------------------------
+        */
+
+        {
+
+            path: '**',
+
+            redirectTo: ''
+
+        }
+
+    ];

@@ -4,86 +4,265 @@
 
         <div class="bg-white rounded-xl shadow-lg p-8">
 
-            <!-- Logo -->
+
+            <!--
+            ================================================================
+            ENCABEZADO
+            ================================================================
+            -->
+
             <div class="text-center mb-8">
-                <h1 class="text-3xl text-primary mb-2">IRRITERRA</h1>
+
+                <h1 class="text-3xl text-primary mb-2">
+
+                    IRRITERRA
+
+                </h1>
+
 
                 <h2 class="text-2xl">
-                    {{ t('Iniciar sesión', 'Sign in') }}
+
+                    {{
+                    t(
+                    'Iniciar sesión',
+                    'Sign in'
+                    )
+                    }}
+
                 </h2>
 
+
                 <p class="text-gray-600 mt-2">
-                    {{ t('Acceso para personal de la empresa', 'Access for company staff') }}
+
+                    {{
+                    t(
+                    'Acceso para personal de la empresa',
+                    'Access for company staff'
+                    )
+                    }}
+
                 </p>
+
             </div>
 
-            <!-- FORM -->
-            <form (ngSubmit)="handleSubmit()" class="space-y-6">
 
-                <!-- EMAIL -->
+            <!--
+            ================================================================
+            FORMULARIO
+            ================================================================
+            -->
+
+            <form #loginForm="ngForm" (ngSubmit)="handleSubmit()" class="space-y-6">
+
+
+                <!--
+                ============================================================
+                USUARIO
+                ============================================================
+                -->
+
                 <div>
-                    <label class="block mb-2 text-gray-700">
-                        {{ t('Correo', 'Email') }}
+
+                    <label for="usuario" class="block mb-2 text-gray-700">
+
+                        {{
+                        t(
+                        'Usuario',
+                        'Username'
+                        )
+                        }}
+
                     </label>
 
-                    <div class="relative">
-                        <lucide-angular [img]="Mail"
-                            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-angular>
 
-                        <input type="email" [(ngModel)]="formData.correo" name="correo" required
+                    <div class="relative">
+
+                        <lucide-angular [img]="User"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400">
+
+                        </lucide-angular>
+
+
+                        <input id="usuario" type="text" name="usuario" [(ngModel)]="formData.usuario" required
+                            maxlength="50" autocomplete="username"
                             class="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-                            [placeholder]="t('tu@correo.com', 'your@email.com')" />
+                            [placeholder]="
+                                t(
+                                    'Nombre de usuario',
+                                    'Username'
+                                )
+                            " [disabled]="cargando()" />
+
                     </div>
+
                 </div>
 
-                <!-- PASSWORD -->
+
+                <!--
+                ============================================================
+                CONTRASEÑA
+                ============================================================
+                -->
+
                 <div>
-                    <label class="block mb-2 text-gray-700">
-                        {{ t('Contraseña', 'Password') }}
+
+                    <label for="contrasena" class="block mb-2 text-gray-700">
+
+                        {{
+                        t(
+                        'Contraseña',
+                        'Password'
+                        )
+                        }}
+
                     </label>
 
-                    <div class="relative">
-                        <lucide-icon [img]="Lock"
-                            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></lucide-icon>
 
-                        <input type="password" [(ngModel)]="formData.contrasena" name="contrasena" required
+                    <div class="relative">
+
+                        <lucide-angular [img]="Lock"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400">
+
+                        </lucide-angular>
+
+
+                        <input id="contrasena" type="password" name="contrasena" [(ngModel)]="formData.contrasena"
+                            required maxlength="255" autocomplete="current-password"
                             class="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-                            placeholder="••••••••" />
+                            placeholder="••••••••" [disabled]="cargando()" />
+
                     </div>
+
                 </div>
 
-                <!-- CHECKBOX + LINK -->
-                <div class="flex items-center justify-between">
 
-                    <label class="flex items-center">
-                        <input type="checkbox" class="mr-2" />
-                        <span class="text-sm text-gray-600">
-                            {{ t('Recordarme', 'Remember me') }}
+                <!--
+                ============================================================
+                ERROR
+                ============================================================
+                -->
+
+                <!--
+================================================================
+MENSAJE
+================================================================
+-->
+
+                @if (errorMensaje()) {
+
+                <div role="alert" class="flex items-start gap-3 rounded-xl border px-4 py-4 shadow-sm"
+                    [class.border-red-200]="
+            tipoMensaje() === 'error'
+        " [class.bg-red-50]="
+            tipoMensaje() === 'error'
+        " [class.text-red-700]="
+            tipoMensaje() === 'error'
+        " [class.border-amber-200]="
+            tipoMensaje() === 'warning'
+        " [class.bg-amber-50]="
+            tipoMensaje() === 'warning'
+        " [class.text-amber-700]="
+            tipoMensaje() === 'warning'
+        " [class.border-blue-200]="
+            tipoMensaje() === 'info'
+        " [class.bg-blue-50]="
+            tipoMensaje() === 'info'
+        " [class.text-blue-700]="
+            tipoMensaje() === 'info'
+        ">
+
+
+                    <div class="flex-shrink-0 pt-0.5">
+
+                        <lucide-angular [img]="CircleAlert" class="w-5 h-5">
+
+                        </lucide-angular>
+
+                    </div>
+
+
+                    <div class="flex-1">
+
+                        <p class="text-sm font-medium">
+
+                            {{ errorMensaje() }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                }
+
+
+                <!--
+                ============================================================
+                BOTÓN
+                ============================================================
+                -->
+
+                <button type="submit" [disabled]="
+                        cargando()
+                        ||
+                        loginForm.invalid
+                    "
+                    class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+
+
+                    @if (cargando()) {
+
+                    <span class="inline-flex items-center justify-center">
+
+                        <span class="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin">
+
                         </span>
-                    </label>
 
-                    <a href="#" class="text-sm text-primary hover:text-primary/80">
-                        {{ t('¿Olvidó su contraseña?', 'Forgot password?') }}
-                    </a>
 
-                </div>
+                        {{
+                        t(
+                        'Ingresando...',
+                        'Signing in...'
+                        )
+                        }}
 
-                <!-- BUTTON -->
-                <button type="submit"
-                    class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-                    {{ t('Iniciar sesión', 'Sign in') }}
+                    </span>
+
+                    } @else {
+
+                    {{
+                    t(
+                    'Iniciar sesión',
+                    'Sign in'
+                    )
+                    }}
+
+                    }
+
                 </button>
 
             </form>
 
-            <!-- FOOTER -->
+
+            <!--
+            ================================================================
+            PIE
+            ================================================================
+            -->
+
             <div class="mt-8 pt-6 border-t border-gray-200 text-center text-sm text-gray-600">
-                {{ t(
+
+                {{
+                t(
                 'Este sistema es solo para personal autorizado',
                 'This system is for authorized personnel only'
-                ) }}
+                )
+                }}
+
             </div>
 
         </div>
+
     </div>
+
 </div>

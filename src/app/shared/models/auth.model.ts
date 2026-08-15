@@ -68,3 +68,15 @@ export interface MessageResponse{
     message: string;
 
 }
+
+/*
+|--------------------------------------------------------------------------
+| Laravel Resource
+|--------------------------------------------------------------------------
+*/
+
+export interface ResourceResponse<T> {
+
+    data: T;
+
+}
