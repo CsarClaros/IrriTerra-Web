@@ -1,0 +1,807 @@
+<div class="space-y-6">
+
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
+
+    <div>
+
+        <h1 class="text-2xl font-semibold text-gray-900">
+
+            @if (
+            modoEdicion()
+            ) {
+
+            Editar transferencia
+
+            } @else {
+
+            Nueva transferencia
+
+            }
+
+        </h1>
+
+
+        <p class="mt-1 text-sm text-gray-500">
+
+            @if (
+            modoEdicion()
+            ) {
+
+            Modifique una transferencia pendiente.
+
+            } @else {
+
+            Registre una solicitud de traslado de inventario entre sucursales.
+
+            }
+
+        </p>
+
+
+        @if (
+        modoEdicion()
+        &&
+        codigoTransferencia()
+        ) {
+
+        <div class="mt-3">
+
+            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+
+                {{
+                codigoTransferencia()
+                }}
+
+            </span>
+
+        </div>
+
+        }
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    ERROR
+    ========================================================================
+    -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    CARGANDO
+    ========================================================================
+    -->
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="flex min-h-80 items-center justify-center rounded-xl border border-gray-200 bg-white">
+
+        <div class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+        </div>
+
+    </div>
+
+    } @else {
+
+
+    <!--
+        ====================================================================
+        SUCURSALES
+        ====================================================================
+        -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+
+        <div class="flex items-center gap-3">
+
+            <div class="rounded-lg bg-primary/10 p-2">
+
+                <lucide-angular [img]="ArrowRightLeft" class="h-5 w-5 text-primary">
+                </lucide-angular>
+
+            </div>
+
+
+            <div>
+
+                <h2 class="font-semibold text-gray-900">
+
+                    Ruta de transferencia
+
+                </h2>
+
+                <p class="text-sm text-gray-500">
+
+                    Seleccione las sucursales de origen y destino.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-6 grid grid-cols-1 items-end gap-5 lg:grid-cols-[1fr_auto_1fr]">
+
+
+            <!-- Origen -->
+
+            <div>
+
+                <label for="sucursal-origen" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Sucursal origen
+
+                </label>
+
+
+                <select id="sucursal-origen" [ngModel]="idSucursalOrigen()" (ngModelChange)="
+                            cambiarSucursalOrigen(
+                                $event
+                            )
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Seleccione una sucursal
+
+                    </option>
+
+
+                    @for (
+                    sucursal
+                    of sucursales();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <option [ngValue]="
+                                    sucursal.id_sucursal
+                                ">
+
+                        {{ sucursal.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Flecha -->
+
+            <div class="hidden pb-2 lg:block">
+
+                <div class="rounded-full bg-gray-100 p-3">
+
+                    <lucide-angular [img]="ArrowRight" class="h-5 w-5 text-gray-500">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+
+            <!-- Destino -->
+
+            <div>
+
+                <label for="sucursal-destino" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Sucursal destino
+
+                </label>
+
+
+                <select id="sucursal-destino" [ngModel]="idSucursalDestino()" (ngModelChange)="
+                            cambiarSucursalDestino(
+                                $event
+                            )
+                        " [disabled]="
+                            idSucursalOrigen()
+                            === null
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-gray-100">
+
+                    <option [ngValue]="null">
+
+                        Seleccione una sucursal
+
+                    </option>
+
+
+                    @for (
+                    sucursal
+                    of sucursalesDestino();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <option [ngValue]="
+                                    sucursal.id_sucursal
+                                ">
+
+                        {{ sucursal.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- Resumen origen -->
+
+        @if (
+        sucursalOrigen();
+        as origen
+        ) {
+
+        <div class="mt-5 flex items-center gap-3 rounded-lg bg-gray-50 p-4">
+
+            <lucide-angular [img]="Warehouse" class="h-5 w-5 text-gray-500">
+            </lucide-angular>
+
+
+            <div>
+
+                <p class="text-xs text-gray-500">
+
+                    Inventario utilizado
+
+                </p>
+
+                <p class="text-sm font-medium text-gray-900">
+
+                    {{ origen.nombre }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <!--
+        ====================================================================
+        AGREGAR PRODUCTOS
+        ====================================================================
+        -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+
+        <div class="flex items-center gap-3">
+
+            <div class="rounded-lg bg-primary/10 p-2">
+
+                <lucide-angular [img]="PackagePlus" class="h-5 w-5 text-primary">
+                </lucide-angular>
+
+            </div>
+
+
+            <div>
+
+                <h2 class="font-semibold text-gray-900">
+
+                    Productos
+
+                </h2>
+
+                <p class="text-sm text-gray-500">
+
+                    Solo se muestran variantes con stock disponible en la sucursal origen.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-6 grid grid-cols-1 items-end gap-4 lg:grid-cols-[1fr_180px_auto]">
+
+
+            <!-- Variante -->
+
+            <div>
+
+                <label for="variante" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Producto / variante
+
+                </label>
+
+
+                <select id="variante" [ngModel]="
+                            idVarianteSeleccionada()
+                        " (ngModelChange)="
+                            seleccionarVariante(
+                                $event
+                            )
+                        " [disabled]="
+                            idSucursalOrigen()
+                            === null
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-gray-100">
+
+                    <option [ngValue]="null">
+
+                        Seleccione un producto
+
+                    </option>
+
+
+                    @for (
+                    variante
+                    of variantesDisponibles();
+                    track variante.id_producto_variante
+                    ) {
+
+                    <option [ngValue]="
+                                    variante.id_producto_variante
+                                ">
+
+                        {{
+                        variante.producto?.nombre
+                        ?? 'Producto'
+                        }}
+
+                        —
+
+                        {{ variante.nombre }}
+
+                        —
+
+                        {{ variante.sku }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Stock -->
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Stock disponible
+
+                </label>
+
+
+                <div
+                    class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm font-semibold text-gray-900">
+
+                    @if (
+                    stockSeleccionado();
+                    as stock
+                    ) {
+
+                    {{
+                    numero(
+                    stock.stock_actual
+                    )
+                    | number:'1.0-3'
+                    }}
+
+                    } @else {
+
+                    —
+
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- Agregar -->
+
+            <button type="button" [disabled]="
+                        !varianteSeleccionada()
+                    " (click)="
+                        agregarProducto()
+                    "
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:opacity-50">
+
+                <lucide-angular [img]="PackagePlus" class="h-4 w-4">
+                </lucide-angular>
+
+                Agregar
+
+            </button>
+
+        </div>
+
+
+        @if (
+        idSucursalOrigen()
+        !== null
+        &&
+        variantesDisponibles().length
+        === 0
+        &&
+        lineas().length
+        === 0
+        ) {
+
+        <div class="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+
+            La sucursal de origen no posee variantes con stock disponible.
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <!--
+        ====================================================================
+        DETALLES
+        ====================================================================
+        -->
+
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+
+        <div
+            class="flex flex-col gap-3 border-b border-gray-200 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+
+                <h2 class="font-semibold text-gray-900">
+
+                    Detalle de transferencia
+
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    {{ lineas().length }}
+                    productos
+
+                    ·
+
+                    {{
+                    cantidadTotal()
+                    | number:'1.0-3'
+                    }}
+                    unidades
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        @if (
+        lineas().length
+        === 0
+        ) {
+
+        <div class="p-12 text-center">
+
+            <lucide-angular [img]="PackagePlus" class="mx-auto h-10 w-10 text-gray-300">
+            </lucide-angular>
+
+
+            <p class="mt-3 text-sm text-gray-500">
+
+                Aún no se agregaron productos.
+
+            </p>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Producto
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            SKU
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Stock
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Cantidad
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Observación
+
+                        </th>
+
+                        <th class="px-5 py-3">
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200">
+
+                    @for (
+                    linea
+                    of lineas();
+                    track linea.id_producto_variante;
+                    let i = $index
+                    ) {
+
+                    <tr>
+
+                        <!-- Producto -->
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm font-medium text-gray-900">
+
+                                {{ linea.producto }}
+
+                            </p>
+
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                {{ linea.variante }}
+
+                                ·
+
+                                {{ linea.unidad_medida }}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- SKU -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+
+                            {{ linea.sku }}
+
+                        </td>
+
+
+                        <!-- Stock -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm font-medium text-gray-700">
+
+                            {{
+                            linea.stock_disponible
+                            | number:'1.0-3'
+                            }}
+
+                        </td>
+
+
+                        <!-- Cantidad -->
+
+                        <td class="min-w-40 px-5 py-4">
+
+                            <input type="number" min="0.001" step="0.001" [max]="
+                                                linea.stock_disponible
+                                            " [ngModel]="
+                                                linea.cantidad
+                                            " (ngModelChange)="
+                                                actualizarCantidad(
+                                                    i,
+                                                    $event
+                                                )
+                                            "
+                                class="w-32 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                            @if (
+                            errorLinea(
+                            linea
+                            );
+                            as error
+                            ) {
+
+                            <p class="mt-1 text-xs text-red-600">
+
+                                {{ error }}
+
+                            </p>
+
+                            }
+
+                        </td>
+
+
+                        <!-- Observación -->
+
+                        <td class="min-w-64 px-5 py-4">
+
+                            <input type="text" [ngModel]="
+                                                linea.observaciones
+                                            " (ngModelChange)="
+                                                actualizarObservacion(
+                                                    i,
+                                                    $event
+                                                )
+                                            " placeholder="Opcional"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                        </td>
+
+
+                        <!-- Eliminar -->
+
+                        <td class="px-5 py-4 text-right">
+
+                            <button type="button" (click)="
+                                                eliminarProducto(
+                                                    i
+                                                )
+                                            " class="rounded-lg p-2 text-red-600 transition hover:bg-red-50">
+
+                                <lucide-angular [img]="Trash2" class="h-4 w-4">
+                                </lucide-angular>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <!--
+        ====================================================================
+        OBSERVACIONES
+        ====================================================================
+        -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <label for="observaciones-transferencia" class="block text-sm font-medium text-gray-700">
+
+            Observaciones
+
+        </label>
+
+
+        <textarea id="observaciones-transferencia" rows="4" [(ngModel)]="
+                    observacionesTransferencia
+                " placeholder="Información adicional sobre la transferencia..."
+            class="mt-2 w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+            </textarea>
+
+    </section>
+
+
+    <!--
+        ====================================================================
+        ACCIONES
+        ====================================================================
+        -->
+
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+        <button type="button" [disabled]="
+                    guardando()
+                " (click)="
+                    cancelar()
+                "
+            class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+            Cancelar
+
+        </button>
+
+
+        <button type="button" [disabled]="
+                    guardando()
+                    ||
+                    lineas().length === 0
+                " (click)="
+                    guardarTransferencia()
+                "
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:opacity-50">
+
+            <lucide-angular [img]="Save" class="h-4 w-4">
+            </lucide-angular>
+
+
+            @if (
+    guardando()
+) {
+
+    Guardando...
+
+} @else if (
+    modoEdicion()
+) {
+
+    Guardar cambios
+
+} @else {
+
+    Guardar solicitud
+
+}
+
+        </button>
+
+    </div>
+
+    }
+
+</div>

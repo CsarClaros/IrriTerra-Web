@@ -1,0 +1,1055 @@
+<div class="space-y-6">
+
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
+
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
+        <div>
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                Transferencias de inventario
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Consulte y gestione transferencias entre sucursales.
+
+            </p>
+
+        </div>
+
+
+        <div class="flex flex-wrap gap-3">
+
+
+            <!-- Actualizar -->
+
+            <button type="button" [disabled]="cargando()" (click)="
+                cargarTransferencias()
+            "
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-60">
+
+                <lucide-angular [img]="RefreshCcw" [class.animate-spin]="cargando()" class="h-4 w-4">
+                </lucide-angular>
+
+                Actualizar
+
+            </button>
+
+
+            <!-- Nueva transferencia -->
+
+            @if (
+            puedeCrear()
+            ) {
+
+            <a routerLink="/dashboard/transfers/create"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90">
+
+                <lucide-angular [img]="Plus" class="h-4 w-4">
+                </lucide-angular>
+
+                Nueva transferencia
+
+            </a>
+
+            }
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    RESUMEN
+    ========================================================================
+    -->
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                Pendientes
+
+            </p>
+
+            <p class="mt-1 text-2xl font-semibold text-amber-600">
+
+                {{ totalPendientes() }}
+
+            </p>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                En tránsito
+
+            </p>
+
+            <p class="mt-1 text-2xl font-semibold text-blue-600">
+
+                {{ totalEnTransito() }}
+
+            </p>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                Completadas
+
+            </p>
+
+            <p class="mt-1 text-2xl font-semibold text-emerald-600">
+
+                {{ totalCompletadas() }}
+
+            </p>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                Rechazadas
+
+            </p>
+
+            <p class="mt-1 text-2xl font-semibold text-red-600">
+
+                {{ totalRechazadas() }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    FILTROS
+    ========================================================================
+    -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_220px_auto]">
+
+
+            <!-- Buscar -->
+
+            <div>
+
+                <label for="buscar-transferencia" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Buscar
+
+                </label>
+
+
+                <div class="relative">
+
+                    <lucide-angular [img]="Search"
+                        class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400">
+                    </lucide-angular>
+
+
+                    <input id="buscar-transferencia" type="text" [ngModel]="busqueda()" (ngModelChange)="
+                            actualizarBusqueda(
+                                $event
+                            )
+                        " placeholder="Código, sucursal origen o destino"
+                        class="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+            </div>
+
+
+            <!-- Estado -->
+
+            <div>
+
+                <label for="estado-transferencia" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Estado
+
+                </label>
+
+
+                <select id="estado-transferencia" [ngModel]="estadoFiltro()" (ngModelChange)="
+                        actualizarEstado(
+                            $event
+                        )
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option value="">
+
+                        Todos
+
+                    </option>
+
+                    <option value="PENDIENTE">
+
+                        Pendiente
+
+                    </option>
+
+                    <option value="EN_TRANSITO">
+
+                        En tránsito
+
+                    </option>
+
+                    <option value="COMPLETADA">
+
+                        Completada
+
+                    </option>
+
+                    <option value="RECHAZADA">
+
+                        Rechazada
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="flex items-end">
+
+                <button type="button" (click)="limpiarFiltros()"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 md:w-auto">
+
+                    Limpiar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!--
+    ========================================================================
+    ERROR
+    ========================================================================
+    -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    TABLA
+    ========================================================================
+    -->
+
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+
+        @if (
+        cargando()
+        ) {
+
+        <div class="flex min-h-72 items-center justify-center">
+
+            <div class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+            </div>
+
+        </div>
+
+        } @else if (
+        transferenciasFiltradas().length === 0
+        ) {
+
+        <div class="p-12 text-center">
+
+            <lucide-angular [img]="ArrowRightLeft" class="mx-auto h-11 w-11 text-gray-300">
+            </lucide-angular>
+
+
+            <p class="mt-3 text-sm font-medium text-gray-700">
+
+                No existen transferencias.
+
+            </p>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                No se encontraron registros para los filtros seleccionados.
+
+            </p>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Código
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Fecha
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Origen
+
+                        </th>
+
+                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Movimiento
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Destino
+
+                        </th>
+
+                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Productos
+
+                        </th>
+
+                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Estado
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Acción
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200">
+
+                    @for (
+                    transferencia
+                    of transferenciasFiltradas();
+                    track transferencia.id_transferencia_inventario
+                    ) {
+
+                    <tr class="transition hover:bg-gray-50">
+
+
+                        <td class="whitespace-nowrap px-5 py-4">
+
+                            <p class="text-sm font-semibold text-gray-900">
+
+                                {{
+                                transferencia
+                                .codigo_transferencia
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+
+                            {{
+                            formatearFecha(
+                            transferencia
+                            .fecha_solicitud
+                            )
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm font-medium text-gray-900">
+
+                                {{
+                                transferencia
+                                .sucursal_origen
+                                ?.nombre
+                                ?? '—'
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-center">
+
+                            <lucide-angular [img]="ArrowRight" class="mx-auto h-5 w-5 text-gray-400">
+                            </lucide-angular>
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm font-medium text-gray-900">
+
+                                {{
+                                transferencia
+                                .sucursal_destino
+                                ?.nombre
+                                ?? '—'
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-center text-sm text-gray-700">
+
+                            {{
+                            transferencia
+                            .detalles
+                            ?.length
+                            ?? 0
+                            }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-center">
+
+                            <span [class]="
+                                            'inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset '
+                                            +
+                                            claseEstado(
+                                                transferencia
+                                                    .estado_transferencia
+                                            )
+                                        ">
+
+                                {{
+                                nombreEstado(
+                                transferencia
+                                .estado_transferencia
+                                )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right">
+
+                            <button type="button" (click)="
+                                            verDetalle(
+                                                transferencia
+                                            )
+                                        "
+                                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                                <lucide-angular [img]="Eye" class="h-4 w-4">
+                                </lucide-angular>
+
+                                Ver
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <!--
+    ========================================================================
+    MODAL DETALLE
+    ========================================================================
+    -->
+
+    @if (
+    transferenciaSeleccionada();
+    as transferencia
+    ) {
+
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4" (click)="cerrarDetalle()">
+
+
+        <div class="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-xl" (click)="
+                    $event.stopPropagation()
+                ">
+
+
+            <!-- Encabezado -->
+
+            <div
+                class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-5">
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+
+                        Transferencia
+
+                    </p>
+
+
+                    <h2 class="mt-1 text-xl font-semibold text-gray-900">
+
+                        {{
+                        transferencia
+                        .codigo_transferencia
+                        }}
+
+                    </h2>
+
+                </div>
+
+
+                <button type="button" [disabled]="cargandoDetalle()" (click)="cerrarDetalle()"
+                    class="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 disabled:opacity-50">
+
+                    <lucide-angular [img]="X" class="h-5 w-5">
+                    </lucide-angular>
+
+                </button>
+
+            </div>
+
+
+            @if (
+            cargandoDetalle()
+            ) {
+
+            <div class="flex min-h-80 items-center justify-center">
+
+                <div class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+                </div>
+
+            </div>
+
+            } @else {
+
+            <div class="space-y-6 p-6">
+
+
+                @if (
+                errorDetalle()
+                ) {
+
+                <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+                    {{ errorDetalle() }}
+
+                </div>
+
+                }
+
+
+                <!-- Estado -->
+
+                <div class="flex flex-wrap items-center justify-between gap-4">
+
+                    <span [class]="
+                                    'inline-flex rounded-full px-3 py-1.5 text-sm font-medium ring-1 ring-inset '
+                                    +
+                                    claseEstado(
+                                        transferencia
+                                            .estado_transferencia
+                                    )
+                                ">
+
+                        {{
+                        nombreEstado(
+                        transferencia
+                        .estado_transferencia
+                        )
+                        }}
+
+                    </span>
+
+
+                    <p class="text-sm text-gray-500">
+
+                        Solicitud:
+                        {{
+                        formatearFecha(
+                        transferencia
+                        .fecha_solicitud
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- Ruta -->
+
+                <section class="rounded-xl border border-gray-200 bg-gray-50 p-5">
+
+                    <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+
+
+                        <div>
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-500">
+
+                                Sucursal origen
+
+                            </p>
+
+                            <p class="mt-2 font-semibold text-gray-900">
+
+                                {{
+                                transferencia
+                                .sucursal_origen
+                                ?.nombre
+                                ?? '—'
+                                }}
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="rounded-full bg-white p-3 shadow-sm">
+
+                            <lucide-angular [img]="Truck" class="h-5 w-5 text-primary">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="text-right">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-500">
+
+                                Sucursal destino
+
+                            </p>
+
+                            <p class="mt-2 font-semibold text-gray-900">
+
+                                {{
+                                transferencia
+                                .sucursal_destino
+                                ?.nombre
+                                ?? '—'
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Fechas -->
+
+                <section>
+
+                    <h3 class="font-semibold text-gray-900">
+
+                        Seguimiento
+
+                    </h3>
+
+
+                    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+                        <div class="rounded-lg border border-gray-200 p-4">
+
+                            <p class="text-xs text-gray-500">
+
+                                Solicitud
+
+                            </p>
+
+                            <p class="mt-1 text-sm font-medium text-gray-900">
+
+                                {{
+                                formatearFecha(
+                                transferencia
+                                .fecha_solicitud
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="rounded-lg border border-gray-200 p-4">
+
+                            <p class="text-xs text-gray-500">
+
+                                Envío
+
+                            </p>
+
+                            <p class="mt-1 text-sm font-medium text-gray-900">
+
+                                {{
+                                formatearFecha(
+                                transferencia
+                                .fecha_envio
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="rounded-lg border border-gray-200 p-4">
+
+                            <p class="text-xs text-gray-500">
+
+                                Recepción
+
+                            </p>
+
+                            <p class="mt-1 text-sm font-medium text-gray-900">
+
+                                {{
+                                formatearFecha(
+                                transferencia
+                                .fecha_recepcion
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="rounded-lg border border-gray-200 p-4">
+
+                            <p class="text-xs text-gray-500">
+
+                                Rechazo
+
+                            </p>
+
+                            <p class="mt-1 text-sm font-medium text-gray-900">
+
+                                {{
+                                formatearFecha(
+                                transferencia
+                                .fecha_rechazo
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Productos -->
+
+                <section>
+
+                    <div class="flex items-center gap-2">
+
+                        <lucide-angular [img]="Package" class="h-5 w-5 text-gray-500">
+                        </lucide-angular>
+
+
+                        <h3 class="font-semibold text-gray-900">
+
+                            Productos a transferir
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="mt-4 overflow-hidden rounded-xl border border-gray-200">
+
+                        <div class="overflow-x-auto">
+
+                            <table class="min-w-full divide-y divide-gray-200">
+
+
+                                <thead class="bg-gray-50">
+
+                                    <tr>
+
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                            Producto
+
+                                        </th>
+
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                            SKU
+
+                                        </th>
+
+                                        <th
+                                            class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                            Cantidad
+
+                                        </th>
+
+                                        <th
+                                            class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                            Observación
+
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody class="divide-y divide-gray-200">
+
+                                    @for (
+                                    detalle
+                                    of transferencia.detalles ?? [];
+                                    track detalle.id_transferencia_inventario_detalle
+                                    ) {
+
+                                    <tr>
+
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900">
+
+                                            {{
+                                            nombreProducto(
+                                            transferencia,
+                                            detalle
+                                            .id_producto_variante
+                                            )
+                                            }}
+
+                                        </td>
+
+
+                                        <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-600">
+
+                                            {{
+                                            detalle
+                                            .producto_variante
+                                            ?.sku
+                                            ?? '—'
+                                            }}
+
+                                        </td>
+
+
+                                        <td
+                                            class="whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-gray-900">
+
+                                            {{
+                                            numero(
+                                            detalle.cantidad
+                                            )
+                                            | number:'1.0-3'
+                                            }}
+
+                                            {{
+                                            detalle
+                                            .producto_variante
+                                            ?.unidad_medida
+                                            ?? ''
+                                            }}
+
+                                        </td>
+
+
+                                        <td class="px-4 py-4 text-sm text-gray-600">
+
+                                            {{
+                                            detalle
+                                            .observaciones
+                                            ?? '—'
+                                            }}
+
+                                        </td>
+
+                                    </tr>
+
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Observaciones -->
+
+                @if (
+                transferencia.observaciones
+                ) {
+
+                <section>
+
+                    <h3 class="font-semibold text-gray-900">
+
+                        Observaciones
+
+                    </h3>
+
+
+                    <div class="mt-3 rounded-lg bg-gray-50 p-4 text-sm text-gray-700">
+
+                        {{
+                        transferencia
+                        .observaciones
+                        }}
+
+                    </div>
+
+                </section>
+
+                }
+
+
+                <!-- Motivo rechazo -->
+
+                @if (
+                transferencia.estado_transferencia
+                === 'RECHAZADA'
+                &&
+                transferencia.motivo_rechazo
+                ) {
+
+                <section class="rounded-xl border border-red-200 bg-red-50 p-4">
+
+                    <p class="text-sm font-semibold text-red-800">
+
+                        Motivo de rechazo
+
+                    </p>
+
+
+                    <p class="mt-2 text-sm text-red-700">
+
+                        {{
+                        transferencia
+                        .motivo_rechazo
+                        }}
+
+                    </p>
+
+                </section>
+
+                }
+
+                <div class="border-t border-gray-200 pt-5">
+
+                    <app-transfer-actions [transferencia]="
+            transferencia
+        " (actualizada)="
+            transferenciaActualizada(
+                $event
+            )
+        " (eliminada)="
+            transferenciaEliminada(
+                $event
+            )
+        ">
+
+                    </app-transfer-actions>
+
+                </div>
+
+            </div>
+
+            }
+
+        </div>
+
+    </div>
+
+    }
+
+</div>

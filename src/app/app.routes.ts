@@ -172,6 +172,14 @@ import {
 import { SalesCreate } from './dashboard/sales/sales-create/sales-create';
 
 
+import {
+    TransferList
+} from './dashboard/transfers/transfer-list/transfer-list';
+
+import {
+    TransferCreate
+} from './dashboard/transfers/transfer-create/transfer-create';
+
 /*
 |--------------------------------------------------------------------------
 | Rutas
@@ -614,7 +622,58 @@ export const routes:
                     component:
                         Settings
 
-                }
+                },
+
+                /*
+|--------------------------------------------------------------------------
+| Transferencias
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path: 'transfers/create',
+
+                    component:
+                        TransferCreate,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'transferencia.crear'
+                        )
+
+                    ]
+                },
+
+                {
+                    path: 'transfers/:id/edit',
+                
+                    component:
+                        TransferCreate,
+                
+                    canActivate: [
+                
+                        permissionGuard(
+                            'transferencia.editar'
+                        )
+                
+                    ]
+                },
+
+                {
+                    path: 'transfers',
+
+                    component:
+                        TransferList,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'transferencia.ver'
+                        )
+
+                    ]
+                },
 
             ]
 

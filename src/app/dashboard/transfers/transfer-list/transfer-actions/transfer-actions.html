@@ -1,0 +1,443 @@
+<div class="space-y-4">
+
+
+    @if (
+        errorMensaje()
+    ) {
+
+        <div
+            class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+
+            {{ errorMensaje() }}
+
+        </div>
+
+    }
+
+
+    @if (
+        tieneAcciones()
+    ) {
+
+        <div
+            class="flex flex-wrap justify-end gap-2">
+
+
+            @if (
+                puedeEditar()
+            ) {
+
+                <button
+                    type="button"
+
+                    [disabled]="procesando()"
+
+                    (click)="editar()"
+
+                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+                    <lucide-angular
+                        [img]="Edit3"
+                        class="h-4 w-4">
+                    </lucide-angular>
+
+                    Editar
+
+                </button>
+
+            }
+
+
+            @if (
+                puedeEnviar()
+            ) {
+
+                <button
+                    type="button"
+
+                    [disabled]="procesando()"
+
+                    (click)="
+                        abrirConfirmacion(
+                            'ENVIAR'
+                        )
+                    "
+
+                    class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50">
+
+                    <lucide-angular
+                        [img]="Send"
+                        class="h-4 w-4">
+                    </lucide-angular>
+
+                    Enviar
+
+                </button>
+
+            }
+
+
+            @if (
+                puedeCompletar()
+            ) {
+
+                <button
+                    type="button"
+
+                    [disabled]="procesando()"
+
+                    (click)="
+                        abrirConfirmacion(
+                            'COMPLETAR'
+                        )
+                    "
+
+                    class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-50">
+
+                    <lucide-angular
+                        [img]="CheckCircle2"
+                        class="h-4 w-4">
+                    </lucide-angular>
+
+                    Completar recepción
+
+                </button>
+
+            }
+
+
+            @if (
+                puedeRechazar()
+            ) {
+
+                <button
+                    type="button"
+
+                    [disabled]="procesando()"
+
+                    (click)="abrirRechazo()"
+
+                    class="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-50">
+
+                    <lucide-angular
+                        [img]="XCircle"
+                        class="h-4 w-4">
+                    </lucide-angular>
+
+                    Rechazar
+
+                </button>
+
+            }
+
+
+            @if (
+                puedeEliminar()
+            ) {
+
+                <button
+                    type="button"
+
+                    [disabled]="procesando()"
+
+                    (click)="
+                        abrirConfirmacion(
+                            'ELIMINAR'
+                        )
+                    "
+
+                    class="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-50">
+
+                    <lucide-angular
+                        [img]="Trash2"
+                        class="h-4 w-4">
+                    </lucide-angular>
+
+                    Eliminar
+
+                </button>
+
+            }
+
+        </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    MODAL CONFIRMACIÓN
+    ========================================================================
+    -->
+
+    @if (
+        accionConfirmacion()
+    ) {
+
+        <div
+            class="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4">
+
+            <div
+                class="w-full max-w-md rounded-2xl bg-white shadow-xl">
+
+
+                <div
+                    class="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+
+                    <h3
+                        class="text-lg font-semibold text-gray-900">
+
+                        {{ tituloConfirmacion() }}
+
+                    </h3>
+
+
+                    <button
+                        type="button"
+
+                        [disabled]="procesando()"
+
+                        (click)="cerrarConfirmacion()"
+
+                        class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 disabled:opacity-50">
+
+                        <lucide-angular
+                            [img]="X"
+                            class="h-5 w-5">
+                        </lucide-angular>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="p-6">
+
+                    <p
+                        class="text-sm leading-6 text-gray-600">
+
+                        {{ mensajeConfirmacion() }}
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+
+                    <button
+                        type="button"
+
+                        [disabled]="procesando()"
+
+                        (click)="cerrarConfirmacion()"
+
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+
+                        [disabled]="procesando()"
+
+                        (click)="confirmarAccion()"
+
+                        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
+
+                        @if (
+                            procesando()
+                        ) {
+
+                            Procesando...
+
+                        } @else {
+
+                            Confirmar
+
+                        }
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    MODAL RECHAZO
+    ========================================================================
+    -->
+
+    @if (
+        modalRechazo()
+    ) {
+
+        <div
+            class="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4">
+
+            <div
+                class="w-full max-w-lg rounded-2xl bg-white shadow-xl">
+
+
+                <div
+                    class="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+
+                    <div>
+
+                        <h3
+                            class="text-lg font-semibold text-gray-900">
+
+                            Rechazar transferencia
+
+                        </h3>
+
+
+                        <p
+                            class="mt-1 text-sm text-gray-500">
+
+                            Indique el motivo del rechazo.
+
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+
+                        [disabled]="procesando()"
+
+                        (click)="cerrarRechazo()"
+
+                        class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 disabled:opacity-50">
+
+                        <lucide-angular
+                            [img]="X"
+                            class="h-5 w-5">
+                        </lucide-angular>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="space-y-4 p-6">
+
+
+                    @if (
+                        errorMensaje()
+                    ) {
+
+                        <div
+                            class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+
+                            {{ errorMensaje() }}
+
+                        </div>
+
+                    }
+
+
+                    <div>
+
+                        <label
+                            for="motivo-rechazo"
+                            class="mb-2 block text-sm font-medium text-gray-700">
+
+                            Motivo
+
+                        </label>
+
+
+                        <textarea
+                            id="motivo-rechazo"
+
+                            rows="4"
+
+                            maxlength="255"
+
+                            [(ngModel)]="motivoRechazo"
+
+                            placeholder="Describa el motivo del rechazo"
+
+                            class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+                        </textarea>
+
+
+                        <div
+                            class="mt-1 text-right text-xs text-gray-400">
+
+                            {{ motivoRechazo.length }}/255
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+
+                    <button
+                        type="button"
+
+                        [disabled]="procesando()"
+
+                        (click)="cerrarRechazo()"
+
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+
+                        [disabled]="
+                            procesando()
+                            ||
+                            !motivoRechazo.trim()
+                        "
+
+                        (click)="confirmarRechazo()"
+
+                        class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
+
+                        @if (
+                            procesando()
+                        ) {
+
+                            Procesando...
+
+                        } @else {
+
+                            Rechazar transferencia
+
+                        }
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

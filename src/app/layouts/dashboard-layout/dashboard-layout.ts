@@ -27,7 +27,8 @@ import {
   ShoppingCart,
   User,
   Users,
-  X
+  X,
+  ArrowRightLeft
 } from 'lucide-angular';
 
 import {
@@ -160,6 +161,10 @@ export class DashboardLayout {
   readonly User =
     User;
 
+  readonly ArrowRightLeft =
+    ArrowRightLeft;
+
+
 
   /*
   |--------------------------------------------------------------------------
@@ -210,6 +215,30 @@ export class DashboardLayout {
 
         permisos: [
           'venta.ver'
+        ]
+
+      },
+
+      {
+
+        path:
+          '/dashboard/transfers',
+
+        icon:
+          ArrowRightLeft,
+
+        label: {
+
+          es:
+            'Transferencias',
+
+          en:
+            'Transfers'
+
+        },
+
+        permisos: [
+          'transferencia.ver'
         ]
 
       },
