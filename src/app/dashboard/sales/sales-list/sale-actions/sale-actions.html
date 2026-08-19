@@ -1,0 +1,423 @@
+<div class="flex flex-wrap justify-end gap-3">
+
+
+    <!--
+    ========================================================================
+    BORRADOR
+    ========================================================================
+    -->
+
+    @if (
+    puedeGestionarBorrador()
+    ) {
+
+    <a [routerLink]="[
+                '/dashboard/sales',
+                venta().id_venta,
+                'edit'
+            ]"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+        <lucide-angular [img]="Pencil" class="h-4 w-4">
+        </lucide-angular>
+
+        Editar
+
+    </a>
+
+
+    <button type="button" (click)="
+                abrirCompletar()
+            " class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white">
+
+        <lucide-angular [img]="CheckCircle2" class="h-4 w-4">
+        </lucide-angular>
+
+        Completar venta
+
+    </button>
+
+    }
+
+
+    <!--
+    ========================================================================
+    COMPLETADA
+    ========================================================================
+    -->
+
+    @if (
+    puedeAnular()
+    ) {
+
+    <button type="button" (click)="
+                abrirAnular()
+            "
+        class="inline-flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50">
+
+        <lucide-angular [img]="Ban" class="h-4 w-4">
+        </lucide-angular>
+
+        Anular venta
+
+    </button>
+
+    }
+
+</div>
+
+
+<!--
+========================================================================
+COMPLETAR
+========================================================================
+-->
+
+@if (
+mostrarCompletar()
+) {
+
+<div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" (click)="
+            cerrarCompletar()
+        ">
+
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl" (click)="
+                $event.stopPropagation()
+            ">
+
+
+        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+
+            <div>
+
+                <p class="text-xs font-medium uppercase tracking-wide text-gray-500">
+
+                    Confirmar operación
+
+                </p>
+
+                <h2 class="mt-1 text-lg font-semibold text-gray-900">
+
+                    Completar venta
+
+                </h2>
+
+            </div>
+
+
+            <button type="button" [disabled]="
+                        procesando()
+                    " (click)="
+                        cerrarCompletar()
+                    " class="rounded-lg p-2 text-gray-500 hover:bg-gray-100">
+
+                <lucide-angular [img]="X" class="h-5 w-5">
+                </lucide-angular>
+
+            </button>
+
+        </div>
+
+
+        <div class="space-y-5 p-6">
+
+
+            <div class="rounded-xl bg-gray-50 p-4">
+
+                <p class="text-xs uppercase tracking-wide text-gray-500">
+
+                    Total a pagar
+
+                </p>
+
+
+                <p class="mt-1 text-2xl font-semibold text-primary">
+
+                    Bs
+                    {{
+                    numero(
+                    venta().total
+                    )
+                    | number:'1.2-2'
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Método de pago
+
+                </label>
+
+
+                <select [(ngModel)]="
+                            metodoPago
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option value="EFECTIVO">
+                        Efectivo
+                    </option>
+
+                    <option value="TRANSFERENCIA">
+                        Transferencia
+                    </option>
+
+                    <option value="QR">
+                        QR
+                    </option>
+
+                    <option value="TARJETA">
+                        Tarjeta
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Monto pagado
+
+                </label>
+
+
+                <input type="text" readonly [value]="
+                            numero(
+                                venta().total
+                            )
+                            | number:'1.2-2'
+                        "
+                    class="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-700" />
+
+
+                <p class="mt-2 text-xs text-gray-500">
+
+                    La venta requiere el pago completo.
+
+                </p>
+
+            </div>
+
+
+            @if (
+            errorMensaje()
+            ) {
+
+            <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+
+                {{ errorMensaje() }}
+
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+
+            <button type="button" [disabled]="
+                        procesando()
+                    " (click)="
+                        cerrarCompletar()
+                    " class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">
+
+                Cancelar
+
+            </button>
+
+
+            <button type="button" [disabled]="
+                        procesando()
+                    " (click)="
+                        completar()
+                    "
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+
+                @if (
+                procesando()
+                ) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+                </span>
+
+                Procesando...
+
+                } @else {
+
+                <lucide-angular [img]="CreditCard" class="h-4 w-4">
+                </lucide-angular>
+
+                Confirmar venta
+
+                }
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+
+<!--
+========================================================================
+ANULAR
+========================================================================
+-->
+
+@if (
+mostrarAnular()
+) {
+
+<div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" (click)="
+            cerrarAnular()
+        ">
+
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl" (click)="
+                $event.stopPropagation()
+            ">
+
+
+        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+
+            <div>
+
+                <p class="text-xs font-medium uppercase tracking-wide text-red-500">
+
+                    Operación irreversible
+
+                </p>
+
+                <h2 class="mt-1 text-lg font-semibold text-gray-900">
+
+                    Anular venta
+
+                </h2>
+
+            </div>
+
+
+            <button type="button" [disabled]="
+                        procesando()
+                    " (click)="
+                        cerrarAnular()
+                    " class="rounded-lg p-2 text-gray-500 hover:bg-gray-100">
+
+                <lucide-angular [img]="X" class="h-5 w-5">
+                </lucide-angular>
+
+            </button>
+
+        </div>
+
+
+        <div class="space-y-5 p-6">
+
+            <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+
+                Al anular la venta se devolverán automáticamente las existencias al inventario.
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Motivo de anulación
+
+                </label>
+
+
+                <textarea [(ngModel)]="
+                            motivoAnulacion
+                        " maxlength="255" rows="4" placeholder="Indique el motivo..."
+                    class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    </textarea>
+
+
+                <p class="mt-1 text-right text-xs text-gray-400">
+
+                    {{ motivoAnulacion.length }}/255
+
+                </p>
+
+            </div>
+
+
+            @if (
+            errorMensaje()
+            ) {
+
+            <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+
+                {{ errorMensaje() }}
+
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+
+            <button type="button" [disabled]="
+                        procesando()
+                    " (click)="
+                        cerrarAnular()
+                    " class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">
+
+                Cancelar
+
+            </button>
+
+
+            <button type="button" [disabled]="
+                        procesando()
+                    " (click)="
+                        anular()
+                    "
+                class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+
+                @if (
+                procesando()
+                ) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+                </span>
+
+                Procesando...
+
+                } @else {
+
+                <lucide-angular [img]="Ban" class="h-4 w-4">
+                </lucide-angular>
+
+                Confirmar anulación
+
+                }
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

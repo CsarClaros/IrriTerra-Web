@@ -1,0 +1,908 @@
+<div class="space-y-6">
+
+
+    <!-- Encabezado -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+
+            <a routerLink="/dashboard/sales"
+                class="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-primary">
+
+                <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+
+                </lucide-angular>
+
+                Volver a ventas
+
+            </a>
+
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                {{
+                    modoEdicion()
+                        ? 'Editar venta'
+                        : 'Nueva venta'
+                }}
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                    modoEdicion()
+            
+                        ? 'Modifique los datos de la venta mientras continúe en borrador.'
+            
+                        : 'Registre los productos y guarde la operación como borrador.'
+                }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Error general -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5">
+
+        </lucide-angular>
+
+
+        <p class="text-sm">
+
+            {{ errorMensaje() }}
+
+        </p>
+
+    </div>
+
+    }
+
+
+    <!-- Cargando -->
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="rounded-xl border border-gray-200 bg-white p-12 text-center">
+
+        <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+
+        </div>
+
+        <p class="mt-4 text-sm text-gray-500">
+
+            Cargando datos de venta...
+
+        </p>
+
+    </div>
+
+    } @else {
+
+
+    <!-- Datos generales -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <h2 class="font-semibold text-gray-900">
+
+            Información de la venta
+
+        </h2>
+
+
+        <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+
+
+            <!-- Sucursal -->
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Sucursal
+
+                </label>
+
+
+                <div class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-700">
+
+                    {{
+                    sucursal()
+                    ?.nombre
+                    ?? 'Sin sucursal asignada'
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- Vendedor -->
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Vendedor
+
+                </label>
+
+
+                <div class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-700">
+
+                    {{
+                    usuario()
+                    ?.nombre
+                    }}
+
+                    {{
+                    usuario()
+                    ?.apellido_paterno
+                    }}
+
+                </div>
+
+            </div>
+
+
+            <!-- Cliente -->
+
+            <div class="md:col-span-2">
+
+                <label for="cliente" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Cliente
+
+                </label>
+
+
+                <select id="cliente" [(ngModel)]="
+                            idCliente
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Consumidor final / sin cliente
+
+                    </option>
+
+
+                    @for (
+                    cliente
+                    of clientes();
+                    track cliente.id_cliente
+                    ) {
+
+                    <option [ngValue]="
+                                    cliente.id_cliente
+                                ">
+
+                        {{
+                        cliente.nombre_razon_social
+                        }}
+
+                        @if (
+                        cliente.numero_documento
+                        ) {
+
+                        —
+                        {{
+                        cliente.numero_documento
+                        }}
+
+                        }
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Observaciones -->
+
+            <div class="md:col-span-2">
+
+                <label for="observaciones_venta" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Observaciones
+
+                </label>
+
+
+                <textarea id="observaciones_venta" [(ngModel)]="
+                            observacionesVenta
+                        " rows="3" placeholder="Observaciones generales de la venta..."
+                    class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    </textarea>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Agregar productos -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <div>
+
+            <h2 class="font-semibold text-gray-900">
+
+                Agregar productos
+
+            </h2>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Seleccione una variante disponible en la sucursal.
+
+            </p>
+
+        </div>
+
+
+        <!-- Error producto -->
+
+        @if (
+        errorProducto()
+        ) {
+
+        <div class="mt-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+
+            {{ errorProducto() }}
+
+        </div>
+
+        }
+
+
+        <div class="mt-5 space-y-5">
+
+
+            <!-- Buscar -->
+
+            <div class="relative">
+
+                <lucide-angular [img]="Search" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400">
+
+                </lucide-angular>
+
+
+                <input type="text" [value]="
+                            busquedaProducto()
+                        " (input)="
+                            actualizarBusqueda(
+                                $event
+                            )
+                        " placeholder="Buscar por producto, variante, SKU o código..."
+                    class="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+            </div>
+
+
+            <!-- Variante -->
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Producto / variante
+
+                </label>
+
+
+                <select [ngModel]="
+        idVarianteSeleccionada()
+    " (ngModelChange)="
+        seleccionarVariante(
+            $event
+        )
+    " class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Seleccione una variante
+
+                    </option>
+
+
+                    @for (
+                    variante
+                    of variantesFiltradas();
+                    track variante.id_producto_variante
+                    ) {
+
+                    <option [ngValue]="
+                variante.id_producto_variante
+            ">
+
+                        {{
+                        nombreVariante(
+                        variante
+                        )
+                        }}
+
+                        —
+                        {{ variante.sku }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            @if (
+            varianteSeleccionada();
+            as variante
+            ) {
+
+            @let precio =
+            precioSeleccionado();
+
+            @let stock =
+            stockSeleccionado();
+
+
+            <!-- Información -->
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs uppercase tracking-wide text-gray-500">
+
+                        Precio venta
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+
+                        Bs
+                        {{
+                        numero(
+                        precio?.precio_venta
+                        )
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs uppercase tracking-wide text-gray-500">
+
+                        Precio mínimo
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+
+                        Bs
+                        {{
+                        numero(
+                        precio?.precio_minimo
+                        )
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs uppercase tracking-wide text-gray-500">
+
+                        Stock disponible
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+
+                        {{
+                        numero(
+                        stock?.stock_actual
+                        )
+                        | number:'1.0-3'
+                        }}
+
+                        {{ variante.unidad_medida }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Datos línea -->
+
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+
+
+                <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Cantidad
+
+                    </label>
+
+                    <input type="number" [(ngModel)]="
+                                    cantidad
+                                " min="0.001" step="0.001"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+
+                <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Precio unitario
+
+                    </label>
+
+                    <input type="number" [(ngModel)]="
+                                    precioUnitario
+                                " min="0.01" step="0.01"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+
+                <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Descuento
+
+                    </label>
+
+                    <input type="number" [(ngModel)]="
+                                    descuento
+                                " min="0" step="0.01"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+
+                <div class="md:col-span-3">
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Observación del producto
+
+                    </label>
+
+                    <input type="text" [(ngModel)]="
+                                    observacionesDetalle
+                                " placeholder="Opcional"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+            </div>
+
+
+            <div class="flex justify-end">
+
+                <button type="button" (click)="
+                                agregarDetalle()
+                            "
+                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white">
+
+                    <lucide-angular [img]="Plus" class="h-4 w-4">
+
+                    </lucide-angular>
+
+                    Agregar producto
+
+                </button>
+
+            </div>
+
+            }
+
+        </div>
+
+    </section>
+
+
+    <!-- Carrito -->
+
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="border-b border-gray-200 px-6 py-5">
+
+            <h2 class="font-semibold text-gray-900">
+
+                Productos de la venta
+
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{ lineas().length }}
+                productos agregados.
+
+            </p>
+
+        </div>
+
+
+        @if (
+        lineas().length === 0
+        ) {
+
+        <div class="p-12 text-center">
+
+            <lucide-angular [img]="PackagePlus" class="mx-auto h-10 w-10 text-gray-300">
+
+            </lucide-angular>
+
+            <p class="mt-3 text-sm text-gray-500">
+
+                Todavía no agregó productos.
+
+            </p>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase text-gray-500">
+
+                            Producto
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Cantidad
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Precio
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Descuento
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Importe
+
+                        </th>
+
+                        <th class="px-5 py-3">
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200">
+
+                    @for (
+                    linea
+                    of lineas();
+                    track linea.id_producto_variante
+                    ) {
+
+                    <tr>
+
+                        <td class="px-5 py-4">
+
+                            <p class="font-medium text-gray-900">
+
+                                {{ linea.producto }}
+
+                            </p>
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                {{ linea.variante }}
+                                ·
+                                {{ linea.sku }}
+
+                            </p>
+
+
+                            @if (
+                            errorLinea(
+                            linea
+                            );
+                            as error
+                            ) {
+
+                            <p class="mt-2 text-xs font-medium text-red-600">
+
+                                {{ error }}
+
+                            </p>
+
+                            }
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <input type="number" [ngModel]="
+                                                linea.cantidad
+                                            " (ngModelChange)="
+                                                actualizarLinea(
+                                                    linea.id_producto_variante,
+                                                    'cantidad',
+                                                    $event
+                                                )
+                                            " min="0.001" step="0.001"
+                                class="ml-auto w-24 rounded-lg border border-gray-300 px-2 py-2 text-right text-sm" />
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <input type="number" [ngModel]="
+                                                linea.precio_unitario
+                                            " (ngModelChange)="
+                                                actualizarLinea(
+                                                    linea.id_producto_variante,
+                                                    'precio_unitario',
+                                                    $event
+                                                )
+                                            " min="0.01" step="0.01"
+                                class="ml-auto w-28 rounded-lg border border-gray-300 px-2 py-2 text-right text-sm" />
+
+                            <p class="mt-1 text-right text-xs text-gray-400">
+
+                                Mín.
+                                Bs
+                                {{
+                                linea.precio_minimo
+                                | number:'1.2-2'
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <input type="number" [ngModel]="
+                                                linea.descuento
+                                            " (ngModelChange)="
+                                                actualizarLinea(
+                                                    linea.id_producto_variante,
+                                                    'descuento',
+                                                    $event
+                                                )
+                                            " min="0" step="0.01"
+                                class="ml-auto w-28 rounded-lg border border-gray-300 px-2 py-2 text-right text-sm" />
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right font-semibold text-gray-900">
+
+                            Bs
+                            {{
+                            (
+                            linea.cantidad
+                            *
+                            linea.precio_unitario
+                            -
+                            linea.descuento
+                            )
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-right">
+
+                            <button type="button" (click)="
+                                                eliminarLinea(
+                                                    linea.id_producto_variante
+                                                )
+                                            " class="rounded-lg p-2 text-red-500 transition hover:bg-red-50">
+
+                                <lucide-angular [img]="Trash2" class="h-4 w-4">
+
+                                </lucide-angular>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <!-- Totales -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <div class="ml-auto max-w-md space-y-3">
+
+
+            <div class="flex justify-between text-sm">
+
+                <span class="text-gray-500">
+
+                    Subtotal
+
+                </span>
+
+                <span class="font-medium text-gray-900">
+
+                    Bs
+                    {{
+                    subtotal()
+                    | number:'1.2-2'
+                    }}
+
+                </span>
+
+            </div>
+
+
+            <div class="flex justify-between text-sm">
+
+                <span class="text-gray-500">
+
+                    Descuento
+
+                </span>
+
+                <span class="font-medium text-gray-900">
+
+                    Bs
+                    {{
+                    descuentoTotal()
+                    | number:'1.2-2'
+                    }}
+
+                </span>
+
+            </div>
+
+
+            <div class="flex justify-between border-t border-gray-200 pt-4">
+
+                <span class="font-semibold text-gray-900">
+
+                    Total
+
+                </span>
+
+                <span class="text-2xl font-semibold text-primary">
+
+                    Bs
+                    {{
+                    total()
+                    | number:'1.2-2'
+                    }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-5">
+
+            <a routerLink="/dashboard/sales"
+                class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">
+
+                Cancelar
+
+            </a>
+
+
+            <button type="button" (click)="
+                        guardarVenta()
+                    " [disabled]="
+                        guardando()
+                        ||
+                        lineas().length === 0
+                    "
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+
+
+                @if (
+                guardando()
+                ) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+
+                </span>
+
+                Guardando...
+
+                } @else {
+
+                <lucide-angular [img]="Save" class="h-4 w-4">
+
+                </lucide-angular>
+
+                {{
+                    modoEdicion()
+                        ? 'Guardar cambios'
+                        : 'Guardar borrador'
+                }}
+
+                }
+
+            </button>
+
+        </div>
+
+    </section>
+
+    }
+
+</div>

@@ -1,1 +1,1246 @@
-<p>sales-reports works!</p>
+<div class="space-y-6">
+
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
+
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
+        <div>
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                Reportes de ventas
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Consulte el rendimiento de ventas y los productos más vendidos.
+
+            </p>
+
+        </div>
+
+
+        <button type="button" [disabled]="
+                cargando()
+            " (click)="
+                cargarReportes()
+            "
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-60">
+
+            <lucide-angular [img]="RefreshCcw" [class.animate-spin]="
+                    cargando()
+                " class="h-4 w-4">
+            </lucide-angular>
+
+            Actualizar
+
+        </button>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    FILTROS
+    ========================================================================
+    -->
+
+    <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+
+        <div class="flex items-center gap-2">
+
+            <lucide-angular [img]="Filter" class="h-5 w-5 text-gray-500">
+            </lucide-angular>
+
+
+            <h2 class="font-semibold text-gray-900">
+
+                Filtros
+
+            </h2>
+
+        </div>
+
+
+        <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+
+            <!-- Fecha desde -->
+
+            <div>
+
+                <label for="fecha_desde" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Fecha desde
+
+                </label>
+
+
+                <input id="fecha_desde" type="date" [(ngModel)]="
+                        filtros.fecha_desde
+                    "
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+            </div>
+
+
+            <!-- Fecha hasta -->
+
+            <div>
+
+                <label for="fecha_hasta" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Fecha hasta
+
+                </label>
+
+
+                <input id="fecha_hasta" type="date" [(ngModel)]="
+                        filtros.fecha_hasta
+                    "
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+            </div>
+
+
+            <!-- Sucursal -->
+
+            <div>
+
+                <label for="sucursal" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Sucursal
+
+                </label>
+
+
+                <select id="sucursal" [(ngModel)]="
+                        filtros.id_sucursal
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Todas
+
+                    </option>
+
+
+                    @for (
+                    sucursal
+                    of sucursales();
+                    track sucursal.id
+                    ) {
+
+                    <option [ngValue]="
+                                sucursal.id
+                            ">
+
+                        {{ sucursal.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Cliente -->
+
+            <div>
+
+                <label for="cliente" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Cliente
+
+                </label>
+
+
+                <select id="cliente" [(ngModel)]="
+                        filtros.id_cliente
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+
+                    @for (
+                    cliente
+                    of clientes();
+                    track cliente.id
+                    ) {
+
+                    <option [ngValue]="
+                                cliente.id
+                            ">
+
+                        {{ cliente.nombre }}
+
+                        @if (
+                        cliente.detalle
+                        ) {
+
+                        —
+                        {{ cliente.detalle }}
+
+                        }
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Vendedor -->
+
+            <div>
+
+                <label for="vendedor" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Vendedor
+
+                </label>
+
+
+                <select id="vendedor" [(ngModel)]="
+                        filtros.id_usuario_vendedor
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+
+                    @for (
+                    vendedor
+                    of vendedores();
+                    track vendedor.id
+                    ) {
+
+                    <option [ngValue]="
+                                vendedor.id
+                            ">
+
+                        {{ vendedor.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Producto -->
+
+            <div>
+
+                <label for="producto" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Producto / variante
+
+                </label>
+
+
+                <select id="producto" [(ngModel)]="
+                        filtros.id_producto_variante
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+
+                    @for (
+                    variante
+                    of variantes();
+                    track variante.id
+                    ) {
+
+                    <option [ngValue]="
+                                variante.id
+                            ">
+
+                        {{ variante.nombre }}
+
+                        @if (
+                        variante.detalle
+                        ) {
+
+                        —
+                        {{ variante.detalle }}
+
+                        }
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Estado -->
+
+            <div>
+
+                <label for="estado" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Estado
+
+                </label>
+
+
+                <select id="estado" [(ngModel)]="
+                        filtros.estado_venta
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+                    <option value="BORRADOR">
+
+                        Borrador
+
+                    </option>
+
+                    <option value="COMPLETADA">
+
+                        Completada
+
+                    </option>
+
+                    <option value="ANULADA">
+
+                        Anulada
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Límite -->
+
+            <div>
+
+                <label for="limite" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Productos más vendidos
+
+                </label>
+
+
+                <select id="limite" [(ngModel)]="
+                        filtros.limite
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option [ngValue]="5">
+
+                        Top 5
+
+                    </option>
+
+                    <option [ngValue]="10">
+
+                        Top 10
+
+                    </option>
+
+                    <option [ngValue]="20">
+
+                        Top 20
+
+                    </option>
+
+                    <option [ngValue]="50">
+
+                        Top 50
+
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-5 flex flex-wrap justify-end gap-3">
+
+            <button type="button" [disabled]="
+                    cargando()
+                " (click)="
+                    limpiarFiltros()
+                "
+                class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                Limpiar
+
+            </button>
+
+
+            <button type="button" [disabled]="
+                    cargando()
+                " (click)="
+                    aplicarFiltros()
+                "
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+
+                <lucide-angular [img]="Filter" class="h-4 w-4">
+                </lucide-angular>
+
+                Aplicar filtros
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!--
+    ========================================================================
+    ERROR
+    ========================================================================
+    -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    KPIs
+    ========================================================================
+    -->
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+
+        <!-- Total vendido -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between">
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+
+                        Total vendido
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        Bs
+                        {{
+                        resumen().total_vendido
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-emerald-50 p-3">
+
+                    <lucide-angular [img]="CircleDollarSign" class="h-5 w-5 text-emerald-600">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Completadas -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between">
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+
+                        Ventas completadas
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        {{ resumen().completadas }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-blue-50 p-3">
+
+                    <lucide-angular [img]="ShoppingCart" class="h-5 w-5 text-blue-600">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Ticket promedio -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between">
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+
+                        Ticket promedio
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        Bs
+                        {{
+                        resumen().ticket_promedio
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-violet-50 p-3">
+
+                    <lucide-angular [img]="TrendingUp" class="h-5 w-5 text-violet-600">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Descuentos -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between">
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+
+                        Descuentos aplicados
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        Bs
+                        {{
+                        resumen().descuento_completado
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-amber-50 p-3">
+
+                    <lucide-angular [img]="ReceiptText" class="h-5 w-5 text-amber-600">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Estados secundarios -->
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+        <div class="rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                Total registros
+
+            </p>
+
+            <p class="mt-1 text-xl font-semibold text-gray-900">
+
+                {{ resumen().ventas }}
+
+            </p>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                Borradores
+
+            </p>
+
+            <p class="mt-1 text-xl font-semibold text-amber-600">
+
+                {{ resumen().borradores }}
+
+            </p>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
+
+            <p class="text-sm text-gray-500">
+
+                Anuladas
+
+            </p>
+
+            <p class="mt-1 text-xl font-semibold text-red-600">
+
+                {{ resumen().anuladas }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    GRÁFICA + RESUMEN PRODUCTOS
+    ========================================================================
+    -->
+
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+
+        <!-- Gráfica -->
+
+        <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-2">
+
+            <div class="flex items-center gap-3">
+
+                <div class="rounded-lg bg-gray-100 p-2">
+
+                    <lucide-angular [img]="CalendarDays" class="h-5 w-5 text-gray-600">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <h2 class="font-semibold text-gray-900">
+
+                        Ventas por fecha
+
+                    </h2>
+
+                    <p class="text-sm text-gray-500">
+
+                        Importe de ventas completadas.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            @if (
+            cargando()
+            ) {
+
+            <div class="flex h-[360px] items-center justify-center">
+
+                <div class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+                </div>
+
+            </div>
+
+            } @else if (
+            hayVentasCompletadas()
+            ) {
+
+            <div echarts [options]="
+                        graficoVentas()
+                    " [autoResize]="true" class="mt-5 h-[360px] w-full">
+            </div>
+
+            } @else {
+
+            <div class="flex h-[360px] flex-col items-center justify-center text-center">
+
+                <lucide-angular [img]="TrendingUp" class="h-10 w-10 text-gray-300">
+                </lucide-angular>
+
+                <p class="mt-3 text-sm text-gray-500">
+
+                    No existen ventas completadas para graficar.
+
+                </p>
+
+            </div>
+
+            }
+
+        </section>
+
+
+        <!-- Resumen productos -->
+
+        <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-center gap-3">
+
+                <div class="rounded-lg bg-gray-100 p-2">
+
+                    <lucide-angular [img]="PackageSearch" class="h-5 w-5 text-gray-600">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <h2 class="font-semibold text-gray-900">
+
+                        Productos vendidos
+
+                    </h2>
+
+                    <p class="text-sm text-gray-500">
+
+                        Solo ventas completadas.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-6 space-y-5">
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+
+                        Variantes vendidas
+
+                    </p>
+
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">
+
+                        {{ resumenProductos().productos }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="border-t border-gray-100 pt-5">
+
+                    <p class="text-sm text-gray-500">
+
+                        Cantidad total
+
+                    </p>
+
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">
+
+                        {{
+                        resumenProductos().cantidad_total
+                        | number:'1.0-3'
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="border-t border-gray-100 pt-5">
+
+                    <p class="text-sm text-gray-500">
+
+                        Importe acumulado
+
+                    </p>
+
+                    <p class="mt-1 text-2xl font-semibold text-primary">
+
+                        Bs
+                        {{
+                        resumenProductos().importe_total
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    PRODUCTOS MÁS VENDIDOS
+    ========================================================================
+    -->
+
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="border-b border-gray-200 px-5 py-4">
+
+            <h2 class="font-semibold text-gray-900">
+
+                Productos más vendidos
+
+            </h2>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Ordenados por cantidad vendida.
+
+            </p>
+
+        </div>
+
+
+        @if (
+        productos().length === 0
+        ) {
+
+        <div class="p-10 text-center">
+
+            <lucide-angular [img]="PackageSearch" class="mx-auto h-10 w-10 text-gray-300">
+            </lucide-angular>
+
+            <p class="mt-3 text-sm text-gray-500">
+
+                No existen productos vendidos para los filtros seleccionados.
+
+            </p>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            #
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Producto
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Cantidad
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Operaciones
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Importe
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200 bg-white">
+
+                    @for (
+                    producto
+                    of productos();
+                    track producto.id_producto_variante;
+                    let i = $index
+                    ) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="px-5 py-4 text-sm font-medium text-gray-500">
+
+                            {{ i + 1 }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm font-medium text-gray-900">
+
+                                {{
+                                nombreProducto(
+                                producto
+                                )
+                                }}
+
+                            </p>
+
+
+                            @if (
+                            producto.producto_variante?.sku
+                            ) {
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                SKU:
+                                {{
+                                producto.producto_variante?.sku
+                                }}
+
+                            </p>
+
+                            }
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm text-gray-700">
+
+                            {{
+                            producto.cantidad
+                            | number:'1.0-3'
+                            }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm text-gray-700">
+
+                            {{ producto.operaciones }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm font-semibold text-gray-900">
+
+                            Bs
+                            {{
+                            numero(
+                            producto.total
+                            )
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <!--
+    ========================================================================
+    LISTADO DE VENTAS
+    ========================================================================
+    -->
+
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="border-b border-gray-200 px-5 py-4">
+
+            <h2 class="font-semibold text-gray-900">
+
+                Ventas del período
+
+            </h2>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{ ventas().length }}
+                registros encontrados.
+
+            </p>
+
+        </div>
+
+
+        @if (
+        ventas().length === 0
+        ) {
+
+        <div class="p-10 text-center">
+
+            <lucide-angular [img]="ShoppingCart" class="mx-auto h-10 w-10 text-gray-300">
+            </lucide-angular>
+
+            <p class="mt-3 text-sm text-gray-500">
+
+                No existen ventas para los filtros seleccionados.
+
+            </p>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Código
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Fecha
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Cliente
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Sucursal
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Vendedor
+
+                        </th>
+
+                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Estado
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Total
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200 bg-white">
+
+                    @for (
+                    venta
+                    of ventas();
+                    track venta.id_venta
+                    ) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm font-medium text-gray-900">
+
+                            {{ venta.codigo_venta }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+
+                            {{
+                            formatearFecha(
+                            venta.fecha_venta
+                            )
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-sm text-gray-700">
+
+                            {{
+                            nombreCliente(
+                            venta
+                            )
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-sm text-gray-700">
+
+                            {{
+                            venta.sucursal?.nombre
+                            ?? '—'
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-sm text-gray-700">
+
+                            {{
+                            nombreVendedor(
+                            venta
+                            )
+                            }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-center">
+
+                            <span [class]="
+                                            'inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset '
+                                            +
+                                            claseEstado(
+                                                venta.estado_venta
+                                            )
+                                        ">
+
+                                {{
+                                nombreEstado(
+                                venta.estado_venta
+                                )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm font-semibold text-gray-900">
+
+                            Bs
+                            {{
+                            numero(
+                            venta.total
+                            )
+                            | number:'1.2-2'
+                            }}
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </section>
+
+</div>

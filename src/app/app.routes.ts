@@ -169,6 +169,7 @@ import {
 import {
     Settings
 } from './dashboard/settings/settings';
+import { SalesCreate } from './dashboard/sales/sales-create/sales-create';
 
 
 /*
@@ -297,12 +298,65 @@ export const routes:
                 |--------------------------------------------------------------------------
                 */
 
-                {
 
+                {
+                    path: 'sales/create',
+
+                    component:
+                        SalesCreate,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'venta.crear'
+                        )
+
+                    ]
+                },
+
+                {
+                    path: 'sales/:id/edit',
+
+                    component:
+                        SalesCreate,
+
+                    canActivate: [
+                        permissionGuard(
+                            'venta.crear'
+                        )
+                    ]
+                },
+
+                {
+                    path: 'sales/reports',
+
+                    redirectTo:
+                        'reports/sales',
+
+                    pathMatch:
+                        'full'
+                },
+
+                {
+                    path: 'sales/export',
+
+                    component:
+                        SalesExport,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'reporte_ventas.ver'
+                        )
+
+                    ]
+                },
+
+                {
                     path: 'sales',
 
                     component:
-                        Sales,
+                        SalesList,
 
                     canActivate: [
 
@@ -310,55 +364,7 @@ export const routes:
                             'venta.ver'
                         )
 
-                    ],
-
-                    children: [
-
-                        {
-
-                            path: '',
-
-                            component:
-                                SalesList
-
-                        },
-
-                        {
-
-                            path: 'reports',
-
-                            component:
-                                SalesReports,
-
-                            canActivate: [
-
-                                permissionGuard(
-                                    'reporte_ventas.ver'
-                                )
-
-                            ]
-
-                        },
-
-                        {
-
-                            path: 'export',
-
-                            component:
-                                SalesExport,
-
-                            canActivate: [
-
-                                permissionGuard(
-                                    'reporte_ventas.ver'
-                                )
-
-                            ]
-
-                        }
-
                     ]
-
                 },
 
 
@@ -522,13 +528,56 @@ export const routes:
 
 
                 /*
+|--------------------------------------------------------------------------
+| Reporte de ventas
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path: 'reports/sales',
+
+                    component:
+                        SalesReports,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'reporte_ventas.ver'
+                        )
+
+                    ]
+                },
+
+
+                /*
                 |--------------------------------------------------------------------------
-                | Reportes generales
+                | Reporte de inventario
+                |--------------------------------------------------------------------------
+                */
+
+                // {
+                //     path: 'reports/inventory',
+
+                //     component:
+                //         StockReport,
+
+                //     canActivate: [
+
+                //         permissionGuard(
+                //             'reporte_inventario.ver'
+                //         )
+
+                //     ]
+                // },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Centro de reportes
                 |--------------------------------------------------------------------------
                 */
 
                 {
-
                     path: 'reports',
 
                     component:
@@ -536,20 +585,19 @@ export const routes:
 
                     canActivate: [
 
-                        anyPermissionGuard([
+                        permissionGuard(
 
-                            'reporte_inventario.ver',
+                            // 'reporte_inventario.ver',
 
                             'reporte_ventas.ver',
 
-                            'reporte_compras.ver',
+                            // 'reporte_compras.ver',
 
-                            'reporte_transferencias.ver'
+                            // 'reporte_transferencias.ver'
 
-                        ])
+                        )
 
                     ]
-
                 },
 
 

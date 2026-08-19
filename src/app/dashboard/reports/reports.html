@@ -1,117 +1,146 @@
-<div class="space-y-6">
+<div
+    class="space-y-6">
+
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
 
     <div>
-        <h1 class="text-3xl mb-2">Reportes</h1>
-        <p class="text-gray-600">
-            Genera y descarga reportes detallados
+
+        <h1
+            class="text-2xl font-semibold text-gray-900">
+
+            Reportes
+
+        </h1>
+
+
+        <p
+            class="mt-1 text-sm text-gray-500">
+
+            Consulte la información operativa disponible según sus permisos.
+
         </p>
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="grid md:grid-cols-3 gap-6">
-
-        <div class="bg-white rounded-xl p-6 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-gray-600 text-sm">Ventas del Mes</h3>
-                <lucide-icon [img]="TrendingUp" class="w-6 h-6 text-green-600"></lucide-icon>
-            </div>
-            <p class="text-3xl mb-2">Bs. 67,000</p>
-            <p class="text-sm text-green-600">+12% vs mes anterior</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-6 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-gray-600 text-sm">Productos Vendidos</h3>
-                <lucide-icon [img]="TrendingUp" class="w-6 h-6 text-green-600"></lucide-icon>
-            </div>
-            <p class="text-3xl mb-2">234</p>
-            <p class="text-sm text-green-600">+15% vs mes anterior</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-6 shadow-lg">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-gray-600 text-sm">Stock Bajo</h3>
-                <lucide-icon [img]="TrendingDown" class="w-6 h-6 text-red-600"></lucide-icon>
-            </div>
-            <p class="text-3xl mb-2">5</p>
-            <p class="text-sm text-red-600">productos</p>
-        </div>
 
     </div>
 
-    <!-- Reports -->
-    <div class="bg-white rounded-xl shadow-lg p-6">
 
-        <h2 class="text-2xl mb-6">Reportes Disponibles</h2>
+    <!--
+    ========================================================================
+    REPORTES DISPONIBLES
+    ========================================================================
+    -->
 
-        <div class="space-y-4">
+    @if (
+        reportesVisibles().length
+        > 0
+    ) {
 
-            @for (report of reports; track report.title.es) {
+        <div
+            class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
 
-            <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+            @for (
+                reporte
+                of reportesVisibles();
+                track reporte.path
+            ) {
 
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <a
+                    [routerLink]="
+                        reporte.path
+                    "
 
-                    <div class="flex-1">
-                        <h3 class="text-xl mb-2">
-                            {{ report.title.es }}
-                        </h3>
+                    class="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md">
 
-                        <p class="text-gray-600 mb-2">
-                            {{ report.description.es }}
-                        </p>
 
-                        <p class="text-sm text-gray-500">
-                            {{ report.date }}
-                        </p>
+                    <!-- Icono -->
+
+                    <div
+                        class="flex items-start justify-between">
+
+                        <div
+                            class="rounded-xl bg-primary/10 p-3">
+
+                            <lucide-angular
+                                [img]="
+                                    reporte.icono
+                                "
+
+                                class="h-6 w-6 text-primary">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <lucide-angular
+                            [img]="ArrowRight"
+
+                            class="h-5 w-5 text-gray-300 transition group-hover:translate-x-1 group-hover:text-primary">
+                        </lucide-angular>
+
                     </div>
 
-                    <div class="flex gap-2">
 
-                        <button class="px-4 py-2 bg-primary text-white rounded-lg inline-flex items-center">
-                            <lucide-icon [img]="Download" class="w-4 h-4 mr-2"></lucide-icon>
-                            PDF
-                        </button>
+                    <!-- Información -->
 
-                        <button class="px-4 py-2 bg-green-600 text-white rounded-lg inline-flex items-center">
-                            <lucide-icon [img]="Download" class="w-4 h-4 mr-2"></lucide-icon>
-                            Excel
-                        </button>
+                    <div
+                        class="mt-5">
+
+                        <h2
+                            class="text-lg font-semibold text-gray-900">
+
+                            {{ reporte.titulo }}
+
+                        </h2>
+
+
+                        <p
+                            class="mt-2 text-sm leading-6 text-gray-500">
+
+                            {{ reporte.descripcion }}
+
+                        </p>
 
                     </div>
 
-                </div>
-            </div>
+
+                    <!-- Acción -->
+
+                    <div
+                        class="mt-5 border-t border-gray-100 pt-4">
+
+                        <span
+                            class="text-sm font-medium text-primary">
+
+                            Ver reporte
+
+                        </span>
+
+                    </div>
+
+                </a>
 
             }
 
         </div>
-    </div>
 
-    <!-- Custom Report -->
-    <div class="bg-white rounded-xl shadow-lg p-6">
+    } @else {
 
-        <h2 class="text-2xl mb-6">Generar Reporte Personalizado</h2>
+        <div
+            class="rounded-xl border border-gray-200 bg-white p-10 text-center shadow-sm">
 
-        <form class="space-y-4">
+            <p
+                class="text-sm text-gray-500">
 
-            <div class="grid md:grid-cols-2 gap-4">
+                No tiene reportes disponibles.
 
-                <input class="border p-2 rounded" placeholder="Tipo de reporte" />
-                <input class="border p-2 rounded" placeholder="Formato" />
+            </p>
 
-                <input type="date" class="border p-2 rounded" />
-                <input type="date" class="border p-2 rounded" />
+        </div>
 
-            </div>
-
-            <button class="px-6 py-3 bg-primary text-white rounded-lg inline-flex items-center">
-                <lucide-icon [img]="Download" class="w-5 h-5 mr-2"></lucide-icon>
-                Generar Reporte
-            </button>
-
-        </form>
-
-    </div>
+    }
 
 </div>
