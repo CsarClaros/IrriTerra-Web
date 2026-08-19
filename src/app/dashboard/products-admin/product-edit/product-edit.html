@@ -1,75 +1,587 @@
-<div class="max-w-3xl mx-auto space-y-6">
+<div class="mx-auto max-w-4xl space-y-6">
 
-    <!-- Header -->
-    <div>
-        <h1 class="text-3xl mb-2">Editar producto</h1>
-        <p class="text-gray-600">
-            Modificación de producto existente
+
+    <!-- Encabezado -->
+
+    <div class="flex items-center gap-4">
+
+        <a routerLink="/dashboard/products"
+            class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 transition hover:bg-gray-50">
+
+            <lucide-angular [img]="ArrowLeft" class="h-5 w-5">
+
+            </lucide-angular>
+
+        </a>
+
+
+        <div>
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                Editar producto
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Modifique la información general del producto.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Cargando -->
+
+    @if (cargando()) {
+
+    <div class="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
+
+        <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+
+        </div>
+
+        <p class="text-sm text-gray-500">
+
+            Cargando producto...
+
         </p>
+
     </div>
 
-    <!-- Form -->
-    <div class="bg-white rounded-xl shadow-lg p-8">
+    }
 
-        <form (ngSubmit)="update()" class="space-y-6">
 
-            <!-- Nombre -->
+    <!-- Error de carga -->
+
+    @else if (
+    errorMensaje()
+    &&
+    ! producto()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-6">
+
+        <div class="flex items-start gap-3">
+
+            <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5 text-red-600">
+
+            </lucide-angular>
+
+
             <div>
-                <label class="block mb-2 text-sm text-gray-600">Nombre</label>
-                <input type="text" [(ngModel)]="formData.nombre" name="nombre" required
-                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
 
-            <!-- Categoria -->
-            <div>
-                <label class="block mb-2 text-sm text-gray-600">Categoría</label>
-                <select [(ngModel)]="formData.categoria" name="categoria" required
-                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option *ngFor="let cat of categorias" [value]="cat">
-                        {{ cat }}
-                    </option>
-                </select>
-            </div>
+                <p class="font-medium text-red-800">
 
-            <!-- Precio y Stock -->
-            <div class="grid md:grid-cols-2 gap-4">
+                    No fue posible cargar el producto
 
-                <div>
-                    <label class="block mb-2 text-sm text-gray-600">Precio</label>
-                    <input type="number" [(ngModel)]="formData.precio" name="precio" required
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
+                </p>
 
-                <div>
-                    <label class="block mb-2 text-sm text-gray-600">Stock</label>
-                    <input type="number" [(ngModel)]="formData.stock" name="stock" required
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
 
-            </div>
+                <p class="mt-1 text-sm text-red-700">
 
-            <!-- Imagen -->
-            <div>
-                <label class="block mb-2 text-sm text-gray-600">URL Imagen</label>
-                <input type="text" [(ngModel)]="formData.imagen" name="imagen"
-                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
+                    {{ errorMensaje() }}
 
-            <!-- Buttons -->
-            <div class="flex justify-end space-x-4 pt-4 border-t">
+                </p>
 
-                <button type="button" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    Cancelar
-                </button>
 
-                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
-                    Actualizar
+                <button type="button" (click)="cargarDatos()"
+                    class="mt-4 inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700">
+
+                    <lucide-angular [img]="RefreshCw" class="h-4 w-4">
+
+                    </lucide-angular>
+
+                    Reintentar
+
                 </button>
 
             </div>
 
-        </form>
+        </div>
 
     </div>
+
+    }
+
+
+    <!-- Formulario -->
+
+    @else if (producto()) {
+
+    @if (errorMensaje()) {
+
+    <div role="alert" class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5">
+
+        </lucide-angular>
+
+        <p class="text-sm">
+
+            {{ errorMensaje() }}
+
+        </p>
+
+    </div>
+
+    }
+
+
+    <form #productoForm="ngForm" (ngSubmit)="guardar()"
+        class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+
+        <!-- Información general -->
+
+        <div class="border-b border-gray-200 p-6">
+
+            <div class="mb-6 flex items-center gap-3">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+
+                    <lucide-angular [img]="Package" class="h-5 w-5">
+
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <h2 class="font-semibold text-gray-900">
+
+                        Información general
+
+                    </h2>
+
+                    <p class="text-sm text-gray-500">
+
+                        Datos principales del producto.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+
+                <!-- Categoría -->
+
+                <div>
+
+                    <label for="id_categoria" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Categoría
+                        <span class="text-red-500">*</span>
+
+                    </label>
+
+
+                    <select id="id_categoria" name="id_categoria" [(ngModel)]="
+                                formData.id_categoria
+                            " required [disabled]="guardando()"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                        <option [ngValue]="null">
+
+                            Seleccione una categoría
+
+                        </option>
+
+
+                        @for (
+                        categoria
+                        of categorias();
+                        track categoria.id_categoria
+                        ) {
+
+                        <option [ngValue]="
+                                        categoria.id_categoria
+                                    ">
+
+                            {{ categoria.nombre }}
+
+                        </option>
+
+                        }
+
+                    </select>
+
+
+                    @if (
+                    errorCampo(
+                    'id_categoria'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+
+                <!-- Nombre -->
+
+                <div>
+
+                    <label for="nombre" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Nombre
+                        <span class="text-red-500">*</span>
+
+                    </label>
+
+
+                    <input id="nombre" name="nombre" type="text" [(ngModel)]="
+                                formData.nombre
+                            " required [disabled]="guardando()"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                    @if (
+                    errorCampo(
+                    'nombre'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+
+                <!-- Marca -->
+
+                <div>
+
+                    <label for="marca" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Marca
+
+                    </label>
+
+
+                    <input id="marca" name="marca" type="text" [(ngModel)]="
+                                formData.marca
+                            " [disabled]="guardando()"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                    @if (
+                    errorCampo(
+                    'marca'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+
+                <!-- Modelo -->
+
+                <div>
+
+                    <label for="modelo" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Modelo
+
+                    </label>
+
+
+                    <input id="modelo" name="modelo" type="text" [(ngModel)]="
+                                formData.modelo
+                            " [disabled]="guardando()"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                    @if (
+                    errorCampo(
+                    'modelo'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+
+                <!-- Descripción -->
+
+                <div class="md:col-span-2">
+
+                    <label for="descripcion" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Descripción
+
+                    </label>
+
+
+                    <textarea id="descripcion" name="descripcion" [(ngModel)]="
+                                formData.descripcion
+                            " [disabled]="guardando()" rows="4"
+                        class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                        </textarea>
+
+
+                    @if (
+                    errorCampo(
+                    'descripcion'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Información adicional -->
+
+        <div class="p-6">
+
+            <div class="mb-6 flex items-center gap-3">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+
+                    <lucide-angular [img]="FileText" class="h-5 w-5">
+
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <h2 class="font-semibold text-gray-900">
+
+                        Información adicional
+
+                    </h2>
+
+                    <p class="text-sm text-gray-500">
+
+                        Información complementaria del producto.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="space-y-6">
+
+                <div>
+
+                    <label for="catalogo_pdf" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Ruta del catálogo PDF
+
+                    </label>
+
+
+                    <input id="catalogo_pdf" name="catalogo_pdf" type="text" [(ngModel)]="
+                                formData.catalogo_pdf
+                            " [disabled]="guardando()" placeholder="/catalogos/producto.pdf"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                    @if (
+                    errorCampo(
+                    'catalogo_pdf'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+
+                <div>
+
+                    <label for="observaciones" class="mb-2 block text-sm font-medium text-gray-700">
+
+                        Observaciones
+
+                    </label>
+
+
+                    <textarea id="observaciones" name="observaciones" [(ngModel)]="
+                                formData.observaciones
+                            " [disabled]="guardando()" rows="3"
+                        class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                        </textarea>
+
+
+                    @if (
+                    errorCampo(
+                    'observaciones'
+                    );
+                    as error
+                    ) {
+
+                    <p class="mt-1.5 text-sm text-red-600">
+
+                        {{ error }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Acciones -->
+
+        <div
+            class="flex flex-col-reverse gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+
+            <a routerLink="/dashboard/products"
+                class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                Cancelar
+
+            </a>
+
+
+            <button type="submit" [disabled]="
+                        guardando()
+                        ||
+                        productoForm.invalid
+                    "
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60">
+
+
+                @if (guardando()) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+
+                </span>
+
+                Guardando...
+
+                } @else {
+
+                <lucide-angular [img]="Save" class="h-4 w-4">
+
+                </lucide-angular>
+
+                Guardar cambios
+
+                }
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <!--
+================================================================
+VARIANTES
+================================================================
+-->
+
+    <div class="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <app-product-variants [idProducto]="
+        producto()!.id_producto
+    ">
+
+        </app-product-variants>
+
+    </div>
+
+    <!--
+================================================================
+STOCK POR SUCURSAL
+================================================================
+-->
+
+    <div class="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <app-product-stock [idProducto]="
+        producto()!.id_producto
+    ">
+
+        </app-product-stock>
+
+    </div>
+
+    <!--
+================================================================
+GALERÍA DE IMÁGENES
+================================================================
+-->
+
+    <div class="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <app-product-images [idProducto]="
+        producto()!.id_producto
+    ">
+
+        </app-product-images>
+
+    </div>
+
+    }
 
 </div>

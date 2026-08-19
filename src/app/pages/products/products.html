@@ -1,55 +1,686 @@
-<div class="min-h-screen bg-muted py-12">
+<div
+    class="min-h-screen bg-gray-50">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <h1 class="text-4xl mb-8">
-            {{ t('Nuestros Productos', 'Our Products') }}
-        </h1>
+    <!-- Hero -->
 
-        <div class="grid lg:grid-cols-4 gap-8">
+    <section
+        class="bg-primary py-16 text-white">
 
-            <!-- Sidebar -->
-            <div class="lg:col-span-1">
+        <div
+            class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-                <div class="bg-white rounded-xl p-6 shadow-lg sticky top-20">
+            <div
+                class="max-w-3xl">
 
-                    <div class="flex items-center space-x-2 mb-6">
+                <h1
+                    class="text-4xl font-semibold lg:text-5xl">
 
-                        <lucide-icon
-                            [img]="Filter"
-                            class="w-5 h-5 text-primary">
-                        </lucide-icon>
+                    {{
+                        t(
+                            'Nuestros productos',
+                            'Our products'
+                        )
+                    }}
 
-                        <h3 class="text-xl">
-                            {{ t('Filtros', 'Filters') }}
-                        </h3>
+                </h1>
+
+
+                <p
+                    class="mt-4 text-lg text-white/80">
+
+                    {{
+                        t(
+                            'Equipos y soluciones para el sector agrícola.',
+                            'Equipment and solutions for the agricultural sector.'
+                        )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <main
+        class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+
+
+        <!-- Filtros -->
+
+        <div
+            class="mb-8 space-y-5">
+
+            <div
+                class="relative max-w-xl">
+
+                <lucide-angular
+                    [img]="Search"
+
+                    class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400">
+
+                </lucide-angular>
+
+
+                <input
+                    type="text"
+
+                    [value]="busqueda()"
+
+                    (input)="
+                        actualizarBusqueda(
+                            $event
+                        )
+                    "
+
+                    [placeholder]="
+                        t(
+                            'Buscar productos...',
+                            'Search products...'
+                        )
+                    "
+
+                    class="w-full rounded-xl border border-gray-300 bg-white py-3 pl-12 pr-4 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+
+            </div>
+
+
+            <div
+                class="flex flex-wrap gap-2">
+
+                <button
+                    type="button"
+
+                    (click)="
+                        seleccionarCategoria(
+                            null
+                        )
+                    "
+
+                    class="rounded-full px-4 py-2 text-sm font-medium transition"
+
+                    [class.bg-primary]="
+                        idCategoria() === null
+                    "
+
+                    [class.text-white]="
+                        idCategoria() === null
+                    "
+
+                    [class.bg-white]="
+                        idCategoria() !== null
+                    "
+
+                    [class.text-gray-700]="
+                        idCategoria() !== null
+                    ">
+
+                    {{
+                        t(
+                            'Todos',
+                            'All'
+                        )
+                    }}
+
+                </button>
+
+
+                @for (
+                    categoria
+                    of categorias();
+                    track categoria.id_categoria
+                ) {
+
+                    <button
+                        type="button"
+
+                        (click)="
+                            seleccionarCategoria(
+                                categoria.id_categoria
+                            )
+                        "
+
+                        class="rounded-full px-4 py-2 text-sm font-medium transition"
+
+                        [class.bg-primary]="
+                            idCategoria()
+                            ===
+                            categoria.id_categoria
+                        "
+
+                        [class.text-white]="
+                            idCategoria()
+                            ===
+                            categoria.id_categoria
+                        "
+
+                        [class.bg-white]="
+                            idCategoria()
+                            !==
+                            categoria.id_categoria
+                        "
+
+                        [class.text-gray-700]="
+                            idCategoria()
+                            !==
+                            categoria.id_categoria
+                        ">
+
+                        {{ categoria.nombre }}
+
+                    </button>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- Cargando -->
+
+        @if (cargando()) {
+
+            <div
+                class="py-24 text-center">
+
+                <div
+                    class="mx-auto h-9 w-9 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+
+                </div>
+
+
+                <p
+                    class="mt-4 text-gray-500">
+
+                    {{
+                        t(
+                            'Cargando productos...',
+                            'Loading products...'
+                        )
+                    }}
+
+                </p>
+
+            </div>
+
+        }
+
+
+        <!-- Error -->
+
+        @else if (errorMensaje()) {
+
+            <div
+                class="rounded-xl border border-red-200 bg-red-50 p-6">
+
+                <div
+                    class="flex gap-3">
+
+                    <lucide-angular
+                        [img]="CircleAlert"
+                        class="h-5 w-5 text-red-600">
+
+                    </lucide-angular>
+
+
+                    <div>
+
+                        <p
+                            class="text-red-700">
+
+                            {{ errorMensaje() }}
+
+                        </p>
+
+
+                        <button
+                            type="button"
+
+                            (click)="cargarCatalogo()"
+
+                            class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-red-700">
+
+                            <lucide-angular
+                                [img]="RefreshCw"
+                                class="h-4 w-4">
+
+                            </lucide-angular>
+
+                            {{
+                                t(
+                                    'Reintentar',
+                                    'Retry'
+                                )
+                            }}
+
+                        </button>
 
                     </div>
 
-                    <!-- Categorías -->
-                    <div class="mb-6">
+                </div>
 
-                        <label class="block mb-3 text-sm text-gray-600">
-                            {{ t('Categoría', 'Category') }}
-                        </label>
+            </div>
 
-                        <div class="space-y-2">
+        }
 
-                            @for (category of categories; track category.id) {
+
+        <!-- Productos -->
+
+        @else if (
+            productosFiltrados().length > 0
+        ) {
+
+            <div
+                class="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+
+                @for (
+                    producto
+                    of productosFiltrados();
+                    track producto.id_producto
+                ) {
+
+                    @let imagen =
+                        imagenPrincipal(
+                            producto
+                        );
+
+                    @let ruta =
+                        rutaImagen(
+                            imagen
+                        );
+
+                    @let precio =
+                        precioDesde(
+                            producto
+                        );
+
+
+                    <article
+                        class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+
+
+                        <!-- Imagen -->
+
+                        <div
+                            class="flex aspect-square items-center justify-center bg-gray-50 p-6">
+
+                            @if (
+                                imagen
+                                &&
+                                ruta
+                                &&
+                                ! imagenConError(
+                                    imagen
+                                )
+                            ) {
+
+                                <img
+                                    [src]="ruta"
+
+                                    [alt]="producto.nombre"
+
+                                    (error)="
+                                        registrarErrorImagen(
+                                            imagen
+                                        )
+                                    "
+
+                                    class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
+                                />
+
+                            } @else {
+
+                                <div
+                                    class="text-center text-gray-400">
+
+                                    <lucide-angular
+                                        [img]="ImageOff"
+                                        class="mx-auto h-12 w-12">
+
+                                    </lucide-angular>
+
+                                </div>
+
+                            }
+
+                        </div>
+
+
+                        <!-- Datos -->
+
+                        <div
+                            class="p-6">
+
+                            <p
+                                class="text-xs font-medium uppercase tracking-wide text-primary">
+
+                                {{
+                                    producto
+                                        .categoria
+                                        ?.nombre
+                                    ?? ''
+                                }}
+
+                            </p>
+
+
+                            <h2
+                                class="mt-2 text-xl font-semibold text-gray-900">
+
+                                {{ producto.nombre }}
+
+                            </h2>
+
+
+                            @if (
+                                producto.marca
+                                ||
+                                producto.modelo
+                            ) {
+
+                                <p
+                                    class="mt-1 text-sm text-gray-500">
+
+                                    {{ producto.marca }}
+
+                                    @if (
+                                        producto.marca
+                                        &&
+                                        producto.modelo
+                                    ) {
+
+                                        ·
+
+                                    }
+
+                                    {{ producto.modelo }}
+
+                                </p>
+
+                            }
+
+
+                            @if (
+                                producto.descripcion
+                            ) {
+
+                                <p
+                                    class="mt-4 line-clamp-3 text-sm leading-6 text-gray-600">
+
+                                    {{ producto.descripcion }}
+
+                                </p>
+
+                            }
+
+
+                            <div
+                                class="mt-6 flex items-end justify-between gap-4">
+
+                                <div>
+
+                                    @if (
+                                        precio !== null
+                                    ) {
+
+                                        <p
+                                            class="text-xs text-gray-500">
+
+                                            {{
+                                                producto.variantes.length > 1
+                                                ? t(
+                                                    'Desde',
+                                                    'From'
+                                                )
+                                                : t(
+                                                    'Precio',
+                                                    'Price'
+                                                )
+                                            }}
+
+                                        </p>
+
+
+                                        <p
+                                            class="text-xl font-semibold text-primary">
+
+                                            Bs
+                                            {{
+                                                precio
+                                                | number:'1.2-2'
+                                            }}
+
+                                        </p>
+
+                                    } @else {
+
+                                        <p
+                                            class="text-sm font-medium text-gray-500">
+
+                                            {{
+                                                t(
+                                                    'Consultar precio',
+                                                    'Request price'
+                                                )
+                                            }}
+
+                                        </p>
+
+                                    }
+
+                                </div>
+
 
                                 <button
                                     type="button"
-                                    (click)="selectCategory(category.id)"
-                                    class="w-full text-left px-4 py-2 rounded-lg transition-colors"
-                                    [class.bg-primary]="selectedCategory === category.id"
-                                    [class.text-white]="selectedCategory === category.id"
-                                    [class.bg-gray-100]="selectedCategory !== category.id"
-                                    [class.text-gray-700]="selectedCategory !== category.id"
-                                    [class.hover:bg-gray-200]="selectedCategory !== category.id">
 
-                                    {{ t(category.es, category.en) }}
+                                    (click)="
+                                        abrirDetalle(
+                                            producto
+                                        )
+                                    "
+
+                                    class="rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary hover:text-white">
+
+                                    {{
+                                        t(
+                                            'Ver detalles',
+                                            'View details'
+                                        )
+                                    }}
 
                                 </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                }
+
+            </div>
+
+        }
+
+
+        <!-- Sin resultados -->
+
+        @else {
+
+            <div
+                class="py-24 text-center">
+
+                <lucide-angular
+                    [img]="Package"
+                    class="mx-auto h-12 w-12 text-gray-300">
+
+                </lucide-angular>
+
+
+                <h2
+                    class="mt-4 font-medium text-gray-900">
+
+                    {{
+                        t(
+                            'No encontramos productos',
+                            'No products found'
+                        )
+                    }}
+
+                </h2>
+
+
+                <p
+                    class="mt-2 text-sm text-gray-500">
+
+                    {{
+                        t(
+                            'Pruebe con otra búsqueda o categoría.',
+                            'Try another search or category.'
+                        )
+                    }}
+
+                </p>
+
+            </div>
+
+        }
+
+    </main>
+
+
+    <!--
+    ========================================================================
+    MODAL DETALLE
+    ========================================================================
+    -->
+
+    @if (
+        productoSeleccionado();
+        as producto
+    ) {
+
+        <div
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+
+            (click)="cerrarDetalle()">
+
+
+            <div
+                class="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl"
+
+                (click)="
+                    $event.stopPropagation()
+                ">
+
+
+                <!-- Encabezado -->
+
+                <div
+                    class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+
+                    <div>
+
+                        <p
+                            class="text-xs font-medium uppercase tracking-wide text-primary">
+
+                            {{
+                                producto
+                                    .categoria
+                                    ?.nombre
+                                ?? ''
+                            }}
+
+                        </p>
+
+
+                        <h2
+                            class="text-xl font-semibold text-gray-900">
+
+                            {{ producto.nombre }}
+
+                        </h2>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+
+                        (click)="cerrarDetalle()"
+
+                        class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
+
+                        <lucide-angular
+                            [img]="X"
+                            class="h-5 w-5">
+
+                        </lucide-angular>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="grid grid-cols-1 gap-8 p-6 lg:grid-cols-2">
+
+
+                    <!-- Imagen -->
+
+                    <div>
+
+                        @let principal =
+                            imagenPrincipal(
+                                producto
+                            );
+
+                        @let rutaPrincipal =
+                            rutaImagen(
+                                principal
+                            );
+
+
+                        <div
+                            class="flex aspect-square items-center justify-center rounded-xl bg-gray-50 p-6">
+
+                            @if (
+                                principal
+                                &&
+                                rutaPrincipal
+                                &&
+                                ! imagenConError(
+                                    principal
+                                )
+                            ) {
+
+                                <img
+                                    [src]="rutaPrincipal"
+
+                                    [alt]="producto.nombre"
+
+                                    (error)="
+                                        registrarErrorImagen(
+                                            principal
+                                        )
+                                    "
+
+                                    class="h-full w-full object-contain"
+                                />
+
+                            } @else {
+
+                                <lucide-angular
+                                    [img]="ImageOff"
+                                    class="h-16 w-16 text-gray-300">
+
+                                </lucide-angular>
 
                             }
 
@@ -57,118 +688,259 @@
 
                     </div>
 
-                    <!-- Disponibilidad -->
+
+                    <!-- Información -->
+
                     <div>
 
-                        <label class="block mb-3 text-sm text-gray-600">
-                            {{ t('Disponibilidad', 'Availability') }}
-                        </label>
+                        @if (
+                            producto.marca
+                            ||
+                            producto.modelo
+                        ) {
 
-                        <div class="space-y-2">
+                            <div
+                                class="mb-5 flex flex-wrap gap-2">
 
-                            <label class="flex items-center cursor-pointer">
-
-                                <input
-                                    type="checkbox"
-                                    class="mr-2"
-                                    [(ngModel)]="onlyInStock">
-
-                                <span>
-                                    {{ t('En stock', 'In stock') }}
-                                </span>
-
-                            </label>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Productos -->
-            <div class="lg:col-span-3">
-
-                <!-- Buscador -->
-                <div class="mb-6">
-
-                    <div class="relative">
-
-                        <lucide-icon
-                            [img]="Search"
-                            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400">
-                        </lucide-icon>
-
-                        <input
-                            type="text"
-                            [(ngModel)]="searchText"
-                            [placeholder]="t('Buscar productos...', 'Search products...')"
-                            class="w-full pl-12 pr-4 py-3 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary">
-
-                    </div>
-
-                </div>
-
-                <!-- Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-
-                    @for (product of filteredProducts; track product.id) {
-
-                        <div
-                            class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-
-                            <div class="h-40 md:h-48 overflow-hidden">
-
-                                <app-image-with-fallback
-                                    [src]="product.image"
-                                    [alt]="product.name.es"
-                                    [className]="'w-full h-full object-cover hover:scale-105 transition-transform duration-300'">
-                                </app-image-with-fallback>
-
-                            </div>
-
-                            <div class="p-3 md:p-6">
-
-                                <h3 class="text-base md:text-xl mb-2 line-clamp-2">
-
-                                    {{ t(product.name.es, product.name.en) }}
-
-                                </h3>
-
-                                <p class="text-sm md:text-base text-gray-600 mb-4 line-clamp-2">
-
-                                    {{ t(product.description.es, product.description.en) }}
-
-                                </p>
-
-                                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                @if (
+                                    producto.marca
+                                ) {
 
                                     <span
-                                        class="px-2 md:px-3 py-1 rounded-full text-xs md:text-sm text-center"
-                                        [class.bg-green-100]="product.inStock"
-                                        [class.text-green-700]="product.inStock"
-                                        [class.bg-red-100]="!product.inStock"
-                                        [class.text-red-700]="!product.inStock">
+                                        class="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
 
-                                        {{ t(product.stock.es, product.stock.en) }}
+                                        {{ producto.marca }}
 
                                     </span>
 
-                                    <button
-                                        class="px-3 md:px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-xs md:text-sm">
+                                }
 
-                                        {{ t('Ver detalle', 'View details') }}
 
-                                    </button>
+                                @if (
+                                    producto.modelo
+                                ) {
 
-                                </div>
+                                    <span
+                                        class="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
+
+                                        {{ producto.modelo }}
+
+                                    </span>
+
+                                }
 
                             </div>
 
+                        }
+
+
+                        @if (
+                            producto.descripcion
+                        ) {
+
+                            <p
+                                class="leading-7 text-gray-600">
+
+                                {{ producto.descripcion }}
+
+                            </p>
+
+                        }
+
+
+                        <!-- Variantes -->
+
+                        <div
+                            class="mt-7">
+
+                            <h3
+                                class="font-semibold text-gray-900">
+
+                                {{
+                                    t(
+                                        'Presentaciones disponibles',
+                                        'Available options'
+                                    )
+                                }}
+
+                            </h3>
+
+
+                            @if (
+                                producto.variantes.length > 0
+                            ) {
+
+                                <div
+                                    class="mt-3 divide-y divide-gray-200 rounded-xl border border-gray-200">
+
+                                    @for (
+                                        variante
+                                        of producto.variantes;
+                                        track variante.id_producto_variante
+                                    ) {
+
+                                        <div
+                                            class="flex items-center justify-between gap-4 p-4">
+
+                                            <div>
+
+                                                <p
+                                                    class="font-medium text-gray-900">
+
+                                                    {{ variante.nombre }}
+
+                                                </p>
+
+
+                                                @if (
+                                                    variante.codigo_comercial
+                                                ) {
+
+                                                    <p
+                                                        class="mt-1 text-xs text-gray-500">
+
+                                                        {{
+                                                            variante.codigo_comercial
+                                                        }}
+
+                                                    </p>
+
+                                                }
+
+                                            </div>
+
+
+                                            <div
+                                                class="text-right">
+
+                                                @if (
+                                                    variante.precio_venta
+                                                    !== null
+                                                ) {
+
+                                                    <p
+                                                        class="font-semibold text-primary">
+
+                                                        Bs
+                                                        {{
+                                                            variante.precio_venta
+                                                            | number:'1.2-2'
+                                                        }}
+
+                                                    </p>
+
+                                                } @else {
+
+                                                    <p
+                                                        class="text-sm text-gray-500">
+
+                                                        {{
+                                                            t(
+                                                                'Consultar',
+                                                                'Request price'
+                                                            )
+                                                        }}
+
+                                                    </p>
+
+                                                }
+
+
+                                                <p
+                                                    class="mt-1 text-xs text-gray-400">
+
+                                                    {{
+                                                        variante.unidad_medida
+                                                    }}
+
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    }
+
+                                </div>
+
+                            } @else {
+
+                                <p
+                                    class="mt-2 text-sm text-gray-500">
+
+                                    {{
+                                        t(
+                                            'Consulte las presentaciones disponibles.',
+                                            'Contact us for available options.'
+                                        )
+                                    }}
+
+                                </p>
+
+                            }
+
                         </div>
 
-                    }
+
+                        <!-- Acciones -->
+
+                        <div
+                            class="mt-7 flex flex-wrap gap-3">
+
+                            <a
+                                routerLink="/contactos"
+
+                                (click)="cerrarDetalle()"
+
+                                class="rounded-lg bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary/90">
+
+                                {{
+                                    t(
+                                        'Solicitar información',
+                                        'Request information'
+                                    )
+                                }}
+
+                            </a>
+
+
+                            @if (
+                                rutaArchivo(
+                                    producto.catalogo_pdf
+                                );
+                                as catalogo
+                            ) {
+
+                                <a
+                                    [href]="catalogo"
+
+                                    target="_blank"
+
+                                    rel="noopener noreferrer"
+
+                                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                                    <lucide-angular
+                                        [img]="FileText"
+                                        class="h-4 w-4">
+
+                                    </lucide-angular>
+
+
+                                    {{
+                                        t(
+                                            'Ver catálogo PDF',
+                                            'View PDF catalog'
+                                        )
+                                    }}
+
+                                </a>
+
+                            }
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -176,6 +948,6 @@
 
         </div>
 
-    </div>
+    }
 
 </div>

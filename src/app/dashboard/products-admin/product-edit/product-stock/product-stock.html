@@ -1,0 +1,707 @@
+<div class="space-y-6">
+
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
+
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+
+        <div>
+
+            <h2 class="text-lg font-semibold text-gray-900">
+
+                Stock por sucursal
+
+            </h2>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Consulte las existencias y configure los niveles mínimo y máximo.
+
+            </p>
+
+        </div>
+
+
+        <button type="button" (click)="cargarDatos()" [disabled]="cargando()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCw" class="h-4 w-4" [class.animate-spin]="
+                    cargando()
+                ">
+
+            </lucide-angular>
+
+            Actualizar
+
+        </button>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    ADVERTENCIA
+    ========================================================================
+    -->
+
+    <div class="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-800">
+
+        <lucide-angular [img]="TriangleAlert" class="mt-0.5 h-5 w-5 flex-shrink-0">
+
+        </lucide-angular>
+
+
+        <div>
+
+            <p class="text-sm font-medium">
+
+                El stock actual no se modifica desde esta pantalla.
+
+            </p>
+
+
+            <p class="mt-1 text-sm text-blue-700">
+
+                Las entradas, salidas, ventas, compras y transferencias actualizarán las existencias mediante
+                movimientos de inventario.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    ERROR
+    ========================================================================
+    -->
+
+    @if (errorMensaje()) {
+
+    <div role="alert" class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5">
+
+        </lucide-angular>
+
+
+        <p class="text-sm">
+
+            {{ errorMensaje() }}
+
+        </p>
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    CARGANDO
+    ========================================================================
+    -->
+
+    @if (cargando()) {
+
+    <div class="rounded-xl border border-gray-200 bg-white p-10 text-center">
+
+        <div class="mx-auto mb-3 h-7 w-7 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+
+        </div>
+
+
+        <p class="text-sm text-gray-500">
+
+            Cargando inventario...
+
+        </p>
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    SIN VARIANTES
+    ========================================================================
+    -->
+
+    @else if (
+    variantes().length === 0
+    ) {
+
+    <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
+
+        <lucide-angular [img]="Boxes" class="mx-auto h-8 w-8 text-gray-400">
+
+        </lucide-angular>
+
+
+        <h3 class="mt-3 font-medium text-gray-900">
+
+            No existen variantes
+
+        </h3>
+
+
+        <p class="mt-1 text-sm text-gray-500">
+
+            Registre al menos una variante antes de configurar inventario.
+
+        </p>
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    CONTENIDO
+    ========================================================================
+    -->
+
+    @else {
+
+
+    <!-- Variante -->
+
+    <div class="rounded-xl border border-gray-200 bg-white p-5">
+
+        <label for="stock_variante" class="mb-2 block text-sm font-medium text-gray-700">
+
+            Variante
+
+        </label>
+
+
+        <select id="stock_variante" [value]="
+                    idVarianteSeleccionada()
+                    ?? ''
+                " (change)="
+                    seleccionarVariante(
+                        $event
+                    )
+                "
+            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+            @for (
+            variante
+            of variantes();
+            track variante.id_producto_variante
+            ) {
+
+            <option [value]="
+                            variante.id_producto_variante
+                        ">
+
+                {{ variante.nombre }}
+                —
+                {{ variante.sku }}
+
+            </option>
+
+            }
+
+        </select>
+
+    </div>
+
+
+    <!--
+        ====================================================================
+        FORMULARIO
+        ====================================================================
+        -->
+
+    @if (
+    mostrarFormulario()
+    &&
+    sucursalConfigurando()
+    ) {
+
+    <form #stockForm="ngForm" (ngSubmit)="guardar()" class="rounded-xl border border-primary/20 bg-primary/5 p-5">
+
+
+        <div class="mb-5 flex items-start justify-between">
+
+            <div>
+
+                <h3 class="font-semibold text-gray-900">
+
+                    Configuración de inventario
+
+                </h3>
+
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    {{
+                    varianteSeleccionada()
+                    ?.nombre
+                    }}
+
+                    ·
+
+                    {{
+                    sucursalConfigurando()
+                    ?.nombre
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <button type="button" (click)="cerrarFormulario()" [disabled]="guardando()"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-white">
+
+                <lucide-angular [img]="X" class="h-5 w-5">
+
+                </lucide-angular>
+
+            </button>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+
+            <!-- Mínimo -->
+
+            <div>
+
+                <label for="stock_minimo" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Stock mínimo
+
+                </label>
+
+
+                <input id="stock_minimo" name="stock_minimo" type="number" [(ngModel)]="
+                                formData.stock_minimo
+                            " required min="0" step="0.01" [disabled]="guardando()"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                @if (
+                errorCampo(
+                'stock_minimo'
+                );
+                as error
+                ) {
+
+                <p class="mt-1.5 text-sm text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- Máximo -->
+
+            <div>
+
+                <label for="stock_maximo" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Stock máximo
+
+                </label>
+
+
+                <input id="stock_maximo" name="stock_maximo" type="number" [(ngModel)]="
+                                formData.stock_maximo
+                            " required min="0" step="0.01" [disabled]="guardando()"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                @if (
+                errorCampo(
+                'stock_maximo'
+                );
+                as error
+                ) {
+
+                <p class="mt-1.5 text-sm text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-5 flex justify-end gap-3 border-t border-primary/10 pt-5">
+
+            <button type="button" (click)="cerrarFormulario()" [disabled]="guardando()"
+                class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700">
+
+                Cancelar
+
+            </button>
+
+
+            <button type="submit" [disabled]="
+                            guardando()
+                            ||
+                            stockForm.invalid
+                        "
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+
+
+                @if (guardando()) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+
+                </span>
+
+                Guardando...
+
+                } @else {
+
+                <lucide-angular [img]="Save" class="h-4 w-4">
+
+                </lucide-angular>
+
+                Guardar configuración
+
+                }
+
+            </button>
+
+        </div>
+
+    </form>
+
+    }
+
+
+    <!--
+        ====================================================================
+        SUCURSALES
+        ====================================================================
+        -->
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Sucursal
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Stock actual
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Mínimo
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Máximo
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Estado
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Configuración
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200">
+
+                    @for (
+                    sucursal
+                    of sucursales();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    @let stock =
+                    stockDeSucursal(
+                    sucursal
+                    );
+
+
+                    @let estado =
+                    estadoStock(
+                    stock
+                    );
+
+
+                    <tr class="hover:bg-gray-50">
+
+
+                        <!-- Sucursal -->
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex items-center gap-3">
+
+                                <div
+                                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+
+                                    <lucide-angular [img]="Building2" class="h-4 w-4">
+
+                                    </lucide-angular>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="font-medium text-gray-900">
+
+                                        {{ sucursal.nombre }}
+
+                                    </p>
+
+
+                                    @if (
+                                    sucursal.id_sucursal
+                                    ===
+                                    idSucursalUsuario()
+                                    ) {
+
+                                    <p class="mt-0.5 text-xs font-medium text-primary">
+
+                                        Mi sucursal
+
+                                    </p>
+
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Actual -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right">
+
+                            @if (stock) {
+
+                            <span class="font-semibold text-gray-900">
+
+                                {{
+                                stock.stock_actual
+                                | number:'1.0-2'
+                                }}
+
+                            </span>
+
+                            } @else {
+
+                            <span class="text-gray-400">
+
+                                —
+
+                            </span>
+
+                            }
+
+                        </td>
+
+
+                        <!-- Mínimo -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm text-gray-600">
+
+                            @if (stock) {
+
+                            {{
+                            stock.stock_minimo
+                            | number:'1.0-2'
+                            }}
+
+                            } @else {
+
+                            —
+
+                            }
+
+                        </td>
+
+
+                        <!-- Máximo -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm text-gray-600">
+
+                            @if (stock) {
+
+                            {{
+                            stock.stock_maximo
+                            | number:'1.0-2'
+                            }}
+
+                            } @else {
+
+                            —
+
+                            }
+
+                        </td>
+
+
+                        <!-- Estado -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-center">
+
+                            @switch (estado) {
+
+                            @case ('sin-configurar') {
+
+                            <span
+                                class="inline-flex rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
+
+                                Sin configurar
+
+                            </span>
+
+                            }
+
+
+                            @case ('agotado') {
+
+                            <span
+                                class="inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">
+
+                                Agotado
+
+                            </span>
+
+                            }
+
+
+                            @case ('bajo') {
+
+                            <span
+                                class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+
+                                Stock bajo
+
+                            </span>
+
+                            }
+
+
+                            @case ('alto') {
+
+                            <span
+                                class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
+
+                                Sobre máximo
+
+                            </span>
+
+                            }
+
+
+                            @default {
+
+                            <span
+                                class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
+
+                                Normal
+
+                            </span>
+
+                            }
+
+                            }
+
+                        </td>
+
+
+                        <!-- Configuración -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right">
+
+                            <button type="button" (click)="
+                                            configurar(
+                                                sucursal
+                                            )
+                                        "
+                                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-primary transition hover:bg-primary/10">
+
+                                <lucide-angular [img]="Pencil" class="h-4 w-4">
+
+                                </lucide-angular>
+
+
+                                {{
+                                stock
+                                ? 'Editar'
+                                : 'Configurar'
+                                }}
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    }
+
+</div>

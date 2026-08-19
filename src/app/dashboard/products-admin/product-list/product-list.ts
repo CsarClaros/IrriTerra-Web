@@ -1,82 +1,636 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { LucideAngularModule, User } from 'lucide-angular';
-import { ProductCreate } from '../product-create/product-create';
+import {
+    Component,
+    OnInit,
+    computed,
+    inject,
+    signal
+} from '@angular/core';
+
+import {
+    CommonModule
+} from '@angular/common';
+
+import {
+    RouterLink
+} from '@angular/router';
+
+import {
+    HttpErrorResponse
+} from '@angular/common/http';
+
+import {
+    forkJoin,
+    finalize
+} from 'rxjs';
+
+import {
+    CircleAlert,
+    Package,
+    Pencil,
+    Plus,
+    RefreshCw,
+    Search,
+    LucideAngularModule
+} from 'lucide-angular';
+
+import {
+    ProductoService
+} from '../../../core/services/catalogos/producto.service';
+
+import {
+    CategoriaService
+} from '../../../core/services/catalogos/categoria.service';
+
+import {
+    SessionService
+} from '../../../core/services/session.service';
+
+import {
+    Producto
+} from '../../../shared/models/producto.model';
+
+import {
+    Categoria
+} from '../../../shared/models/categoria.model';
+
 
 @Component({
-  selector: 'app-product-list',
-  standalone: true,
-  imports: [CommonModule, LucideAngularModule, ProductCreate],
-  templateUrl: './product-list.html',
-  styleUrl: './product-list.css'
+    selector: 'app-product-list',
+
+    imports: [
+        CommonModule,
+        RouterLink,
+        LucideAngularModule
+    ],
+
+    templateUrl: './product-list.html',
+
+    styleUrl: './product-list.css'
 })
-export class ProductList {
+export class ProductList
+    implements OnInit {
 
-  showModal = false;
+    /*
+    |--------------------------------------------------------------------------
+    | Dependencias
+    |--------------------------------------------------------------------------
+    */
 
-  User = User;
+    private readonly productoService =
+        inject(
+            ProductoService
+        );
 
-  productos = [
-    {
-      id: 1,
-      nombre: 'Sistema Goteo Premium',
-      categoria: 'Riego por goteo',
-      precio: 1200,
-      stock: 45,
-      estado: 'activo',
-      imagen: 'https://images.unsplash.com/photo-1738598665698-7fd7af4b5e0c?w=100',
-    },
-    {
-      id: 2,
-      nombre: 'Aspersor Giratorio 360°',
-      categoria: 'Aspersores',
-      precio: 350,
-      stock: 78,
-      estado: 'activo',
-      imagen: 'https://images.unsplash.com/photo-1771684512143-88bdb34782fa?w=100',
-    },
-    {
-      id: 3,
-      nombre: 'Controlador Smart WiFi',
-      categoria: 'Controladores',
-      precio: 800,
-      stock: 12,
-      estado: 'activo',
-      imagen: 'https://images.unsplash.com/photo-1698848065415-ad8e2f269fa8?w=100',
-    },
-    {
-      id: 4,
-      nombre: 'Filtro de Disco Industrial',
-      categoria: 'Filtros',
-      precio: 450,
-      stock: 5,
-      estado: 'activo',
-      imagen: 'https://images.unsplash.com/photo-1698848065415-ad8e2f269fa8?w=100',
-    },
-    {
-      id: 5,
-      nombre: 'Válvula Solenoide 24V',
-      categoria: 'Válvulas',
-      precio: 280,
-      stock: 34,
-      estado: 'activo',
-      imagen: 'https://images.unsplash.com/photo-1698848065415-ad8e2f269fa8?w=100',
-    },
-  ];
 
-  openCreate() {
-    this.showModal = true;
-  }
+    private readonly categoriaService =
+        inject(
+            CategoriaService
+        );
 
-  closeModal() {
-    this.showModal = false;
-  }
 
-  deleteProduct(id: number) {
-    const confirmDelete = confirm('¿Está seguro de eliminar este producto?');
-    if (!confirmDelete) return;
+    private readonly sessionService =
+        inject(
+            SessionService
+        );
 
-    this.productos = this.productos.filter(p => p.id !== id);
-  }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Datos
+    |--------------------------------------------------------------------------
+    */
+
+    readonly productos =
+        signal<Producto[]>([]);
+
+
+    readonly categorias =
+        signal<Categoria[]>([]);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Estado
+    |--------------------------------------------------------------------------
+    */
+
+    readonly cargando =
+        signal(false);
+
+
+    readonly errorMensaje =
+        signal('');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filtros
+    |--------------------------------------------------------------------------
+    */
+
+    readonly busqueda =
+        signal('');
+
+
+    readonly categoriaSeleccionada =
+        signal<number | null>(
+            null
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Permisos
+    |--------------------------------------------------------------------------
+    */
+
+    readonly puedeCrear =
+        computed(
+            () =>
+                this.sessionService
+                    .tienePermiso(
+                        'producto.crear'
+                    )
+        );
+
+
+    readonly puedeEditar =
+        computed(
+            () =>
+                this.sessionService
+                    .tienePermiso(
+                        'producto.editar'
+                    )
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Productos filtrados
+    |--------------------------------------------------------------------------
+    */
+
+    readonly productosFiltrados =
+        computed(
+            () => {
+
+                const texto =
+                    this.busqueda()
+                        .trim()
+                        .toLowerCase();
+
+
+                const categoria =
+                    this.categoriaSeleccionada();
+
+
+                return this.productos()
+                    .filter(
+                        producto => {
+
+                            /*
+                             * Filtro categoría
+                             */
+
+                            if (
+                                categoria !== null
+                                &&
+                                this.obtenerIdCategoria(
+                                    producto
+                                )
+                                !== categoria
+                            ) {
+
+                                return false;
+
+                            }
+
+
+                            /*
+                             * Sin texto de búsqueda
+                             */
+
+                            if (
+                                ! texto
+                            ) {
+
+                                return true;
+
+                            }
+
+
+                            /*
+                             * Campos buscables
+                             */
+
+                            const valores = [
+
+                                producto.nombre,
+
+                                producto.descripcion,
+
+                                producto.marca,
+
+                                producto.modelo,
+
+                                this.nombreCategoria(
+                                    producto
+                                )
+
+                            ];
+
+
+                            return valores
+                                .some(
+                                    valor =>
+                                        valor
+                                            ?.toLowerCase()
+                                            .includes(
+                                                texto
+                                            )
+                                );
+
+                        }
+                    );
+
+            }
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Totales
+    |--------------------------------------------------------------------------
+    */
+
+    readonly totalProductos =
+        computed(
+            () =>
+                this.productos()
+                    .length
+        );
+
+
+    readonly totalFiltrados =
+        computed(
+            () =>
+                this.productosFiltrados()
+                    .length
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos
+    |--------------------------------------------------------------------------
+    */
+
+    readonly Search =
+        Search;
+
+
+    readonly Plus =
+        Plus;
+
+
+    readonly Pencil =
+        Pencil;
+
+
+    readonly Package =
+        Package;
+
+
+    readonly RefreshCw =
+        RefreshCw;
+
+
+    readonly CircleAlert =
+        CircleAlert;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inicio
+    |--------------------------------------------------------------------------
+    */
+
+    ngOnInit(): void {
+
+        this.cargarDatos();
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cargar productos y categorías
+    |--------------------------------------------------------------------------
+    */
+
+    cargarDatos(): void {
+
+        if (
+            this.cargando()
+        ) {
+
+            return;
+
+        }
+
+
+        this.cargando.set(
+            true
+        );
+
+
+        this.errorMensaje.set(
+            ''
+        );
+
+
+        forkJoin({
+
+            productos:
+                this.productoService
+                    .listar(),
+
+            categorias:
+                this.categoriaService
+                    .listar()
+
+        })
+            .pipe(
+
+                finalize(
+                    () => {
+
+                        this.cargando.set(
+                            false
+                        );
+
+                    }
+                )
+
+            )
+            .subscribe({
+
+                next: response => {
+
+                    this.productos.set(
+                        response
+                            .productos
+                            .data
+                        ?? []
+                    );
+
+
+                    this.categorias.set(
+                        response
+                            .categorias
+                            .data
+                        ?? []
+                    );
+
+                },
+
+
+                error: (
+                    error:
+                        HttpErrorResponse
+                ) => {
+
+                    this.errorMensaje.set(
+                        this.obtenerMensajeError(
+                            error
+                        )
+                    );
+
+                }
+
+            });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Búsqueda
+    |--------------------------------------------------------------------------
+    */
+
+    actualizarBusqueda(event: Event): void {
+
+        const input = event.target as HTMLInputElement;
+
+
+        this.busqueda.set(
+            input.value
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Categoría
+    |--------------------------------------------------------------------------
+    */
+
+    actualizarCategoria(
+        event: Event
+    ): void {
+
+        const select =
+            event.target as HTMLSelectElement;
+
+
+        if (
+            ! select.value
+        ) {
+
+            this.categoriaSeleccionada
+                .set(
+                    null
+                );
+
+            return;
+
+        }
+
+
+        this.categoriaSeleccionada
+            .set(
+                Number(
+                    select.value
+                )
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Limpiar filtros
+    |--------------------------------------------------------------------------
+    */
+
+    limpiarFiltros(): void {
+
+        this.busqueda.set(
+            ''
+        );
+
+
+        this.categoriaSeleccionada
+            .set(
+                null
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nombre categoría
+    |--------------------------------------------------------------------------
+    */
+
+    nombreCategoria(
+        producto: Producto
+    ): string {
+
+        /*
+         * Laravel envió relación.
+         */
+
+        if (
+            producto.categoria
+                ?.nombre
+        ) {
+
+            return producto
+                .categoria
+                .nombre;
+
+        }
+
+
+        /*
+         * Laravel envió solamente id_categoria.
+         */
+
+        const idCategoria =
+            producto.id_categoria;
+
+
+        if (
+            idCategoria === null
+            ||
+            idCategoria === undefined
+        ) {
+
+            return 'Sin categoría';
+
+        }
+
+
+        return this.categorias()
+            .find(
+                categoria =>
+                    categoria
+                        .id_categoria
+                    === idCategoria
+            )
+            ?.nombre
+            ?? 'Sin categoría';
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ID categoría
+    |--------------------------------------------------------------------------
+    */
+
+    private obtenerIdCategoria(
+        producto: Producto
+    ): number | null {
+
+        return (
+            producto
+                .categoria
+                ?.id_categoria
+            ??
+            producto
+                .id_categoria
+            ??
+            null
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mensajes HTTP
+    |--------------------------------------------------------------------------
+    */
+
+    private obtenerMensajeError(
+        error: HttpErrorResponse
+    ): string {
+
+        const mensaje =
+            error.error
+                ?.message;
+
+
+        if (
+            typeof mensaje === 'string'
+            &&
+            mensaje.trim()
+        ) {
+
+            return mensaje;
+
+        }
+
+
+        switch (
+            error.status
+        ) {
+
+            case 0:
+
+                return (
+                    'No se pudo conectar con el servidor.'
+                );
+
+
+            case 403:
+
+                return (
+                    'No tiene permiso para consultar los productos.'
+                );
+
+
+            case 500:
+
+                return (
+                    'Ocurrió un error en el servidor.'
+                );
+
+
+            default:
+
+                return (
+                    'No fue posible cargar los productos.'
+                );
+
+        }
+
+    }
 
 }

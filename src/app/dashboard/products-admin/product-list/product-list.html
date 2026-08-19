@@ -1,120 +1,747 @@
-<div class="space-y-6">
+<div
+    class="space-y-6">
 
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
+
+    <div
+        class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
         <div>
-            <h1 class="text-3xl mb-2">Productos</h1>
-            <p class="text-gray-600">
-                Gestión de productos e inventario
+
+            <h1
+                class="text-2xl font-semibold text-gray-900">
+
+                Productos
+
+            </h1>
+
+
+            <p
+                class="mt-1 text-sm text-gray-500">
+
+                Administración del catálogo interno de productos.
+
             </p>
+
         </div>
 
-        <button (click)="openCreate()"
-            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center">
-            <!-- lucide-angular icon -->
-            <lucide-icon [img]="User" class="w-5 h-5 mr-2"></lucide-icon>
-            Crear producto
-        </button>
 
-        @if (showModal) {
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        @if (puedeCrear()) {
 
-            <!-- CONTENEDOR DEL MODAL -->
-            <div class="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 relative">
+            <a
+                routerLink="/dashboard/products/create"
 
-                <!-- Botón cerrar -->
-                <button class="absolute top-3 right-3 text-gray-500 hover:text-black" (click)="closeModal()">
-                    ✕
-                </button>
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary/90">
 
-                <!-- TU COMPONENTE -->
-                <app-product-create (close)="closeModal()">
-                </app-product-create>
+                <lucide-angular
+                    [img]="Plus"
+                    class="h-4 w-4">
 
-            </div>
-        </div>
+                </lucide-angular>
+
+
+                Nuevo producto
+
+            </a>
+
         }
+
     </div>
 
-    <!-- Alert -->
-    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-        <div class="flex items-start space-x-3">
 
-            <lucide-icon [img]="User" class="w-6 h-6 text-yellow-600 mt-0.5"></lucide-icon>
+    <!--
+    ========================================================================
+    RESUMEN
+    ========================================================================
+    -->
+
+    <div
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+        <div
+            class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div
+                class="flex items-center gap-3">
+
+                <div
+                    class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+
+                    <lucide-angular
+                        [img]="Package"
+                        class="h-5 w-5">
+
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <p
+                        class="text-sm text-gray-500">
+
+                        Productos registrados
+
+                    </p>
+
+
+                    <p
+                        class="text-2xl font-semibold text-gray-900">
+
+                        {{ totalProductos() }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
 
             <div>
-                <h3 class="mb-2 text-yellow-900">
-                    Alertas de Stock Bajo
-                </h3>
-                <p class="text-yellow-800">
-                    2 productos tienen stock bajo
+
+                <p
+                    class="text-sm text-gray-500">
+
+                    Resultados visibles
+
                 </p>
+
+
+                <p
+                    class="mt-1 text-2xl font-semibold text-gray-900">
+
+                    {{ totalFiltrados() }}
+
+                </p>
+
             </div>
-        </div>
-    </div>
-
-    <!-- Table -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div class="overflow-x-auto">
-
-            <table class="w-full">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Imagen</th>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Nombre</th>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Categoría</th>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Precio</th>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Stock</th>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Estado</th>
-                        <th class="px-6 py-3 text-left text-xs uppercase text-gray-500">Acciones</th>
-                    </tr>
-                </thead>
-
-                <tbody class="divide-y divide-gray-200">
-                    <tr *ngFor="let producto of productos" class="hover:bg-gray-50">
-
-                        <td class="px-6 py-4">
-                            <img *ngIf="producto.imagen" [src]="producto.imagen"
-                                class="w-16 h-16 object-cover rounded-lg" />
-                        </td>
-
-                        <td class="px-6 py-4">{{ producto.nombre }}</td>
-                        <td class="px-6 py-4">{{ producto.categoria }}</td>
-                        <td class="px-6 py-4">Bs. {{ producto.precio }}</td>
-
-                        <td class="px-6 py-4">
-                            <span class="px-3 py-1 rounded-full text-sm"
-                                [ngClass]="producto.stock < 15 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'">
-                                {{ producto.stock }} unidades
-                            </span>
-                        </td>
-
-                        <td class="px-6 py-4">
-                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                                Activo
-                            </span>
-                        </td>
-
-                        <td class="px-6 py-4">
-                            <div class="flex items-center space-x-2">
-
-                                <button class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
-                                    <lucide-icon [img]="User" class="w-4 h-4"></lucide-icon>
-                                </button>
-
-                                <button (click)="deleteProduct(producto.id)"
-                                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg">
-                                    <lucide-icon [img]="User" class="w-4 h-4"></lucide-icon>
-                                </button>
-
-                            </div>
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
 
         </div>
+
     </div>
+
+
+    <!--
+    ========================================================================
+    FILTROS
+    ========================================================================
+    -->
+
+    <div
+        class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+        <div
+            class="flex flex-col gap-4 lg:flex-row">
+
+
+            <!-- Búsqueda -->
+
+            <div
+                class="relative flex-1">
+
+                <lucide-angular
+                    [img]="Search"
+
+                    class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400">
+
+                </lucide-angular>
+
+
+                <input
+                    type="text"
+
+                    [value]="busqueda()"
+
+                    (input)="
+                        actualizarBusqueda(
+                            $event
+                        )
+                    "
+
+                    placeholder="Buscar producto..."
+
+                    class="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+
+            </div>
+
+
+            <!-- Categoría -->
+
+            <div
+                class="w-full lg:w-64">
+
+                <select
+                    [value]="
+                        categoriaSeleccionada()
+                        ?? ''
+                    "
+
+                    (change)="
+                        actualizarCategoria(
+                            $event
+                        )
+                    "
+
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option
+                        value="">
+
+                        Todas las categorías
+
+                    </option>
+
+
+                    @for (
+                        categoria
+                        of categorias();
+                        track categoria.id_categoria
+                    ) {
+
+                        <option
+                            [value]="
+                                categoria.id_categoria
+                            ">
+
+                            {{ categoria.nombre }}
+
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Recargar -->
+
+            <button
+                type="button"
+
+                (click)="cargarDatos()"
+
+                [disabled]="cargando()"
+
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+
+                <lucide-angular
+                    [img]="RefreshCw"
+
+                    class="h-4 w-4"
+
+                    [class.animate-spin]="
+                        cargando()
+                    ">
+
+                </lucide-angular>
+
+
+                Actualizar
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    CARGANDO
+    ========================================================================
+    -->
+
+    @if (cargando()) {
+
+        <div
+            class="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
+
+            <div
+                class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+
+            </div>
+
+
+            <p
+                class="text-sm text-gray-500">
+
+                Cargando productos...
+
+            </p>
+
+        </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    ERROR
+    ========================================================================
+    -->
+
+    @else if (errorMensaje()) {
+
+        <div
+            role="alert"
+
+            class="rounded-xl border border-red-200 bg-red-50 p-6">
+
+            <div
+                class="flex items-start gap-3">
+
+                <lucide-angular
+                    [img]="CircleAlert"
+
+                    class="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600">
+
+                </lucide-angular>
+
+
+                <div
+                    class="flex-1">
+
+                    <p
+                        class="font-medium text-red-800">
+
+                        No se pudieron cargar los productos
+
+                    </p>
+
+
+                    <p
+                        class="mt-1 text-sm text-red-700">
+
+                        {{ errorMensaje() }}
+
+                    </p>
+
+
+                    <button
+                        type="button"
+
+                        (click)="cargarDatos()"
+
+                        class="mt-4 inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100">
+
+                        <lucide-angular
+                            [img]="RefreshCw"
+                            class="h-4 w-4">
+
+                        </lucide-angular>
+
+
+                        Reintentar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    TABLA
+    ========================================================================
+    -->
+
+    @else if (
+        productosFiltrados().length > 0
+    ) {
+
+        <div
+            class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+            <div
+                class="overflow-x-auto">
+
+                <table
+                    class="min-w-full divide-y divide-gray-200">
+
+                    <thead
+                        class="bg-gray-50">
+
+                        <tr>
+
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                                Producto
+
+                            </th>
+
+
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                                Categoría
+
+                            </th>
+
+
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                                Marca / Modelo
+
+                            </th>
+
+
+                            <th
+                                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                                Estado
+
+                            </th>
+
+
+                            @if (puedeEditar()) {
+
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                                    Acciones
+
+                                </th>
+
+                            }
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        class="divide-y divide-gray-200 bg-white">
+
+                        @for (
+                            producto
+                            of productosFiltrados();
+                            track producto.id_producto
+                        ) {
+
+                            <tr
+                                class="transition-colors hover:bg-gray-50">
+
+
+                                <!-- Producto -->
+
+                                <td
+                                    class="px-6 py-4">
+
+                                    <div
+                                        class="flex items-center gap-3">
+
+                                        <div
+                                            class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+
+                                            <lucide-angular
+                                                [img]="Package"
+                                                class="h-5 w-5">
+
+                                            </lucide-angular>
+
+                                        </div>
+
+
+                                        <div
+                                            class="min-w-0">
+
+                                            <p
+                                                class="font-medium text-gray-900">
+
+                                                {{ producto.nombre }}
+
+                                            </p>
+
+
+                                            @if (
+                                                producto.descripcion
+                                            ) {
+
+                                                <p
+                                                    class="mt-1 max-w-md truncate text-sm text-gray-500">
+
+                                                    {{
+                                                        producto.descripcion
+                                                    }}
+
+                                                </p>
+
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Categoría -->
+
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+
+                                    {{
+                                        nombreCategoria(
+                                            producto
+                                        )
+                                    }}
+
+                                </td>
+
+
+                                <!-- Marca / modelo -->
+
+                                <td
+                                    class="px-6 py-4 text-sm text-gray-600">
+
+                                    @if (
+                                        producto.marca
+                                        ||
+                                        producto.modelo
+                                    ) {
+
+                                        <div>
+
+                                            @if (
+                                                producto.marca
+                                            ) {
+
+                                                <p
+                                                    class="font-medium text-gray-700">
+
+                                                    {{ producto.marca }}
+
+                                                </p>
+
+                                            }
+
+
+                                            @if (
+                                                producto.modelo
+                                            ) {
+
+                                                <p
+                                                    class="text-gray-500">
+
+                                                    {{ producto.modelo }}
+
+                                                </p>
+
+                                            }
+
+                                        </div>
+
+                                    } @else {
+
+                                        <span
+                                            class="text-gray-400">
+
+                                            —
+
+                                        </span>
+
+                                    }
+
+                                </td>
+
+
+                                <!-- Estado -->
+
+                                <td
+                                    class="whitespace-nowrap px-6 py-4">
+
+                                    @if (
+                                        producto.estado_registro
+                                        === 'A'
+                                    ) {
+
+                                        <span
+                                            class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
+
+                                            Activo
+
+                                        </span>
+
+                                    } @else {
+
+                                        <span
+                                            class="inline-flex rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
+
+                                            Inactivo
+
+                                        </span>
+
+                                    }
+
+                                </td>
+
+
+                                <!-- Acciones -->
+
+                                @if (
+                                    puedeEditar()
+                                ) {
+
+                                    <td
+                                        class="whitespace-nowrap px-6 py-4 text-right">
+
+                                        <a
+                                            [routerLink]="[
+                                                '/dashboard/products/edit',
+                                                producto.id_producto
+                                            ]"
+
+                                            class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-primary transition hover:bg-primary/10">
+
+                                            <lucide-angular
+                                                [img]="Pencil"
+                                                class="h-4 w-4">
+
+                                            </lucide-angular>
+
+
+                                            Editar
+
+                                        </a>
+
+                                    </td>
+
+                                }
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    SIN RESULTADOS
+    ========================================================================
+    -->
+
+    @else {
+
+        <div
+            class="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
+
+            <div
+                class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
+
+                <lucide-angular
+                    [img]="Package"
+
+                    class="h-7 w-7 text-gray-400">
+
+                </lucide-angular>
+
+            </div>
+
+
+            @if (
+                totalProductos() === 0
+            ) {
+
+                <h3
+                    class="font-medium text-gray-900">
+
+                    No hay productos registrados
+
+                </h3>
+
+
+                <p
+                    class="mt-1 text-sm text-gray-500">
+
+                    Todavía no existen productos activos para mostrar.
+
+                </p>
+
+
+                @if (
+                    puedeCrear()
+                ) {
+
+                    <a
+                        routerLink="/dashboard/products/create"
+
+                        class="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
+
+                        <lucide-angular
+                            [img]="Plus"
+                            class="h-4 w-4">
+
+                        </lucide-angular>
+
+
+                        Registrar producto
+
+                    </a>
+
+                }
+
+            } @else {
+
+                <h3
+                    class="font-medium text-gray-900">
+
+                    Sin resultados
+
+                </h3>
+
+
+                <p
+                    class="mt-1 text-sm text-gray-500">
+
+                    No existen productos que coincidan con los filtros.
+
+                </p>
+
+
+                <button
+                    type="button"
+
+                    (click)="limpiarFiltros()"
+
+                    class="mt-4 text-sm font-medium text-primary hover:underline">
+
+                    Limpiar filtros
+
+                </button>
+
+            }
+
+        </div>
+
+    }
 
 </div>
