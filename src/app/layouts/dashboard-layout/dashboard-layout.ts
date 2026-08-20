@@ -244,6 +244,24 @@ export class DashboardLayout {
       },
 
       {
+        path:
+          '/dashboard/purchases',
+
+        icon:
+          ShoppingCart,
+
+        label: {
+          es: 'Compras',
+
+          en: 'Purchases'
+        },
+
+        permisos: [
+          'compra.ver'
+        ]
+      },
+
+      {
 
         path:
           '/dashboard/products',
@@ -322,6 +340,7 @@ export class DashboardLayout {
         ]
 
       },
+
 
       {
 

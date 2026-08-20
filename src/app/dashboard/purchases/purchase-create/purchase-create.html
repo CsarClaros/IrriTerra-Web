@@ -1,0 +1,765 @@
+<div class="space-y-6">
+
+
+    <!-- ENCABEZADO -->
+
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+
+        <div>
+
+            <a routerLink="/dashboard/purchases"
+                class="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800">
+
+                <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+                </lucide-angular>
+
+                Volver a compras
+
+            </a>
+
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                @if (
+                modoEdicion()
+                ) {
+
+                Editar compra
+
+                } @else {
+
+                Nueva compra
+
+                }
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                @if (
+                modoEdicion()
+                ) {
+
+                Modifique una compra que todavía se encuentra en borrador.
+
+                } @else {
+
+                Registre una nueva compra a proveedor.
+
+                }
+
+            </p>
+
+
+            @if (
+            modoEdicion()
+            &&
+            codigoCompra()
+            ) {
+
+            <span class="mt-3 inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+
+                {{
+                codigoCompra()
+                }}
+
+            </span>
+
+            }
+
+        </div>
+
+    </div>
+
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="flex min-h-72 items-center justify-center rounded-xl border border-gray-200 bg-white">
+
+        <div class="text-center">
+
+            <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary">
+            </div>
+
+            <p class="mt-3 text-sm text-gray-500">
+
+                Cargando información...
+
+            </p>
+
+        </div>
+
+    </div>
+
+    } @else {
+
+
+    <!-- INFORMACIÓN COMPRA -->
+
+    <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <div class="mb-5">
+
+            <h2 class="font-semibold text-gray-900">
+
+                Información de compra
+
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Seleccione proveedor y sucursal de recepción.
+
+            </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+
+            <!-- Proveedor -->
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Proveedor *
+
+                </label>
+
+                <select [ngModel]="
+                            idProveedor()
+                            ?? ''
+                        " (ngModelChange)="
+                            actualizarProveedor(
+                                $event
+                            )
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option value="">
+                        Seleccione un proveedor
+                    </option>
+
+
+                    @for (
+                    proveedor
+                    of proveedores();
+                    track proveedor.id_proveedor
+                    ) {
+
+                    <option [value]="
+                                    proveedor.id_proveedor
+                                ">
+
+                        {{
+                        proveedor.nombre_razon_social
+                        }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Sucursal -->
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Sucursal de recepción *
+
+                </label>
+
+                <select [ngModel]="
+                            idSucursal()
+                            ?? ''
+                        " (ngModelChange)="
+                            actualizarSucursal(
+                                $event
+                            )
+                        "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option value="">
+                        Seleccione una sucursal
+                    </option>
+
+
+                    @for (
+                    sucursal
+                    of sucursales();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <option [value]="
+                                    sucursal.id_sucursal
+                                ">
+
+                        {{
+                        sucursal.nombre
+                        }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Fecha -->
+
+            <div>
+
+                <label for="fecha-compra" class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Fecha de compra
+
+                </label>
+
+                <input id="fecha-compra" type="datetime-local" [(ngModel)]="fechaCompra"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+            </div>
+
+
+            <!-- Factura -->
+
+            <div>
+
+                <label for="numero-factura" class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Número de factura
+
+                </label>
+
+                <input id="numero-factura" type="text" maxlength="50" [(ngModel)]="numeroFactura" placeholder="Opcional"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AGREGAR PRODUCTO -->
+
+    <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <div class="mb-5">
+
+            <h2 class="font-semibold text-gray-900">
+
+                Productos
+
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Agregue las variantes incluidas en la compra.
+
+            </p>
+
+        </div>
+
+
+        <div class="flex flex-col gap-3 md:flex-row">
+
+            <select
+                class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                [ngModel]="
+                        idVarianteSeleccionada()
+                        ?? ''
+                    " (ngModelChange)="
+                        actualizarVariante(
+                            $event
+                        )
+                    ">
+
+                <option value="">
+                    Seleccione un producto
+                </option>
+
+
+                @for (
+                variante
+                of variantesDisponibles();
+                track variante.id_producto_variante
+                ) {
+
+                <option [value]="
+                                variante.id_producto_variante
+                            ">
+
+                    {{
+                    variante.producto
+                    ?.nombre
+                    ?? 'Producto'
+                    }}
+
+                    -
+
+                    {{
+                    variante.nombre
+                    }}
+
+                    ({{ variante.sku }})
+
+                </option>
+
+                }
+
+            </select>
+
+
+            <button type="button" (click)="agregarVariante()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800">
+
+                <lucide-angular [img]="Plus" class="h-4 w-4">
+                </lucide-angular>
+
+                Agregar
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- DETALLE -->
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+
+        @if (
+        lineas().length === 0
+        ) {
+
+        <div class="flex min-h-52 items-center justify-center p-6">
+
+            <div class="text-center">
+
+                <lucide-angular [img]="ShoppingCart" class="mx-auto h-10 w-10 text-gray-300">
+                </lucide-angular>
+
+                <p class="mt-3 font-medium text-gray-700">
+
+                    No hay productos agregados
+
+                </p>
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    Seleccione al menos una variante.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500">
+
+                            Producto
+
+                        </th>
+
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Cantidad
+
+                        </th>
+
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Costo unit.
+
+                        </th>
+
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Descuento
+
+                        </th>
+
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-gray-500">
+
+                            Subtotal
+
+                        </th>
+
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-500">
+
+                            Observación
+
+                        </th>
+
+                        <th class="w-16 px-4 py-3">
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100">
+
+                    @for (
+                    linea
+                    of lineas();
+                    track linea.id_producto_variante
+                    ) {
+
+                    <tr class="align-top">
+
+                        <td class="min-w-56 px-4 py-4">
+
+                            <p class="text-sm font-medium text-gray-800">
+
+                                {{
+                                linea.producto
+                                }}
+
+                            </p>
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                {{
+                                linea.variante
+                                }}
+                                ·
+                                {{
+                                linea.sku
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- Cantidad -->
+
+                        <td class="min-w-36 px-4 py-4">
+
+                            <input type="number" min="0.001" step="0.001" [ngModel]="
+                                                linea.cantidad
+                                            " (ngModelChange)="
+                                                actualizarCantidad(
+                                                    linea.id_producto_variante,
+                                                    $event
+                                                )
+                                            "
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-right text-sm outline-none focus:border-primary">
+
+                            <p class="mt-1 text-right text-xs text-gray-400">
+
+                                {{
+                                linea.unidad_medida
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- Costo -->
+
+                        <td class="min-w-40 px-4 py-4">
+
+                            <input type="number" min="0.01" step="0.01" [ngModel]="
+                                                linea.costo_unitario
+                                            " (ngModelChange)="
+                                                actualizarCosto(
+                                                    linea.id_producto_variante,
+                                                    $event
+                                                )
+                                            "
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-right text-sm outline-none focus:border-primary">
+
+                        </td>
+
+
+                        <!-- Descuento -->
+
+                        <td class="min-w-40 px-4 py-4">
+
+                            <input type="number" min="0" step="0.01" [ngModel]="
+                                                linea.descuento
+                                            " (ngModelChange)="
+                                                actualizarDescuento(
+                                                    linea.id_producto_variante,
+                                                    $event
+                                                )
+                                            "
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-right text-sm outline-none focus:border-primary">
+
+                        </td>
+
+
+                        <!-- Subtotal -->
+
+                        <td class="whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-gray-900">
+
+                            {{
+                            moneda(
+                            subtotalLinea(
+                            linea
+                            )
+                            )
+                            }}
+
+                        </td>
+
+
+                        <!-- Observaciones -->
+
+                        <td class="min-w-56 px-4 py-4">
+
+                            <input type="text" [ngModel]="
+                                                linea.observaciones
+                                            " (ngModelChange)="
+                                                actualizarObservacion(
+                                                    linea.id_producto_variante,
+                                                    $event
+                                                )
+                                            " placeholder="Opcional"
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary">
+
+                            @if (
+                            errorLinea(
+                            linea
+                            )
+                            ) {
+
+                            <p class="mt-1 text-xs text-red-600">
+
+                                {{
+                                errorLinea(
+                                linea
+                                )
+                                }}
+
+                            </p>
+
+                            }
+
+                        </td>
+
+
+                        <td class="px-4 py-4 text-right">
+
+                            <button type="button" (click)="
+                                                eliminarLinea(
+                                                    linea.id_producto_variante
+                                                )
+                                            " class="rounded-lg p-2 text-red-600 hover:bg-red-50">
+
+                                <lucide-angular [img]="Trash2" class="h-4 w-4">
+                                </lucide-angular>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </div>
+
+
+    <!-- OBSERVACIONES Y TOTALES -->
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <label for="observaciones-compra" class="mb-2 block text-sm font-medium text-gray-700">
+
+                Observaciones
+
+            </label>
+
+            <textarea id="observaciones-compra" rows="5" [(ngModel)]="observacionesCompra"
+                placeholder="Observaciones generales de la compra"
+                class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+                </textarea>
+
+        </div>
+
+
+        <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <h2 class="mb-5 font-semibold text-gray-900">
+
+                Resumen
+
+            </h2>
+
+
+            <div class="space-y-3">
+
+                <div class="flex justify-between text-sm">
+
+                    <span class="text-gray-500">
+                        Subtotal
+                    </span>
+
+                    <span class="font-medium text-gray-800">
+
+                        {{
+                        moneda(
+                        subtotalVisual()
+                        )
+                        }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="flex justify-between text-sm">
+
+                    <span class="text-gray-500">
+                        Descuentos
+                    </span>
+
+                    <span class="font-medium text-gray-800">
+
+                        {{
+                        moneda(
+                        descuentoVisual()
+                        )
+                        }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="border-t border-gray-200 pt-4">
+
+                    <div class="flex items-center justify-between">
+
+                        <span class="font-semibold text-gray-900">
+
+                            Total estimado
+
+                        </span>
+
+                        <span class="text-2xl font-semibold text-gray-900">
+
+                            {{
+                            moneda(
+                            totalVisual()
+                            )
+                            }}
+
+                        </span>
+
+                    </div>
+
+
+                    <p class="mt-2 text-xs text-gray-400">
+
+                        El total definitivo será calculado por el servidor.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOTONES -->
+
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+        <a routerLink="/dashboard/purchases"
+            class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+
+            Cancelar
+
+        </a>
+
+
+        <button type="button" [disabled]="guardando()" (click)="guardar()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+
+            <lucide-angular [img]="Save" class="h-4 w-4">
+            </lucide-angular>
+
+
+            @if (
+            guardando()
+            ) {
+
+            Guardando...
+
+            } @else if (
+            modoEdicion()
+            ) {
+
+            Guardar cambios
+
+            } @else {
+
+            Guardar compra
+
+            }
+
+        </button>
+
+    </div>
+
+    }
+
+</div>

@@ -1,0 +1,1367 @@
+<div class="space-y-6">
+
+
+    <!--
+    ========================================================================
+    ENCABEZADO
+    ========================================================================
+    -->
+
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
+        <div>
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                Compras
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Consulte las compras registradas a proveedores.
+
+            </p>
+
+        </div>
+
+
+        <div class="flex flex-wrap gap-3">
+
+            <button type="button" [disabled]="cargando()" (click)="cargarCompras()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-60">
+
+                <lucide-angular [img]="RefreshCcw" [class.animate-spin]="cargando()" class="h-4 w-4">
+                </lucide-angular>
+
+                Actualizar
+
+            </button>
+
+
+            @if (
+            puedeCrear()
+            ) {
+
+            <a routerLink="/dashboard/purchases/create"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm">
+
+                <lucide-angular [img]="Plus" class="h-4 w-4">
+                </lucide-angular>
+
+                Nueva compra
+
+            </a>
+
+            }
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    KPIS
+    ========================================================================
+    -->
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+
+        <!-- Borradores -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        Borradores
+
+                    </p>
+
+
+                    <p class="mt-2 text-3xl font-semibold text-gray-900">
+
+                        {{ totalBorradores() }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-amber-50 p-3 text-amber-600">
+
+                    <lucide-angular [img]="Package" class="h-6 w-6">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Confirmadas -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        Confirmadas
+
+                    </p>
+
+
+                    <p class="mt-2 text-3xl font-semibold text-gray-900">
+
+                        {{ totalConfirmadas() }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-blue-50 p-3 text-blue-600">
+
+                    <lucide-angular [img]="Package" class="h-6 w-6">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Recibidas -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        Recibidas
+
+                    </p>
+
+
+                    <p class="mt-2 text-3xl font-semibold text-gray-900">
+
+                        {{ totalRecibidas() }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-emerald-50 p-3 text-emerald-600">
+
+                    <lucide-angular [img]="CheckCircle2" class="h-6 w-6">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Anuladas -->
+
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        Anuladas
+
+                    </p>
+
+
+                    <p class="mt-2 text-3xl font-semibold text-gray-900">
+
+                        {{ totalAnuladas() }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-red-50 p-3 text-red-600">
+
+                    <lucide-angular [img]="XCircle" class="h-6 w-6">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    FILTROS
+    ========================================================================
+    -->
+
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-12">
+
+
+            <!-- Buscar -->
+
+            <div class="lg:col-span-5">
+
+                <label for="buscar-compra" class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Buscar
+
+                </label>
+
+
+                <div class="relative">
+
+                    <lucide-angular [img]="Search"
+                        class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400">
+                    </lucide-angular>
+
+
+                    <input id="buscar-compra" type="text" [ngModel]="busqueda()" (ngModelChange)="
+                            actualizarBusqueda(
+                                $event
+                            )
+                        " placeholder="Código, factura, proveedor o sucursal"
+                        class="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                </div>
+
+            </div>
+
+
+            <!-- Estado -->
+
+            <div class="lg:col-span-3">
+
+                <label for="estado-compra" class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Estado
+
+                </label>
+
+
+                <select id="estado-compra" [ngModel]="estadoFiltro()" (ngModelChange)="
+                        actualizarEstado(
+                            $event
+                        )
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option value="">
+
+                        Todos
+
+                    </option>
+
+                    <option value="BORRADOR">
+
+                        Borrador
+
+                    </option>
+
+                    <option value="CONFIRMADA">
+
+                        Confirmada
+
+                    </option>
+
+                    <option value="RECIBIDA">
+
+                        Recibida
+
+                    </option>
+
+                    <option value="ANULADA">
+
+                        Anulada
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Proveedor -->
+
+            <div class="lg:col-span-3">
+
+                <label for="proveedor-compra" class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Proveedor
+
+                </label>
+
+
+                <select id="proveedor-compra" [ngModel]="
+                        proveedorFiltro()
+                        ?? ''
+                    " (ngModelChange)="
+                        actualizarProveedor(
+                            $event
+                        )
+                    "
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    <option value="">
+
+                        Todos
+
+                    </option>
+
+
+                    @for (
+                    proveedor
+                    of proveedores();
+                    track proveedor.id_proveedor
+                    ) {
+
+                    <option [value]="
+                                proveedor.id_proveedor
+                            ">
+
+                        {{
+                        proveedor.nombre
+                        }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Limpiar -->
+
+            <div class="flex items-end lg:col-span-1">
+
+                <button type="button" (click)="limpiarFiltros()"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50">
+
+                    Limpiar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    ERROR
+    ========================================================================
+    -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!--
+    ========================================================================
+    TABLA
+    ========================================================================
+    -->
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+
+        @if (
+        cargando()
+        ) {
+
+        <div class="flex min-h-64 items-center justify-center">
+
+            <div class="text-center">
+
+                <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary">
+                </div>
+
+
+                <p class="mt-3 text-sm text-gray-500">
+
+                    Cargando compras...
+
+                </p>
+
+            </div>
+
+        </div>
+
+        } @else if (
+        comprasFiltradas().length
+        === 0
+        ) {
+
+        <div class="flex min-h-64 items-center justify-center p-6">
+
+            <div class="text-center">
+
+                <lucide-angular [img]="Package" class="mx-auto h-10 w-10 text-gray-300">
+                </lucide-angular>
+
+
+                <p class="mt-3 font-medium text-gray-700">
+
+                    No se encontraron compras
+
+                </p>
+
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    No existen registros que coincidan con los filtros seleccionados.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Código
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Fecha
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Proveedor
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Sucursal
+
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Factura
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Total
+
+                        </th>
+
+                        <th class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Estado
+
+                        </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            Acción
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100 bg-white">
+
+                    @for (
+                    compra
+                    of comprasFiltradas();
+                    track compra.id_compra
+                    ) {
+
+                    <tr class="transition hover:bg-gray-50">
+
+                        <td class="whitespace-nowrap px-5 py-4">
+
+                            <span class="text-sm font-semibold text-gray-900">
+
+                                {{
+                                compra.codigo_compra
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+
+                            {{
+                            formatearFecha(
+                            compra.fecha_compra
+                            )
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <div class="max-w-56">
+
+                                <p class="truncate text-sm font-medium text-gray-800">
+
+                                    {{
+                                    compra.proveedor
+                                    ?.nombre_razon_social
+                                    ?? '—'
+                                    }}
+
+                                </p>
+
+
+                                @if (
+                                compra.proveedor
+                                ?.numero_documento
+                                ) {
+
+                                <p class="mt-0.5 truncate text-xs text-gray-400">
+
+                                    {{
+                                    compra.proveedor
+                                    .numero_documento
+                                    }}
+
+                                </p>
+
+                                }
+
+                            </div>
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-sm text-gray-600">
+
+                            {{
+                            compra.sucursal
+                            ?.nombre
+                            ?? '—'
+                            }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+
+                            {{
+                            compra.numero_factura
+                            ?? '—'
+                            }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm font-semibold text-gray-900">
+
+                            {{
+                            moneda(
+                            compra.total
+                            )
+                            }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-center">
+
+                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset"
+                                [class]="
+                                            claseEstado(
+                                                compra.estado_compra
+                                            )
+                                        ">
+
+                                {{
+                                nombreEstado(
+                                compra.estado_compra
+                                )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right">
+
+                            <button type="button" (click)="
+                                            verDetalle(
+                                                compra
+                                            )
+                                        "
+                                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                                <lucide-angular [img]="Eye" class="h-4 w-4">
+                                </lucide-angular>
+
+                                Ver
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </div>
+
+
+    <!--
+    ========================================================================
+    MODAL DETALLE
+    ========================================================================
+    -->
+
+    @if (
+    compraSeleccionada();
+    as compra
+    ) {
+
+    <div class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4">
+
+        <div class="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+
+
+            <!-- Encabezado -->
+
+            <div class="flex items-start justify-between border-b border-gray-200 px-6 py-5">
+
+                <div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+
+                        <h2 class="text-xl font-semibold text-gray-900">
+
+                            {{
+                            compra.codigo_compra
+                            }}
+
+                        </h2>
+
+
+                        <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset"
+                            [class]="
+                                    claseEstado(
+                                        compra.estado_compra
+                                    )
+                                ">
+
+                            {{
+                            nombreEstado(
+                            compra.estado_compra
+                            )
+                            }}
+
+                        </span>
+
+                    </div>
+
+
+                    <p class="mt-1 text-sm text-gray-500">
+
+                        Detalle de compra
+
+                    </p>
+
+                </div>
+
+
+                <button type="button" (click)="cerrarDetalle()"
+                    class="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100">
+
+                    <lucide-angular [img]="X" class="h-5 w-5">
+                    </lucide-angular>
+
+                </button>
+
+            </div>
+
+
+            <!-- Contenido -->
+
+            <div class="max-h-[calc(92vh-90px)] overflow-y-auto p-6">
+
+
+                @if (
+                cargandoDetalle()
+                ) {
+
+                <div class="flex min-h-48 items-center justify-center">
+
+                    <div class="text-center">
+
+                        <div
+                            class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary">
+                        </div>
+
+
+                        <p class="mt-3 text-sm text-gray-500">
+
+                            Cargando detalle...
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                } @else {
+
+                    @if (
+                    errorDetalle()
+                    ) {
+
+                    <div class="mb-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+                        {{
+                        errorDetalle()
+                        }}
+
+                    </div>
+
+                    }
+
+                <div class="space-y-6">
+
+
+                    <!-- Información general -->
+
+                    <div>
+
+                        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
+
+                            Información general
+
+                        </h3>
+
+
+                        <div
+                            class="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-gray-50 p-5 md:grid-cols-2 lg:grid-cols-3">
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Proveedor
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    compra.proveedor
+                                    ?.nombre_razon_social
+                                    ?? '—'
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Sucursal
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    compra.sucursal
+                                    ?.nombre
+                                    ?? '—'
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Comprador
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    nombreUsuario(
+                                    compra.comprador
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Número de factura
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    compra.numero_factura
+                                    ?? '—'
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Fecha de compra
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    formatearFecha(
+                                    compra.fecha_compra
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Confirmación
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    formatearFecha(
+                                    compra.fecha_confirmacion
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Recepción
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    formatearFecha(
+                                    compra.fecha_recepcion
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                    Anulación
+
+                                </p>
+
+                                <p class="mt-1 text-sm font-medium text-gray-800">
+
+                                    {{
+                                    formatearFecha(
+                                    compra.fecha_anulacion
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Detalles -->
+
+                    <div>
+
+                        <div class="mb-4 flex items-center justify-between">
+
+                            <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500">
+
+                                Productos
+
+                            </h3>
+
+
+                            <span class="text-sm text-gray-500">
+
+                                {{
+                                compra.detalles
+                                ?.length
+                                ?? 0
+                                }}
+
+                                producto(s)
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="overflow-hidden rounded-xl border border-gray-200">
+
+                            <div class="overflow-x-auto">
+
+                                <table class="min-w-full divide-y divide-gray-200">
+
+                                    <thead class="bg-gray-50">
+
+                                        <tr>
+
+                                            <th
+                                                class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                                Producto
+
+                                            </th>
+
+                                            <th
+                                                class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                                SKU
+
+                                            </th>
+
+                                            <th
+                                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                                Cantidad
+
+                                            </th>
+
+                                            <th
+                                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                                Costo unit.
+
+                                            </th>
+
+                                            <th
+                                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                                Descuento
+
+                                            </th>
+
+                                            <th
+                                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                                                Subtotal
+
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody class="divide-y divide-gray-100">
+
+                                        @for (
+                                        detalle
+                                        of compra.detalles
+                                        ?? [];
+                                        track detalle.id_compra_detalle
+                                        ) {
+
+                                        <tr>
+
+                                            <td class="px-4 py-3">
+
+                                                <p class="text-sm font-medium text-gray-800">
+
+                                                    {{
+                                                    nombreProducto(
+                                                    compra,
+                                                    detalle.id_producto_variante
+                                                    )
+                                                    }}
+
+                                                </p>
+
+
+                                                @if (
+                                                detalle.observaciones
+                                                ) {
+
+                                                <p class="mt-1 max-w-72 text-xs text-gray-400">
+
+                                                    {{
+                                                    detalle.observaciones
+                                                    }}
+
+                                                </p>
+
+                                                }
+
+                                            </td>
+
+
+                                            <td class="whitespace-nowrap px-4 py-3 text-sm text-gray-600">
+
+                                                {{
+                                                detalle.producto_variante
+                                                ?.sku
+                                                ?? '—'
+                                                }}
+
+                                            </td>
+
+
+                                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-gray-700">
+
+                                                {{
+                                                numero(
+                                                detalle.cantidad
+                                                )
+                                                }}
+
+                                                {{
+                                                detalle.producto_variante
+                                                ?.unidad_medida
+                                                ?? ''
+                                                }}
+
+                                            </td>
+
+
+                                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-gray-700">
+
+                                                {{
+                                                moneda(
+                                                detalle.costo_unitario
+                                                )
+                                                }}
+
+                                            </td>
+
+
+                                            <td class="whitespace-nowrap px-4 py-3 text-right text-sm text-gray-700">
+
+                                                {{
+                                                moneda(
+                                                detalle.descuento
+                                                )
+                                                }}
+
+                                            </td>
+
+
+                                            <td
+                                                class="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-900">
+
+                                                {{
+                                                moneda(
+                                                detalle.subtotal
+                                                )
+                                                }}
+
+                                            </td>
+
+                                        </tr>
+
+                                        }
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Totales -->
+
+                    <div class="flex justify-end">
+
+                        <div class="w-full max-w-sm space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-5">
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">
+
+                                    Subtotal
+
+                                </span>
+
+                                <span class="font-medium text-gray-800">
+
+                                    {{
+                                    moneda(
+                                    compra.subtotal
+                                    )
+                                    }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">
+
+                                    Descuento
+
+                                </span>
+
+                                <span class="font-medium text-gray-800">
+
+                                    {{
+                                    moneda(
+                                    compra.descuento
+                                    )
+                                    }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="border-t border-gray-200 pt-3">
+
+                                <div class="flex items-center justify-between">
+
+                                    <span class="font-semibold text-gray-800">
+
+                                        Total
+
+                                    </span>
+
+                                    <span class="text-xl font-semibold text-gray-900">
+
+                                        {{
+                                        moneda(
+                                        compra.total
+                                        )
+                                        }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Observaciones -->
+
+                    @if (
+                    compra.observaciones
+                    ) {
+
+                    <div>
+
+                        <h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+
+                            Observaciones
+
+                        </h3>
+
+
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
+
+                            {{
+                            compra.observaciones
+                            }}
+
+                        </div>
+
+                    </div>
+
+                    }
+
+
+                    <!-- Motivo anulación -->
+
+                    @if (
+                    compra.motivo_anulacion
+                    ) {
+
+                    <div>
+
+                        <h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-red-500">
+
+                            Motivo de anulación
+
+                        </h3>
+
+
+                        <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+                            {{
+                            compra.motivo_anulacion
+                            }}
+
+                        </div>
+
+                    </div>
+
+                    }
+
+                </div>
+
+                }
+
+                <app-purchase-actions [compra]="compra" (actualizada)="
+        compraActualizada(
+            $event
+        )
+    " (eliminada)="
+        compraEliminada(
+            $event
+        )
+    ">
+                </app-purchase-actions>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <!-- @if (
+    puedeEditar(
+    compra
+    )
+    ) {
+
+    <div class="flex justify-end border-t border-gray-200 pt-5">
+
+        <a [routerLink]="[
+                '/dashboard/purchases',
+                compra.id_compra,
+                'edit'
+            ]"
+            class="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white">
+
+            Editar compra
+
+        </a>
+
+    </div>
+
+    } -->
+
+    }
+
+</div>

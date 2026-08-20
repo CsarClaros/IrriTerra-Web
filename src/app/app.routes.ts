@@ -180,6 +180,22 @@ import {
     TransferCreate
 } from './dashboard/transfers/transfer-create/transfer-create';
 
+/**
+ * 
+ * Compras
+ * 
+ */
+import {
+    PurchaseList
+} from './dashboard/purchases/purchase-list/purchase-list';
+
+import {
+    PurchaseCreate
+} from './dashboard/purchases/purchase-create/purchase-create';
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Rutas
@@ -647,16 +663,16 @@ export const routes:
 
                 {
                     path: 'transfers/:id/edit',
-                
+
                     component:
                         TransferCreate,
-                
+
                     canActivate: [
-                
+
                         permissionGuard(
                             'transferencia.editar'
                         )
-                
+
                     ]
                 },
 
@@ -675,6 +691,59 @@ export const routes:
                     ]
                 },
 
+                /*
+|--------------------------------------------------------------------------
+| Compras
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path:
+                        'purchases/create',
+
+                    component:
+                        PurchaseCreate,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'compra.crear'
+                        )
+
+                    ]
+                },
+
+                {
+                    path:
+                        'purchases/:id/edit',
+
+                    component:
+                        PurchaseCreate,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'compra.editar'
+                        )
+
+                    ]
+                },
+
+                {
+                    path:
+                        'purchases',
+
+                    component:
+                        PurchaseList,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'compra.ver'
+                        )
+
+                    ]
+                },
             ]
 
         },
