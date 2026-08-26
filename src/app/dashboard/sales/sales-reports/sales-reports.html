@@ -1,6 +1,14 @@
 <div class="space-y-6">
 
+    <a routerLink="/dashboard/reports"
+    class="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-primary">
 
+    <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+    </lucide-angular>
+
+    Volver a reportes
+
+</a>
     <!--
     ========================================================================
     ENCABEZADO
@@ -974,14 +982,14 @@
 
 
                             @if (
-                            producto.producto_variante?.sku
+                            producto.producto_variante.sku
                             ) {
 
                             <p class="mt-1 text-xs text-gray-500">
 
                                 SKU:
                                 {{
-                                producto.producto_variante?.sku
+                                producto.producto_variante.sku
                                 }}
 
                             </p>

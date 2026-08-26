@@ -12,13 +12,13 @@ import {
 } from '../api.service';
 
 import {
-    ReporteVentasFiltros
+    ReporteTransferenciasFiltros
 } from '../../../shared/models/reportes/reporte-filtros.model';
 
 import {
-    ReporteVentasProductosResponse,
-    ReporteVentasResponse
-} from '../../../shared/models/reportes/reporte-ventas.model';
+    ReporteTransferenciasProductosResponse,
+    ReporteTransferenciasResponse
+} from '../../../shared/models/reportes/reporte-transferencias.model';
 
 import {
     construirQueryReporte
@@ -29,7 +29,7 @@ import {
     providedIn:
         'root'
 })
-export class ReporteVentasService {
+export class ReporteTransferenciasService {
 
     private readonly api =
         inject(
@@ -37,24 +37,19 @@ export class ReporteVentasService {
         );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resumen
-    |--------------------------------------------------------------------------
-    */
-
     resumen(
         filtros:
-            ReporteVentasFiltros = {}
-    ): Observable<
-        ReporteVentasResponse
-    > {
+            ReporteTransferenciasFiltros = {}
+    ):
+        Observable<
+            ReporteTransferenciasResponse
+        > {
 
         return this.api
             .get<
-                ReporteVentasResponse
+                ReporteTransferenciasResponse
             >(
-                'reportes/ventas/resumen'
+                'reportes/transferencias/resumen'
                 +
                 construirQueryReporte(
                     filtros
@@ -64,30 +59,24 @@ export class ReporteVentasService {
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Productos más vendidos
-    |--------------------------------------------------------------------------
-    */
-
     productos(
         filtros:
-            ReporteVentasFiltros = {}
+            ReporteTransferenciasFiltros = {}
     ): Observable<
-        ReporteVentasProductosResponse
+        ReporteTransferenciasProductosResponse
     > {
 
         const {
-            estado_venta,
+            estado_transferencia,
             ...filtrosProductos
         } = filtros;
 
 
         return this.api
             .get<
-                ReporteVentasProductosResponse
+                ReporteTransferenciasProductosResponse
             >(
-                'reportes/ventas/productos'
+                'reportes/transferencias/productos'
                 +
                 construirQueryReporte(
                     filtrosProductos

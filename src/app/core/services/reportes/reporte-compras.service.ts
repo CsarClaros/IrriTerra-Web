@@ -12,13 +12,13 @@ import {
 } from '../api.service';
 
 import {
-    ReporteVentasFiltros
+    ReporteComprasFiltros
 } from '../../../shared/models/reportes/reporte-filtros.model';
 
 import {
-    ReporteVentasProductosResponse,
-    ReporteVentasResponse
-} from '../../../shared/models/reportes/reporte-ventas.model';
+    ReporteComprasProductosResponse,
+    ReporteComprasResponse
+} from '../../../shared/models/reportes/reporte-compras.model';
 
 import {
     construirQueryReporte
@@ -29,7 +29,7 @@ import {
     providedIn:
         'root'
 })
-export class ReporteVentasService {
+export class ReporteComprasService {
 
     private readonly api =
         inject(
@@ -37,24 +37,19 @@ export class ReporteVentasService {
         );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resumen
-    |--------------------------------------------------------------------------
-    */
-
     resumen(
         filtros:
-            ReporteVentasFiltros = {}
-    ): Observable<
-        ReporteVentasResponse
-    > {
+            ReporteComprasFiltros = {}
+    ):
+        Observable<
+            ReporteComprasResponse
+        > {
 
         return this.api
             .get<
-                ReporteVentasResponse
+                ReporteComprasResponse
             >(
-                'reportes/ventas/resumen'
+                'reportes/compras/resumen'
                 +
                 construirQueryReporte(
                     filtros
@@ -64,30 +59,24 @@ export class ReporteVentasService {
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Productos más vendidos
-    |--------------------------------------------------------------------------
-    */
-
     productos(
         filtros:
-            ReporteVentasFiltros = {}
+            ReporteComprasFiltros = {}
     ): Observable<
-        ReporteVentasProductosResponse
+        ReporteComprasProductosResponse
     > {
 
         const {
-            estado_venta,
+            estado_compra,
             ...filtrosProductos
         } = filtros;
 
 
         return this.api
             .get<
-                ReporteVentasProductosResponse
+                ReporteComprasProductosResponse
             >(
-                'reportes/ventas/productos'
+                'reportes/compras/productos'
                 +
                 construirQueryReporte(
                     filtrosProductos

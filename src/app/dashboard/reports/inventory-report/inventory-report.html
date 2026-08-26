@@ -1,0 +1,1199 @@
+<div class="space-y-6">
+
+
+    <!-- ================================================================ -->
+    <!-- CABECERA -->
+    <!-- ================================================================ -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+
+            <a routerLink="/dashboard/reports"
+                class="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-primary">
+
+                <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+                </lucide-angular>
+
+                Volver a reportes
+
+            </a>
+
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                Reportes de Inventario
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Consulte existencias, niveles críticos, valoración y movimientos.
+
+            </p>
+
+        </div>
+
+
+        <button type="button" [disabled]="cargando()" (click)="cargarReporte()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+            </lucide-angular>
+
+            Actualizar
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!-- PESTAÑAS -->
+    <!-- ================================================================ -->
+
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+
+
+        <button type="button" (click)="seleccionarVista('STOCK')" [class.border-primary]="vista() === 'STOCK'"
+            [class.bg-primary]="vista() === 'STOCK'" [class.text-white]="vista() === 'STOCK'"
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-4 text-left text-gray-700 shadow-sm transition hover:border-primary/40">
+
+            <lucide-angular [img]="Boxes" class="h-5 w-5 shrink-0">
+            </lucide-angular>
+
+            <span class="font-medium">
+
+                Stock
+
+            </span>
+
+        </button>
+
+
+        <button type="button" (click)="seleccionarVista('CRITICO')" [class.border-primary]="vista() === 'CRITICO'"
+            [class.bg-primary]="vista() === 'CRITICO'" [class.text-white]="vista() === 'CRITICO'"
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-4 text-left text-gray-700 shadow-sm transition hover:border-primary/40">
+
+            <lucide-angular [img]="AlertTriangle" class="h-5 w-5 shrink-0">
+            </lucide-angular>
+
+            <span class="font-medium">
+
+                Stock crítico
+
+            </span>
+
+        </button>
+
+
+        <button type="button" (click)="seleccionarVista('VALORACION')" [class.border-primary]="vista() === 'VALORACION'"
+            [class.bg-primary]="vista() === 'VALORACION'" [class.text-white]="vista() === 'VALORACION'"
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-4 text-left text-gray-700 shadow-sm transition hover:border-primary/40">
+
+            <lucide-angular [img]="Banknote" class="h-5 w-5 shrink-0">
+            </lucide-angular>
+
+            <span class="font-medium">
+
+                Valoración
+
+            </span>
+
+        </button>
+
+
+        <button type="button" (click)="seleccionarVista('KARDEX')" [class.border-primary]="vista() === 'KARDEX'"
+            [class.bg-primary]="vista() === 'KARDEX'" [class.text-white]="vista() === 'KARDEX'"
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-4 text-left text-gray-700 shadow-sm transition hover:border-primary/40">
+
+            <lucide-angular [img]="History" class="h-5 w-5 shrink-0">
+            </lucide-angular>
+
+            <span class="font-medium">
+
+                Kardex
+
+            </span>
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!-- FILTROS STOCK -->
+    <!-- ================================================================ -->
+
+    @if (
+    vista() !== 'KARDEX'
+    ) {
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Sucursal
+
+                </label>
+
+
+                <select [(ngModel)]="filtrosStock.id_sucursal"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary">
+
+                    <option [ngValue]="null">
+
+                        Todas
+
+                    </option>
+
+
+                    @for (
+                    sucursal of sucursales();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <option [ngValue]="sucursal.id_sucursal">
+
+                        {{ sucursal.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Categoría
+
+                </label>
+
+
+                <select [(ngModel)]="filtrosStock.id_categoria"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary">
+
+                    <option [ngValue]="null">
+
+                        Todas
+
+                    </option>
+
+
+                    @for (
+                    categoria of categorias();
+                    track categoria.id_categoria
+                    ) {
+
+                    <option [ngValue]="categoria.id_categoria">
+
+                        {{ categoria.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Producto
+
+                </label>
+
+
+                <select [(ngModel)]="filtrosStock.id_producto_variante"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+
+                    @for (
+                    variante of variantes();
+                    track variante.id_producto_variante
+                    ) {
+
+                    <option [ngValue]="variante.id_producto_variante">
+
+                        {{ nombreProducto(variante) }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            @if (
+            vista() !== 'CRITICO'
+            ) {
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Estado
+
+                </label>
+
+
+                <select [(ngModel)]="filtrosStock.estado_stock"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary">
+
+                    <option value="TODOS">
+
+                        Todos
+
+                    </option>
+
+                    <option value="AGOTADO">
+
+                        Agotado
+
+                    </option>
+
+                    <option value="BAJO">
+
+                        Bajo mínimo
+
+                    </option>
+
+                    <option value="NORMAL">
+
+                        Normal
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="mt-5 flex flex-wrap justify-end gap-2">
+
+            <button type="button" [disabled]="cargando()" (click)="limpiarFiltros()"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+
+                <lucide-angular [img]="RotateCcw" class="h-4 w-4">
+                </lucide-angular>
+
+                Limpiar
+
+            </button>
+
+
+            <button type="button" [disabled]="cargando()" (click)="aplicarFiltros()"
+                class="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50">
+
+                Aplicar filtros
+
+            </button>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- FILTROS KARDEX -->
+    <!-- ================================================================ -->
+
+    @if (
+    vista() === 'KARDEX'
+    ) {
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Sucursal
+
+                </label>
+
+                <select [(ngModel)]="filtrosKardex.id_sucursal"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+
+                        Todas
+
+                    </option>
+
+                    @for (
+                    sucursal of sucursales();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <option [ngValue]="sucursal.id_sucursal">
+
+                        {{ sucursal.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Producto
+
+                </label>
+
+                <select [(ngModel)]="filtrosKardex.id_producto_variante"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+                    @for (
+                    variante of variantes();
+                    track variante.id_producto_variante
+                    ) {
+
+                    <option [ngValue]="variante.id_producto_variante">
+
+                        {{ nombreProducto(variante) }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Movimiento
+
+                </label>
+
+                <select [(ngModel)]="filtrosKardex.tipo_movimiento"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+
+                        Todos
+
+                    </option>
+
+                    @for (
+                    tipo of tiposMovimiento;
+                    track tipo.valor
+                    ) {
+
+                    <option [ngValue]="tipo.valor">
+
+                        {{ tipo.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Referencia
+
+                </label>
+
+                <select [(ngModel)]="filtrosKardex.tipo_referencia"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+
+                        Todas
+
+                    </option>
+
+                    @for (
+                    tipo of tiposReferencia;
+                    track tipo.valor
+                    ) {
+
+                    <option [ngValue]="tipo.valor">
+
+                        {{ tipo.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Desde
+
+                </label>
+
+                <input type="date" [(ngModel)]="filtrosKardex.fecha_desde"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                    Hasta
+
+                </label>
+
+                <input type="date" [(ngModel)]="filtrosKardex.fecha_hasta"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-5 flex justify-end gap-2">
+
+            <button type="button" (click)="limpiarFiltros()"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">
+
+                <lucide-angular [img]="RotateCcw" class="h-4 w-4">
+                </lucide-angular>
+
+                Limpiar
+
+            </button>
+
+
+            <button type="button" (click)="aplicarFiltros()"
+                class="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white">
+
+                Aplicar filtros
+
+            </button>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- ERROR -->
+    <!-- ================================================================ -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- KPIs STOCK -->
+    <!-- ================================================================ -->
+
+    @if (
+    vista() === 'STOCK'
+    &&
+    resumenStock();
+    as resumen
+    ) {
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Registros</p>
+            <p class="mt-2 text-2xl font-semibold">{{ resumen.registros }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Stock total</p>
+            <p class="mt-2 text-2xl font-semibold">{{ cantidad(resumen.stock_total) }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Normales</p>
+            <p class="mt-2 text-2xl font-semibold text-emerald-600">{{ resumen.normales }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Bajo mínimo</p>
+            <p class="mt-2 text-2xl font-semibold text-amber-600">{{ resumen.bajo_minimo }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Agotados</p>
+            <p class="mt-2 text-2xl font-semibold text-red-600">{{ resumen.agotados }}</p>
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- KPIs CRÍTICO -->
+
+    @if (
+    vista() === 'CRITICO'
+    &&
+    resumenCritico();
+    as resumen
+    ) {
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Registros críticos</p>
+            <p class="mt-2 text-2xl font-semibold">{{ resumen.registros }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Agotados</p>
+            <p class="mt-2 text-2xl font-semibold text-red-600">{{ resumen.agotados }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Bajo mínimo</p>
+            <p class="mt-2 text-2xl font-semibold text-amber-600">{{ resumen.bajo_minimo }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Faltante total</p>
+            <p class="mt-2 text-2xl font-semibold">{{ cantidad(resumen.faltante_total) }}</p>
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- KPIs VALORACIÓN -->
+
+    @if (
+    vista() === 'VALORACION'
+    &&
+    resumenValoracion();
+    as resumen
+    ) {
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Registros</p>
+            <p class="mt-2 text-2xl font-semibold">{{ resumen.registros }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Stock total</p>
+            <p class="mt-2 text-2xl font-semibold">{{ cantidad(resumen.stock_total) }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Valor inventario</p>
+            <p class="mt-2 text-2xl font-semibold">{{ moneda(resumen.valor_total_inventario) }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Sin costo configurado</p>
+            <p class="mt-2 text-2xl font-semibold text-amber-600">{{ resumen.sin_precio_configurado }}</p>
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- KPIs KARDEX -->
+
+    @if (
+    vista() === 'KARDEX'
+    &&
+    resumenKardex();
+    as resumen
+    ) {
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Movimientos</p>
+            <p class="mt-2 text-2xl font-semibold">{{ resumen.movimientos }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Entradas</p>
+            <p class="mt-2 text-2xl font-semibold text-emerald-600">
+                {{ cantidad(resumen.cantidad_entradas) }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Salidas</p>
+            <p class="mt-2 text-2xl font-semibold text-red-600">
+                {{ cantidad(resumen.cantidad_salidas) }}
+            </p>
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- CARGANDO -->
+    <!-- ================================================================ -->
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-12 text-center text-sm text-gray-500">
+
+        Cargando reporte...
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- TABLAS STOCK -->
+    <!-- ================================================================ -->
+
+    @if (
+    ! cargando()
+    &&
+    vista() !== 'KARDEX'
+    ) {
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Sucursal
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Producto
+                        </th>
+
+
+                        @if (
+                        vista() === 'STOCK'
+                        ) {
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Actual
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Mínimo
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Máximo
+                        </th>
+
+                        <th class="px-4 py-3 text-center font-medium text-gray-600">
+                            Estado
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Ubicación
+                        </th>
+
+                        }
+
+
+                        @if (
+                        vista() === 'CRITICO'
+                        ) {
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Actual
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Mínimo
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Faltante
+                        </th>
+
+                        <th class="px-4 py-3 text-center font-medium text-gray-600">
+                            Estado
+                        </th>
+
+                        }
+
+
+                        @if (
+                        vista() === 'VALORACION'
+                        ) {
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Stock
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Costo
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Valor
+                        </th>
+
+                        <th class="px-4 py-3 text-center font-medium text-gray-600">
+                            Costo configurado
+                        </th>
+
+                        }
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100">
+
+                    @for (
+                    registro of registrosStock();
+                    track registro.id_stock_sucursal
+                    ) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="px-4 py-3 text-gray-700">
+
+                            {{ nombreSucursal(registro.sucursal) }}
+
+                        </td>
+
+
+                        <td class="px-4 py-3">
+
+                            <div class="font-medium text-gray-900">
+
+                                {{ nombreProducto(registro.producto_variante) }}
+
+                            </div>
+
+                            <div class="mt-0.5 text-xs text-gray-500">
+
+                                {{ registro.producto_variante.sku }}
+
+                            </div>
+
+                        </td>
+
+
+                        @if (
+                        vista() === 'STOCK'
+                        ) {
+
+                        <td class="px-4 py-3 text-right">
+                            {{ cantidad(registro.stock_actual) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right">
+                            {{ cantidad(registro.stock_minimo) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right">
+                            {{ registro.stock_maximo !== null
+                            ? cantidad(registro.stock_maximo)
+                            : '-' }}
+                        </td>
+
+                        <td class="px-4 py-3 text-center">
+
+                            <span [class]="
+                                                'inline-flex rounded-full px-2.5 py-1 text-xs font-medium '
+                                                + claseEstadoStock(registro.estado_stock)
+                                            ">
+
+                                {{ nombreEstadoStock(registro.estado_stock) }}
+
+                            </span>
+
+                        </td>
+
+                        <td class="px-4 py-3 text-gray-600">
+                            {{ registro.ubicacion_almacen || '-' }}
+                        </td>
+
+                        }
+
+
+                        @if (
+                        vista() === 'CRITICO'
+                        ) {
+
+                        <td class="px-4 py-3 text-right">
+                            {{ cantidad(registro.stock_actual) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right">
+                            {{ cantidad(registro.stock_minimo) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right font-medium text-red-600">
+                            {{ cantidad(registro.faltante_minimo) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-center">
+
+                            <span [class]="
+                                                'inline-flex rounded-full px-2.5 py-1 text-xs font-medium '
+                                                + claseEstadoStock(registro.estado_stock)
+                                            ">
+
+                                {{ nombreEstadoStock(registro.estado_stock) }}
+
+                            </span>
+
+                        </td>
+
+                        }
+
+
+                        @if (
+                        vista() === 'VALORACION'
+                        ) {
+
+                        <td class="px-4 py-3 text-right">
+                            {{ cantidad(registro.stock_actual) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right">
+                            {{ moneda(registro.costo_compra) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right font-medium">
+                            {{ moneda(registro.valor_inventario) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-center">
+
+                            @if (
+                            registro.tiene_precio_configurado
+                            ) {
+
+                            <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">
+
+                                Sí
+
+                            </span>
+
+                            } @else {
+
+                            <span class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+
+                                No
+
+                            </span>
+
+                            }
+
+                        </td>
+
+                        }
+
+                    </tr>
+
+                    } @empty {
+
+                    <tr>
+
+                        <td colspan="8" class="px-4 py-12 text-center text-gray-500">
+
+                            No existen registros para los filtros seleccionados.
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- KARDEX -->
+    <!-- ================================================================ -->
+
+    @if (
+    ! cargando()
+    &&
+    vista() === 'KARDEX'
+    ) {
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Fecha
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Código
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Sucursal / Producto
+                        </th>
+
+                        <th class="px-4 py-3 text-center font-medium text-gray-600">
+                            Movimiento
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Cantidad
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Anterior
+                        </th>
+
+                        <th class="px-4 py-3 text-right font-medium text-gray-600">
+                            Resultante
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Referencia
+                        </th>
+
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">
+                            Motivo
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100">
+
+                    @for (
+                    movimiento of movimientos();
+                    track movimiento.id_movimiento_inventario
+                    ) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="whitespace-nowrap px-4 py-3 text-gray-600">
+
+                            {{ formatearFecha(movimiento.fecha_movimiento) }}
+
+                        </td>
+
+
+                        <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
+
+                            {{ movimiento.codigo_movimiento }}
+
+                        </td>
+
+
+                        <td class="px-4 py-3">
+
+                            <div class="text-gray-900">
+
+                                {{
+                                nombreProducto(
+                                movimiento
+                                .stock_sucursal
+                                .producto_variante
+                                )
+                                }}
+
+                            </div>
+
+                            <div class="text-xs text-gray-500">
+
+                                {{
+                                nombreSucursal(
+                                movimiento
+                                .stock_sucursal
+                                .sucursal
+                                )
+                                }}
+
+                            </div>
+
+                        </td>
+
+
+                        <td class="px-4 py-3 text-center">
+
+                            <span [class]="
+                                            'inline-flex rounded-full px-2.5 py-1 text-xs font-medium '
+                                            + claseMovimiento(movimiento.tipo_movimiento)
+                                        ">
+
+                                {{ nombreMovimiento(movimiento.tipo_movimiento) }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td class="px-4 py-3 text-right font-medium">
+
+                            {{ cantidad(movimiento.cantidad) }}
+
+                        </td>
+
+
+                        <td class="px-4 py-3 text-right">
+
+                            {{ cantidad(movimiento.stock_anterior) }}
+
+                        </td>
+
+
+                        <td class="px-4 py-3 text-right">
+
+                            {{ cantidad(movimiento.stock_resultante) }}
+
+                        </td>
+
+
+                        <td class="px-4 py-3">
+
+                            <div>
+                                {{ nombreReferencia(movimiento.tipo_referencia) }}
+                            </div>
+
+                            @if (
+                            movimiento.id_referencia
+                            ) {
+
+                            <div class="text-xs text-gray-500">
+
+                                ID {{ movimiento.id_referencia }}
+
+                            </div>
+
+                            }
+
+                        </td>
+
+
+                        <td class="max-w-xs px-4 py-3 text-gray-600">
+
+                            {{ movimiento.motivo }}
+
+                        </td>
+
+                    </tr>
+
+                    } @empty {
+
+                    <tr>
+
+                        <td colspan="9" class="px-4 py-12 text-center text-gray-500">
+
+                            No existen movimientos para los filtros seleccionados.
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    }
+
+
+</div>

@@ -33,6 +33,7 @@ import {
   RefreshCcw,
   ShoppingCart,
   TrendingUp,
+  ArrowLeft,
   LucideAngularModule
 } from 'lucide-angular';
 
@@ -66,16 +67,26 @@ import {
 } from '../../../core/services/reportes/reporte-ventas.service';
 
 import {
-  ReporteProductoVendido,
-  ReporteProductosVentasResponse,
-  ReporteVentasFiltros,
-  ResumenReporteProductos,
-  ResumenReporteVentas
-} from '../../../shared/models/reporte-ventas.model';
+  ReporteVentasResumen,
+  ReporteVentasProductosResponse
+} from '../../../shared/models/reportes/reporte-ventas.model';
+
+import {
+  ReporteVentasFiltros
+} from '../../../shared/models/reportes/reporte-filtros.model';
+
+import {
+  ReporteProductoOperacion,
+  ReporteProductoOperacionResumen
+} from '../../../shared/models/reportes/reporte-producto-operacion.model';
 
 import {
   Venta
 } from '../../../shared/models/venta.model';
+
+import {
+  RouterLink
+} from '@angular/router';
 
 
 /*
@@ -119,6 +130,7 @@ interface OpcionFiltro {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     LucideAngularModule,
     NgxEchartsDirective
   ],
@@ -172,7 +184,7 @@ export class SalesReports
 
   readonly resumen =
     signal<
-      ResumenReporteVentas
+      ReporteVentasResumen
     >(
       this.resumenVacio()
     );
@@ -180,7 +192,7 @@ export class SalesReports
 
   readonly resumenProductos =
     signal<
-      ResumenReporteProductos
+    ReporteProductoOperacionResumen
     >(
       this.resumenProductosVacio()
     );
@@ -200,7 +212,7 @@ export class SalesReports
 
   readonly productos =
     signal<
-      ReporteProductoVendido[]
+    ReporteProductoOperacion[]
     >([]);
 
 
@@ -332,6 +344,9 @@ export class SalesReports
 
   readonly TrendingUp =
     TrendingUp;
+
+  readonly ArrowLeft = 
+    ArrowLeft;
 
 
   /*
@@ -1113,7 +1128,7 @@ export class SalesReports
 
   nombreProducto(
     registro:
-      ReporteProductoVendido
+    ReporteProductoOperacion
   ): string {
 
     const variante =
@@ -1420,7 +1435,7 @@ export class SalesReports
   */
 
   private resumenVacio():
-    ResumenReporteVentas {
+  ReporteVentasResumen {
 
     return {
 
@@ -1454,7 +1469,7 @@ export class SalesReports
 
 
   private resumenProductosVacio():
-    ResumenReporteProductos {
+  ReporteProductoOperacionResumen {
 
     return {
 
@@ -1473,7 +1488,7 @@ export class SalesReports
 
 
   private respuestaProductosVacia():
-    ReporteProductosVentasResponse {
+    ReporteVentasProductosResponse {
 
     return {
 

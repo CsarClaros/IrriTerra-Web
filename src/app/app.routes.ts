@@ -159,6 +159,22 @@ import {
     Reports
 } from './dashboard/reports/reports';
 
+import {
+    ReportCenter
+} from './dashboard/reports/report-center/report-center';
+
+import {
+    InventoryReport
+} from './dashboard/reports/inventory-report/inventory-report';
+
+import {
+    PurchasesReport
+} from './dashboard/reports/purchases-report/purchases-report';
+
+import {
+    TransfersReport
+} from './dashboard/reports/transfers-report/transfers-report';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -479,6 +495,84 @@ export const routes:
 
                 },
 
+                /**
+                 * 
+                 * Reports
+                 * 
+                 * 
+                 */
+                {
+                    path:
+                        'reports/inventory',
+
+                    component:
+                        InventoryReport,
+
+                    canActivate: [
+                        permissionGuard(
+                            'reporte_inventario.ver'
+                        )
+                    ]
+                },
+
+                /*
+|--------------------------------------------------------------------------
+| Reporte de ventas
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path: 'reports/sales',
+
+                    component:
+                        SalesReports,
+
+                    canActivate: [
+
+                        permissionGuard(
+                            'reporte_ventas.ver'
+                        )
+
+                    ]
+                },
+
+
+                {
+                    path:
+                        'reports/purchases',
+
+                    component:
+                        PurchasesReport,
+
+                    canActivate: [
+                        permissionGuard(
+                            'reporte_compras.ver'
+                        )
+                    ]
+                },
+
+                {
+                    path:
+                        'reports/transfers',
+
+                    component:
+                        TransfersReport,
+
+                    canActivate: [
+                        permissionGuard(
+                            'reporte_transferencias.ver'
+                        )
+                    ]
+                },
+
+                {
+                    path:
+                        'reports',
+
+                    component:
+                        ReportCenter
+                },
+
 
                 /*
                 |--------------------------------------------------------------------------
@@ -551,26 +645,7 @@ export const routes:
                 },
 
 
-                /*
-|--------------------------------------------------------------------------
-| Reporte de ventas
-|--------------------------------------------------------------------------
-*/
 
-                {
-                    path: 'reports/sales',
-
-                    component:
-                        SalesReports,
-
-                    canActivate: [
-
-                        permissionGuard(
-                            'reporte_ventas.ver'
-                        )
-
-                    ]
-                },
 
 
                 /*

@@ -1,0 +1,794 @@
+<div class="space-y-6">
+
+
+    <!-- ================================================================ -->
+    <!-- CABECERA -->
+    <!-- ================================================================ -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+
+            <a routerLink="/dashboard/reports"
+                class="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-primary">
+
+                <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+                </lucide-angular>
+
+                Volver a reportes
+
+            </a>
+
+
+            <h1 class="text-2xl font-semibold text-gray-900">
+
+                Reportes de Compras
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                Consulte compras realizadas y productos con mayor volumen de adquisición.
+
+            </p>
+
+        </div>
+
+
+        <button type="button" [disabled]="cargando()" (click)="cargarReporte()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+            </lucide-angular>
+
+            Actualizar
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!-- VISTAS -->
+    <!-- ================================================================ -->
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+        <button type="button" (click)="seleccionarVista('RESUMEN')" [class.border-primary]="vista() === 'RESUMEN'"
+            [class.bg-primary]="vista() === 'RESUMEN'" [class.text-white]="vista() === 'RESUMEN'"
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-5 py-4 text-left text-gray-700 shadow-sm">
+
+            <lucide-angular [img]="BarChart3" class="h-5 w-5">
+            </lucide-angular>
+
+            <div>
+
+                <div class="font-medium">
+                    Resumen de compras
+                </div>
+
+                <div class="mt-0.5 text-xs opacity-75">
+                    Estados, importes y compra promedio
+                </div>
+
+            </div>
+
+        </button>
+
+
+        <button type="button" (click)="seleccionarVista('PRODUCTOS')" [class.border-primary]="vista() === 'PRODUCTOS'"
+            [class.bg-primary]="vista() === 'PRODUCTOS'" [class.text-white]="vista() === 'PRODUCTOS'"
+            class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-5 py-4 text-left text-gray-700 shadow-sm">
+
+            <lucide-angular [img]="Package" class="h-5 w-5">
+            </lucide-angular>
+
+            <div>
+
+                <div class="font-medium">
+                    Productos más comprados
+                </div>
+
+                <div class="mt-0.5 text-xs opacity-75">
+                    Ranking de compras recibidas
+                </div>
+
+            </div>
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!-- FILTROS -->
+    <!-- ================================================================ -->
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Sucursal
+                </label>
+
+                <select [(ngModel)]="filtros.id_sucursal"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+                        Todas
+                    </option>
+
+                    @for (
+                    item of sucursales();
+                    track item.id
+                    ) {
+
+                    <option [ngValue]="item.id">
+                        {{ item.nombre }}
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Proveedor
+                </label>
+
+                <select [(ngModel)]="filtros.id_proveedor"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
+
+                    @for (
+                    item of proveedores();
+                    track item.id
+                    ) {
+
+                    <option [ngValue]="item.id">
+                        {{ item.nombre }}
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Comprador
+                </label>
+
+                <select [(ngModel)]="filtros.id_usuario_comprador"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
+
+                    @for (
+                    item of compradores();
+                    track item.id
+                    ) {
+
+                    <option [ngValue]="item.id">
+                        {{ item.nombre }}
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Producto
+                </label>
+
+                <select [(ngModel)]="filtros.id_producto_variante"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
+
+                    @for (
+                    item of variantes();
+                    track item.id
+                    ) {
+
+                    <option [ngValue]="item.id">
+                        {{ item.nombre }}
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            @if (
+            vista() === 'RESUMEN'
+            ) {
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Estado
+                </label>
+
+                <select [(ngModel)]="filtros.estado_compra"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
+
+                    <option value="BORRADOR">
+                        Borrador
+                    </option>
+
+                    <option value="CONFIRMADA">
+                        Confirmada
+                    </option>
+
+                    <option value="RECIBIDA">
+                        Recibida
+                    </option>
+
+                    <option value="ANULADA">
+                        Anulada
+                    </option>
+
+                </select>
+
+            </div>
+
+            }
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Desde
+                </label>
+
+                <input type="date" [(ngModel)]="filtros.fecha_desde"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">
+
+            </div>
+
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Hasta
+                </label>
+
+                <input type="date" [(ngModel)]="filtros.fecha_hasta"
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm">
+
+            </div>
+
+
+            @if (
+            vista() === 'PRODUCTOS'
+            ) {
+
+            <div>
+
+                <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    Cantidad de resultados
+                </label>
+
+                <select [(ngModel)]="filtros.limite"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm">
+
+                    @for (
+                    limite of limites;
+                    track limite
+                    ) {
+
+                    <option [ngValue]="limite">
+                        Top {{ limite }}
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="mt-5 flex justify-end gap-2">
+
+            <button type="button" (click)="limpiarFiltros()" [disabled]="cargando()"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700">
+
+                <lucide-angular [img]="RotateCcw" class="h-4 w-4">
+                </lucide-angular>
+
+                Limpiar
+
+            </button>
+
+
+            <button type="button" (click)="aplicarFiltros()" [disabled]="cargando()"
+                class="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white disabled:opacity-50">
+
+                Aplicar filtros
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- RESUMEN -->
+    <!-- ================================================================ -->
+
+    @if (
+    vista() === 'RESUMEN'
+    &&
+    resumen();
+    as datos
+    ) {
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Compras</p>
+            <p class="mt-2 text-2xl font-semibold">{{ datos.compras }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Borradores</p>
+            <p class="mt-2 text-2xl font-semibold">{{ datos.borradores }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Confirmadas</p>
+            <p class="mt-2 text-2xl font-semibold">{{ datos.confirmadas }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Recibidas</p>
+            <p class="mt-2 text-2xl font-semibold text-emerald-600">
+                {{ datos.recibidas }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Anuladas</p>
+            <p class="mt-2 text-2xl font-semibold text-red-600">
+                {{ datos.anuladas }}
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Subtotal recibido</p>
+            <p class="mt-2 text-xl font-semibold">
+                {{ moneda(datos.subtotal_recibido) }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Descuentos</p>
+            <p class="mt-2 text-xl font-semibold">
+                {{ moneda(datos.descuento_recibido) }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Total comprado</p>
+            <p class="mt-2 text-xl font-semibold text-emerald-600">
+                {{ moneda(datos.total_comprado) }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Compra promedio</p>
+            <p class="mt-2 text-xl font-semibold">
+                {{ moneda(datos.compra_promedio) }}
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- ECharts estados -->
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+        <h2 class="font-semibold text-gray-900">
+
+            Distribución por estado
+
+        </h2>
+
+        <div echarts [options]="graficoEstados()" class="mt-4 h-80 w-full">
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- PRODUCTOS -->
+    <!-- ================================================================ -->
+
+    @if (
+    vista() === 'PRODUCTOS'
+    &&
+    resumenProductos();
+    as datos
+    ) {
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Productos</p>
+            <p class="mt-2 text-2xl font-semibold">
+                {{ datos.productos }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Cantidad comprada</p>
+            <p class="mt-2 text-2xl font-semibold">
+                {{ cantidad(datos.cantidad_total) }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4">
+            <p class="text-xs text-gray-500">Importe</p>
+            <p class="mt-2 text-2xl font-semibold">
+                {{ moneda(datos.importe_total) }}
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- ECharts productos -->
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+        <h2 class="font-semibold text-gray-900">
+
+            Productos más comprados
+
+        </h2>
+
+        <p class="mt-1 text-xs text-gray-500">
+
+            Ordenado por cantidad recibida.
+
+        </p>
+
+        <div echarts [options]="graficoProductos()" class="mt-4 h-96 w-full">
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- CARGANDO -->
+    <!-- ================================================================ -->
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="rounded-2xl border bg-white p-12 text-center text-sm text-gray-500">
+
+        Cargando reporte...
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- TABLA COMPRAS -->
+    <!-- ================================================================ -->
+
+    @if (
+    ! cargando()
+    &&
+    vista() === 'RESUMEN'
+    ) {
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="border-b px-5 py-4">
+
+            <div class="flex items-center gap-2">
+
+                <lucide-angular [img]="List" class="h-5 w-5 text-gray-500">
+                </lucide-angular>
+
+                <h2 class="font-semibold">
+                    Compras encontradas
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y text-sm">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-left">
+                            Código
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Fecha
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Proveedor
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Comprador
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Sucursal
+                        </th>
+
+                        <th class="px-4 py-3 text-right">
+                            Total
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Estado
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y">
+
+                    @for (
+                    compra of compras();
+                    track compra.id_compra
+                    ) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="px-4 py-3 font-medium">
+                            {{ compra.codigo_compra }}
+                        </td>
+
+                        <td class="whitespace-nowrap px-4 py-3">
+                            {{ formatearFecha(compra.fecha_compra) }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ compra.proveedor?.nombre_razon_social || '-' }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{
+                            compra.comprador
+                            ? nombreUsuario(compra.comprador)
+                            : '-'
+                            }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ compra.sucursal?.nombre || '-' }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right font-medium">
+                            {{ moneda(compra.total) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-center">
+
+                            <span [class]="
+                                            'rounded-full px-2.5 py-1 text-xs font-medium '
+                                            + claseEstado(compra.estado_compra)
+                                        ">
+
+                                {{ nombreEstado(compra.estado_compra) }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    } @empty {
+
+                    <tr>
+
+                        <td colspan="7" class="px-4 py-12 text-center text-gray-500">
+
+                            No existen compras para los filtros seleccionados.
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- TABLA PRODUCTOS -->
+    <!-- ================================================================ -->
+
+    @if (
+    ! cargando()
+    &&
+    vista() === 'PRODUCTOS'
+    ) {
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y text-sm">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-4 py-3 text-center">
+                            #
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            Producto
+                        </th>
+
+                        <th class="px-4 py-3 text-left">
+                            SKU
+                        </th>
+
+                        <th class="px-4 py-3 text-right">
+                            Cantidad
+                        </th>
+
+                        <th class="px-4 py-3 text-right">
+                            Compras
+                        </th>
+
+                        <th class="px-4 py-3 text-right">
+                            Importe
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y">
+
+                    @for (
+                    producto of productos();
+                    track producto.id_producto_variante;
+                    let i = $index
+                    ) {
+
+                    <tr class="hover:bg-gray-50">
+
+                        <td class="px-4 py-3 text-center font-semibold text-gray-500">
+                            {{ i + 1 }}
+                        </td>
+
+                        <td class="px-4 py-3 font-medium">
+                            {{ nombreProducto(producto) }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ producto.producto_variante.sku }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right font-medium">
+                            {{ cantidad(producto.cantidad) }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right">
+                            {{ producto.operaciones }}
+                        </td>
+
+                        <td class="px-4 py-3 text-right font-medium">
+                            {{ moneda(producto.total) }}
+                        </td>
+
+                    </tr>
+
+                    } @empty {
+
+                    <tr>
+
+                        <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+
+                            No existen productos comprados para los filtros seleccionados.
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    }
+
+
+</div>
