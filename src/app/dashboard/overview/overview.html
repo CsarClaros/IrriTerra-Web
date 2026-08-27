@@ -1,143 +1,2046 @@
-<div class="space-y-8">
+<div class="min-w-0 w-full max-w-full space-y-6">
 
-    <!-- HEADER -->
-    <div>
-        <h1 class="text-3xl mb-2">
-            {{ t('Dashboard', 'Dashboard') }}
-        </h1>
-        <p class="text-gray-600">
-            {{ t('Resumen general de ventas y métricas', 'General sales and metrics overview') }}
-        </p>
-    </div>
 
-    <!-- STATS CARDS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- ================================================================ -->
+    <!-- ENCABEZADO -->
+    <!-- ================================================================ -->
 
-        @for (stat of stats; track stat) {
-        <div class="bg-white rounded-xl p-6 shadow-lg">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 
-            <div class="flex items-center justify-between mb-4">
 
-                <div class="p-3 rounded-lg" [ngClass]="stat.color">
-                    <lucide-icon [img]="stat.icon" class="w-6 h-6 text-white"></lucide-icon>
-                </div>
+        <div>
 
-                <span class="text-green-600 text-sm">
-                    {{ stat.change }}
-                </span>
+            <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">
 
-            </div>
+                {{
+                t(
+                'Dashboard',
+                'Dashboard'
+                )
+                }}
 
-            <h3 class="text-gray-600 text-sm mb-1">
-                {{ t(stat.label.es, stat.label.en) }}
-            </h3>
+            </h1>
 
-            <p class="text-2xl">
-                {{ stat.value }}
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Resumen general de la actividad del sistema.',
+                'General overview of system activity.'
+                )
+                }}
+
             </p>
 
         </div>
+
+
+        <button type="button" [disabled]="cargando()" (click)="cargarDashboard()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+            </lucide-angular>
+
+
+            {{
+            t(
+            'Actualizar',
+            'Refresh'
+            )
+            }}
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!-- BIENVENIDA -->
+    <!-- ================================================================ -->
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="p-6 lg:p-8">
+
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+
+
+                <div>
+
+                    <p class="text-sm font-medium text-primary">
+
+                        {{
+                        t(
+                        'Bienvenido',
+                        'Welcome'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <h2 class="mt-1 text-2xl font-semibold text-gray-900">
+
+                        {{ nombreCompleto() }}
+
+                    </h2>
+
+
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+
+                        {{
+                        t(
+                        'Aquí encontrará un resumen de las principales operaciones disponibles según sus permisos.',
+                        'Here you will find a summary of the main operations available according to your permissions.'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-80">
+
+
+                    <div class="rounded-xl bg-gray-50 px-4 py-3">
+
+                        <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                            {{
+                            t(
+                            'Rol',
+                            'Role'
+                            )
+                            }}
+
+                        </p>
+
+
+                        <p class="mt-1 text-sm font-medium text-gray-800">
+
+                            {{ rol() }}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="rounded-xl bg-gray-50 px-4 py-3">
+
+                        <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                            {{
+                            t(
+                            'Sucursal',
+                            'Branch'
+                            )
+                            }}
+
+                        </p>
+
+
+                        <p class="mt-1 text-sm font-medium text-gray-800">
+
+                            {{ sucursal() }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================================ -->
+    <!-- ERROR -->
+    <!-- ================================================================ -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+    <!-- ================================================================ -->
+    <!-- ERRORES PARCIALES -->
+    <!-- ================================================================ -->
+
+    @if (
+    hayErroresParciales()
+    &&
+    dashboard();
+    as datos
+    ) {
+
+    <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+
+        <div class="flex items-start gap-3">
+
+            <lucide-angular [img]="AlertTriangle" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600">
+            </lucide-angular>
+
+
+            <div>
+
+                <p class="text-sm font-medium text-amber-800">
+
+                    {{
+                    t(
+                    'Parte de la información no pudo cargarse.',
+                    'Some information could not be loaded.'
+                    )
+                    }}
+
+                </p>
+
+
+                <p class="mt-1 text-xs text-amber-700">
+
+                    {{
+                    t(
+                    'Los demás módulos continúan disponibles.',
+                    'The remaining modules are still available.'
+                    )
+                    }}
+
+                </p>
+
+
+                <div class="mt-2 flex flex-wrap gap-2">
+
+                    @for (
+                    modulo of datos.errores;
+                    track modulo
+                    ) {
+
+                    <span class="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
+
+                        {{ nombreModulo(modulo) }}
+
+                    </span>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- CARGANDO -->
+    <!-- ================================================================ -->
+
+    @if (
+    cargando()
+    &&
+    ! dashboard()
+    ) {
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-sm">
+
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+
+            <lucide-angular [img]="RefreshCcw" class="h-5 w-5 text-gray-500">
+            </lucide-angular>
+
+        </div>
+
+
+        <p class="mt-4 text-sm text-gray-500">
+
+            {{
+            t(
+            'Cargando información del dashboard...',
+            'Loading dashboard information...'
+            )
+            }}
+
+        </p>
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- KPIs -->
+    <!-- ================================================================ -->
+
+    @if (
+    dashboard();
+    as datos
+    ) {
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+
+        <!-- ======================================================== -->
+        <!-- VENTAS -->
+        <!-- ======================================================== -->
+
+        @if (
+        datos.ventas;
+        as ventas
+        ) {
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between gap-4">
+
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        {{
+                        t(
+                        'Ventas completadas',
+                        'Completed sales'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        {{
+                        ventas
+                        .resumen
+                        .completadas
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+
+                    <lucide-angular [img]="ShoppingCart" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 border-t border-gray-100 pt-4">
+
+                <p class="text-xs text-gray-400">
+
+                    {{
+                    t(
+                    'Total vendido',
+                    'Total sales'
+                    )
+                    }}
+
+                </p>
+
+
+                <p class="mt-1 text-lg font-semibold text-emerald-600">
+
+                    {{
+                    moneda(
+                    ventas
+                    .resumen
+                    .total_vendido
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        }
+
+
+        <!-- ======================================================== -->
+        <!-- INVENTARIO -->
+        <!-- ======================================================== -->
+
+        @if (
+        datos.inventario;
+        as inventario
+        ) {
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between gap-4">
+
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        {{
+                        t(
+                        'Stock crítico',
+                        'Critical stock'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        {{
+                        inventario
+                        .resumenCritico
+                        .registros
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+
+                    <lucide-angular [img]="Boxes" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 border-t border-gray-100 pt-4">
+
+                <p class="text-xs text-gray-400">
+
+                    {{
+                    t(
+                    'Faltante hasta mínimo',
+                    'Shortage to minimum'
+                    )
+                    }}
+
+                </p>
+
+
+                <p class="mt-1 text-lg font-semibold text-amber-600">
+
+                    {{
+                    cantidad(
+                    inventario
+                    .resumenCritico
+                    .faltante_total
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        }
+
+
+        <!-- ======================================================== -->
+        <!-- COMPRAS -->
+        <!-- ======================================================== -->
+
+        @if (
+        datos.compras;
+        as compras
+        ) {
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between gap-4">
+
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        {{
+                        t(
+                        'Compras recibidas',
+                        'Received purchases'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        {{
+                        compras
+                        .resumen
+                        .recibidas
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+
+                    <lucide-angular [img]="BarChart3" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 border-t border-gray-100 pt-4">
+
+                <p class="text-xs text-gray-400">
+
+                    {{
+                    t(
+                    'Total comprado',
+                    'Total purchases'
+                    )
+                    }}
+
+                </p>
+
+
+                <p class="mt-1 text-lg font-semibold text-blue-600">
+
+                    {{
+                    moneda(
+                    compras
+                    .resumen
+                    .total_comprado
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        }
+
+
+        <!-- ======================================================== -->
+        <!-- TRANSFERENCIAS -->
+        <!-- ======================================================== -->
+
+        @if (
+        datos.transferencias;
+        as transferencias
+        ) {
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div class="flex items-start justify-between gap-4">
+
+
+                <div>
+
+                    <p class="text-sm font-medium text-gray-500">
+
+                        {{
+                        t(
+                        'En tránsito',
+                        'In transit'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">
+
+                        {{
+                        transferencias
+                        .resumen
+                        .en_transito
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+
+                    <lucide-angular [img]="ArrowLeftRight" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 border-t border-gray-100 pt-4">
+
+                <p class="text-xs text-gray-400">
+
+                    {{
+                    t(
+                    'Cantidad completada',
+                    'Completed quantity'
+                    )
+                    }}
+
+                </p>
+
+
+                <p class="mt-1 text-lg font-semibold text-violet-600">
+
+                    {{
+                    cantidad(
+                    transferencias
+                    .resumen
+                    .cantidad_completada
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
         }
 
     </div>
 
-    <!-- CHARTS GRID -->
-    <div class="grid lg:grid-cols-2 gap-8">
+    }
 
-        <!-- SALES BAR CHART -->
-        <div class="bg-white rounded-xl p-6 shadow-lg">
-            <h3 class="text-xl mb-6">
-                {{ t('Ventas Mensuales', 'Monthly Sales') }}
-            </h3>
+    <!-- ================================================================ -->
+    <!-- GRÁFICOS -->
+    <!-- ================================================================ -->
 
-            <div echarts [options]="salesChart" class="h-[300px] w-full"></div>
+    @if (
+    dashboard();
+    as datos
+    ) {
+
+    <div class="space-y-4">
+
+
+        <!-- ============================================================ -->
+        <!-- TÍTULO -->
+        <!-- ============================================================ -->
+
+        <div>
+
+            <h2 class="text-lg font-semibold text-gray-900">
+
+                {{
+                t(
+                'Indicadores gráficos',
+                'Visual indicators'
+                )
+                }}
+
+            </h2>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Representación visual de las principales operaciones del sistema.',
+                'Visual representation of the main system operations.'
+                )
+                }}
+
+            </p>
+
         </div>
 
-        <!-- PIE CHART -->
-        <div class="bg-white rounded-xl p-6 shadow-lg">
-            <h3 class="text-xl mb-6">
-                {{ t('Productos Más Vendidos', 'Best Selling Products') }}
-            </h3>
 
-            <div echarts [options]="productChart" class="h-[300px] w-full"></div>
+        <!-- ============================================================ -->
+        <!-- VENTAS -->
+        <!-- ============================================================ -->
+
+        @if (
+        datos.ventas;
+        as ventas
+        ) {
+
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+
+
+            <!-- Estados de venta -->
+
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+                <div>
+
+                    <h3 class="font-semibold text-gray-900">
+
+                        {{
+                        t(
+                        'Estado de ventas',
+                        'Sales status'
+                        )
+                        }}
+
+                    </h3>
+
+
+                    <p class="mt-1 text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Distribución de las ventas registradas.',
+                        'Distribution of registered sales.'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div echarts [options]="graficoVentasEstados()" class="mt-3 h-80 w-full">
+                </div>
+
+            </div>
+
+
+            <!-- Productos más vendidos -->
+
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+                <div>
+
+                    <h3 class="font-semibold text-gray-900">
+
+                        {{
+                        t(
+                        'Productos más vendidos',
+                        'Best-selling products'
+                        )
+                        }}
+
+                    </h3>
+
+
+                    <p class="mt-1 text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Top 5 por cantidad vendida en ventas completadas.',
+                        'Top 5 by quantity sold in completed sales.'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                @if (
+                ventas.productos.length > 0
+                ) {
+
+                <div echarts [options]="graficoProductosVendidos()" class="mt-3 h-80 w-full">
+                </div>
+
+                } @else {
+
+                <div class="flex h-80 items-center justify-center text-sm text-gray-500">
+
+                    {{
+                    t(
+                    'No existen productos vendidos para mostrar.',
+                    'There are no sold products to display.'
+                    )
+                    }}
+
+                </div>
+
+                }
+
+            </div>
+
         </div>
 
-        <!-- LINE CHART -->
-        <div class="bg-white rounded-xl p-6 shadow-lg lg:col-span-2">
-            <h3 class="text-xl mb-6">
-                {{ t('Crecimiento de Ventas', 'Sales Growth') }}
-            </h3>
+        }
 
-            <div echarts [options]="growthChart" class="h-[300px] w-full"></div>
+
+        <!-- ============================================================ -->
+        <!-- INVENTARIO / COMPRAS -->
+        <!-- ============================================================ -->
+
+        @if (
+        datos.inventario
+        ||
+        datos.compras
+        ) {
+
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+
+
+            <!-- Inventario crítico -->
+
+            @if (
+            datos.inventario
+            ) {
+
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+                <div>
+
+                    <h3 class="font-semibold text-gray-900">
+
+                        {{
+                        t(
+                        'Inventario crítico',
+                        'Critical inventory'
+                        )
+                        }}
+
+                    </h3>
+
+
+                    <p class="mt-1 text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Productos agotados y bajo el nivel mínimo.',
+                        'Products out of stock or below minimum level.'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div echarts [options]="graficoInventarioCritico()" class="mt-3 h-80 w-full">
+                </div>
+
+            </div>
+
+            }
+
+
+            <!-- Compras -->
+
+            @if (
+            datos.compras
+            ) {
+
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+                <div>
+
+                    <h3 class="font-semibold text-gray-900">
+
+                        {{
+                        t(
+                        'Estado de compras',
+                        'Purchase status'
+                        )
+                        }}
+
+                    </h3>
+
+
+                    <p class="mt-1 text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Distribución actual de las compras registradas.',
+                        'Current distribution of registered purchases.'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <div echarts [options]="graficoComprasEstados()" class="mt-3 h-80 w-full">
+                </div>
+
+            </div>
+
+            }
+
         </div>
+
+        }
+
+
+        <!-- ============================================================ -->
+        <!-- TRANSFERENCIAS -->
+        <!-- ============================================================ -->
+
+        @if (
+        datos.transferencias
+        ) {
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <div>
+
+                <h3 class="font-semibold text-gray-900">
+
+                    {{
+                    t(
+                    'Estado de transferencias',
+                    'Transfer status'
+                    )
+                    }}
+
+                </h3>
+
+
+                <p class="mt-1 text-xs text-gray-500">
+
+                    {{
+                    t(
+                    'Situación de los movimientos de inventario entre sucursales.',
+                    'Status of inventory movements between branches.'
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <div echarts [options]="graficoTransferenciasEstados()" class="mt-3 h-80 w-full">
+            </div>
+
+        </div>
+
+        }
 
     </div>
 
-    <!-- TABLE -->
-    <div class="bg-white rounded-xl p-6 shadow-lg">
+    }
 
-        <h3 class="text-xl mb-6">
-            {{ t('Ventas por Vendedor', 'Sales by Seller') }}
-        </h3>
+    <!-- ================================================================ -->
+    <!-- INFORMACIÓN OPERATIVA -->
+    <!-- ================================================================ -->
 
-        <div class="overflow-x-auto">
+    @if (
+    dashboard();
+    as datos
+    ) {
 
-            <table class="w-full">
+    @if (
+    datos.ventas
+    ||
+    datos.inventario
+    ||
+    datos.compras
+    ||
+    datos.transferencias
+    ) {
 
-                <thead class="bg-gray-50">
+    <div class="space-y-4">
 
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
-                            {{ t('Vendedor', 'Seller') }}
-                        </th>
 
-                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
-                            {{ t('Ventas', 'Sales') }}
-                        </th>
+        <!-- ======================================================== -->
+        <!-- TÍTULO -->
+        <!-- ======================================================== -->
 
-                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
-                            {{ t('Productos', 'Products') }}
-                        </th>
+        <div>
 
-                        <th class="px-6 py-3 text-left text-xs uppercase tracking-wider text-gray-500">
-                            {{ t('Total', 'Total') }}
-                        </th>
-                    </tr>
+            <h2 class="text-lg font-semibold text-gray-900">
 
-                </thead>
+                {{
+                t(
+                'Información operativa',
+                'Operational information'
+                )
+                }}
 
-                <tbody class="divide-y divide-gray-200">
+            </h2>
 
-                    @for (seller of sellers; track seller.seller) {
 
-                    <tr class="hover:bg-gray-50">
+            <p class="mt-1 text-sm text-gray-500">
 
-                        <td class="px-6 py-4">
-                            {{ seller.seller }}
-                        </td>
+                {{
+                t(
+                'Datos recientes y situaciones que requieren seguimiento.',
+                'Recent data and situations that require attention.'
+                )
+                }}
 
-                        <td class="px-6 py-4">
-                            {{ seller.sales }}
-                        </td>
+            </p>
 
-                        <td class="px-6 py-4">
-                            {{ seller.products }}
-                        </td>
+        </div>
 
-                        <td class="px-6 py-4">
-                            {{ seller.total }}
-                        </td>
 
-                    </tr>
+        <!-- ======================================================== -->
+        <!-- VENTAS / STOCK -->
+        <!-- ======================================================== -->
+
+        @if (
+        datos.ventas
+        ||
+        datos.inventario
+        ) {
+
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+
+
+            <!-- ================================================= -->
+            <!-- ÚLTIMAS VENTAS -->
+            <!-- ================================================= -->
+
+            @if (
+            datos.ventas;
+            as ventas
+            ) {
+
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+
+                <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+
+                            <lucide-angular [img]="ShoppingCart" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-900">
+
+                                {{
+                                t(
+                                'Últimas ventas',
+                                'Latest sales'
+                                )
+                                }}
+
+                            </h3>
+
+
+                            <p class="text-xs text-gray-500">
+
+                                {{
+                                t(
+                                'Operaciones registradas recientemente.',
+                                'Recently registered operations.'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <a routerLink="/dashboard/reports/sales"
+                        class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+
+                        <lucide-angular [img]="ArrowRight" class="h-3.5 w-3.5">
+                        </lucide-angular>
+
+                    </a>
+
+                </div>
+
+
+                <div class="divide-y divide-gray-100">
+
+                    @for (
+                    venta of ventas.ventas;
+                    track venta.id_venta
+                    ) {
+
+                    <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+
+
+                        <div class="min-w-0">
+
+                            <div class="flex flex-wrap items-center gap-2">
+
+                                <p class="font-medium text-gray-900">
+
+                                    {{ venta.codigo_venta }}
+
+                                </p>
+
+
+                                <span [class]="
+                                                        'inline-flex rounded-full px-2 py-0.5 text-xs font-medium '
+                                                        +
+                                                        claseEstadoVenta(
+                                                            venta.estado_venta
+                                                        )
+                                                    ">
+
+                                    {{
+                                    nombreEstadoVenta(
+                                    venta.estado_venta
+                                    )
+                                    }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
+
+                                <lucide-angular [img]="Clock3" class="h-3.5 w-3.5">
+                                </lucide-angular>
+
+                                {{
+                                formatearFecha(
+                                venta.fecha_venta
+                                )
+                                }}
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="shrink-0 font-semibold text-gray-900">
+
+                            {{
+                            moneda(
+                            venta.total
+                            )
+                            }}
+
+                        </p>
+
+                    </div>
+
+                    } @empty {
+
+                    <div class="px-5 py-10 text-center text-sm text-gray-500">
+
+                        {{
+                        t(
+                        'No existen ventas recientes.',
+                        'There are no recent sales.'
+                        )
+                        }}
+
+                    </div>
 
                     }
 
-                </tbody>
+                </div>
 
-            </table>
+            </div>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- STOCK CRÍTICO -->
+            <!-- ================================================= -->
+
+            @if (
+            datos.inventario;
+            as inventario
+            ) {
+
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+
+                <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+
+                            <lucide-angular [img]="AlertTriangle" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-900">
+
+                                {{
+                                t(
+                                'Stock crítico',
+                                'Critical stock'
+                                )
+                                }}
+
+                            </h3>
+
+
+                            <p class="text-xs text-gray-500">
+
+                                {{
+                                t(
+                                'Productos agotados o bajo mínimo.',
+                                'Products out of stock or below minimum.'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <a routerLink="/dashboard/reports/inventory"
+                        class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+
+                        <lucide-angular [img]="ArrowRight" class="h-3.5 w-3.5">
+                        </lucide-angular>
+
+                    </a>
+
+                </div>
+
+
+                <div class="divide-y divide-gray-100">
+
+                    @for (
+                    stock of inventario.stockCritico;
+                    track stock.id_stock_sucursal
+                    ) {
+
+                    <div class="px-5 py-4">
+
+
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+
+
+                            <div class="min-w-0">
+
+                                <div class="flex flex-wrap items-center gap-2">
+
+                                    <p class="truncate font-medium text-gray-900">
+
+                                        {{
+                                        nombreProductoStock(
+                                        stock
+                                        )
+                                        }}
+
+                                    </p>
+
+
+                                    <span [class]="
+                                                            'inline-flex rounded-full px-2 py-0.5 text-xs font-medium '
+                                                            +
+                                                            claseEstadoStock(
+                                                                stock.estado_stock
+                                                            )
+                                                        ">
+
+                                        {{
+                                        nombreEstadoStock(
+                                        stock.estado_stock
+                                        )
+                                        }}
+
+                                    </span>
+
+                                </div>
+
+
+                                <p class="mt-1 text-xs text-gray-500">
+
+                                    {{
+                                    stock
+                                    .sucursal
+                                    ?.nombre
+                                    || '-'
+                                    }}
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="shrink-0 text-left sm:text-right">
+
+                                <p class="text-sm font-semibold text-gray-900">
+
+                                    {{
+                                    cantidad(
+                                    stock.stock_actual
+                                    )
+                                    }}
+
+                                    /
+
+                                    {{
+                                    cantidad(
+                                    stock.stock_minimo
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <p class="mt-0.5 text-xs text-amber-600">
+
+                                    {{
+                                    t(
+                                    'Faltan',
+                                    'Missing'
+                                    )
+                                    }}
+
+                                    {{
+                                    cantidad(
+                                    stock.faltante_minimo
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    } @empty {
+
+                    <div class="px-5 py-10 text-center text-sm text-emerald-600">
+
+                        {{
+                        t(
+                        'No existen productos con stock crítico.',
+                        'There are no products with critical stock.'
+                        )
+                        }}
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+            }
+
+        </div>
+
+        }
+
+
+        <!-- ======================================================== -->
+        <!-- COMPRAS / TRANSFERENCIAS -->
+        <!-- ======================================================== -->
+
+        @if (
+        datos.compras
+        ||
+        datos.transferencias
+        ) {
+
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+
+
+            <!-- ================================================= -->
+            <!-- ÚLTIMAS COMPRAS -->
+            <!-- ================================================= -->
+
+            @if (
+            datos.compras;
+            as compras
+            ) {
+
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+
+                <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+
+                            <lucide-angular [img]="BarChart3" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-900">
+
+                                {{
+                                t(
+                                'Últimas compras',
+                                'Latest purchases'
+                                )
+                                }}
+
+                            </h3>
+
+
+                            <p class="text-xs text-gray-500">
+
+                                {{
+                                t(
+                                'Compras registradas recientemente.',
+                                'Recently registered purchases.'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <a routerLink="/dashboard/reports/purchases"
+                        class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+
+                        <lucide-angular [img]="ArrowRight" class="h-3.5 w-3.5">
+                        </lucide-angular>
+
+                    </a>
+
+                </div>
+
+
+                <div class="divide-y divide-gray-100">
+
+                    @for (
+                    compra of compras.compras;
+                    track compra.id_compra
+                    ) {
+
+                    <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+
+
+                        <div class="min-w-0">
+
+                            <div class="flex flex-wrap items-center gap-2">
+
+                                <p class="font-medium text-gray-900">
+
+                                    {{ compra.codigo_compra }}
+
+                                </p>
+
+
+                                <span [class]="
+                                                        'inline-flex rounded-full px-2 py-0.5 text-xs font-medium '
+                                                        +
+                                                        claseEstadoCompra(
+                                                            compra.estado_compra
+                                                        )
+                                                    ">
+
+                                    {{
+                                    nombreEstadoCompra(
+                                    compra.estado_compra
+                                    )
+                                    }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
+
+                                <lucide-angular [img]="Clock3" class="h-3.5 w-3.5">
+                                </lucide-angular>
+
+                                {{
+                                formatearFecha(
+                                compra.fecha_compra
+                                )
+                                }}
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="shrink-0 font-semibold text-gray-900">
+
+                            {{
+                            moneda(
+                            compra.total
+                            )
+                            }}
+
+                        </p>
+
+                    </div>
+
+                    } @empty {
+
+                    <div class="px-5 py-10 text-center text-sm text-gray-500">
+
+                        {{
+                        t(
+                        'No existen compras recientes.',
+                        'There are no recent purchases.'
+                        )
+                        }}
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+            }
+
+
+            <!-- ================================================= -->
+            <!-- ÚLTIMAS TRANSFERENCIAS -->
+            <!-- ================================================= -->
+
+            @if (
+            datos.transferencias;
+            as transferencias
+            ) {
+
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+
+                <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+
+                            <lucide-angular [img]="ArrowLeftRight" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3 class="font-semibold text-gray-900">
+
+                                {{
+                                t(
+                                'Últimas transferencias',
+                                'Latest transfers'
+                                )
+                                }}
+
+                            </h3>
+
+
+                            <p class="text-xs text-gray-500">
+
+                                {{
+                                t(
+                                'Movimientos recientes entre sucursales.',
+                                'Recent movements between branches.'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <a routerLink="/dashboard/reports/transfers"
+                        class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+
+                        <lucide-angular [img]="ArrowRight" class="h-3.5 w-3.5">
+                        </lucide-angular>
+
+                    </a>
+
+                </div>
+
+
+                <div class="divide-y divide-gray-100">
+
+                    @for (
+                    transferencia of transferencias.transferencias;
+                    track transferencia.id_transferencia_inventario
+                    ) {
+
+                    <div class="px-5 py-4">
+
+
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+
+                            <div class="min-w-0">
+
+                                <div class="flex flex-wrap items-center gap-2">
+
+                                    <p class="font-medium text-gray-900">
+
+                                        {{
+                                        transferencia
+                                        .codigo_transferencia
+                                        }}
+
+                                    </p>
+
+
+                                    <span [class]="
+                                                            'inline-flex rounded-full px-2 py-0.5 text-xs font-medium '
+                                                            +
+                                                            claseEstadoTransferencia(
+                                                                transferencia.estado_transferencia
+                                                            )
+                                                        ">
+
+                                        {{
+                                        nombreEstadoTransferencia(
+                                        transferencia.estado_transferencia
+                                        )
+                                        }}
+
+                                    </span>
+
+                                </div>
+
+
+                                <p class="mt-1 truncate text-xs text-gray-500">
+
+                                    {{
+                                    transferencia
+                                    .sucursal_origen
+                                    ?.nombre
+                                    || '-'
+                                    }}
+
+                                    →
+
+                                    {{
+                                    transferencia
+                                    .sucursal_destino
+                                    ?.nombre
+                                    || '-'
+                                    }}
+
+                                </p>
+
+
+                                <div class="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
+
+                                    <lucide-angular [img]="Clock3" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+                                    {{
+                                    formatearFecha(
+                                    transferencia.fecha_solicitud
+                                    )
+                                    }}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="shrink-0 text-left sm:text-right">
+
+                                <p class="text-xs text-gray-400">
+
+                                    {{
+                                    t(
+                                    'Cantidad',
+                                    'Quantity'
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <p class="mt-0.5 font-semibold text-gray-900">
+
+                                    {{
+                                    cantidad(
+                                    cantidadTransferencia(
+                                    transferencia
+                                    )
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    } @empty {
+
+                    <div class="px-5 py-10 text-center text-sm text-gray-500">
+
+                        {{
+                        t(
+                        'No existen transferencias recientes.',
+                        'There are no recent transfers.'
+                        )
+                        }}
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+            }
+
+        </div>
+
+        }
+
+    </div>
+
+    }
+
+    }
+
+    <!-- ================================================================ -->
+    <!-- ACCESOS RÁPIDOS -->
+    <!-- ================================================================ -->
+
+    @if (
+    tieneReportes()
+    ) {
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+
+        <div>
+
+            <h2 class="text-lg font-semibold text-gray-900">
+
+                {{
+                t(
+                'Accesos rápidos',
+                'Quick access'
+                )
+                }}
+
+            </h2>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Consulte información detallada de las áreas habilitadas para su usuario.',
+                'View detailed information for the areas enabled for your user.'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+
+        <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+
+
+            @if (
+            puedeVerVentas()
+            ) {
+
+            <a routerLink="/dashboard/reports/sales"
+                class="group flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-4 transition hover:border-primary/40 hover:bg-gray-50">
+
+                <div
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+
+                    <lucide-angular [img]="ShoppingCart" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <p class="font-medium text-gray-900">
+
+                        {{
+                        t(
+                        'Ventas',
+                        'Sales'
+                        )
+                        }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+            </a>
+
+            }
+
+
+            @if (
+            puedeVerInventario()
+            ) {
+
+            <a routerLink="/dashboard/reports/inventory"
+                class="group flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-4 transition hover:border-primary/40 hover:bg-gray-50">
+
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+
+                    <lucide-angular [img]="Boxes" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <p class="font-medium text-gray-900">
+
+                        {{
+                        t(
+                        'Inventario',
+                        'Inventory'
+                        )
+                        }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+            </a>
+
+            }
+
+
+            @if (
+            puedeVerCompras()
+            ) {
+
+            <a routerLink="/dashboard/reports/purchases"
+                class="group flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-4 transition hover:border-primary/40 hover:bg-gray-50">
+
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+
+                    <lucide-angular [img]="BarChart3" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <p class="font-medium text-gray-900">
+
+                        {{
+                        t(
+                        'Compras',
+                        'Purchases'
+                        )
+                        }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+            </a>
+
+            }
+
+
+            @if (
+            puedeVerTransferencias()
+            ) {
+
+            <a routerLink="/dashboard/reports/transfers"
+                class="group flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-4 transition hover:border-primary/40 hover:bg-gray-50">
+
+                <div
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+
+                    <lucide-angular [img]="ArrowLeftRight" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <p class="font-medium text-gray-900">
+
+                        {{
+                        t(
+                        'Transferencias',
+                        'Transfers'
+                        )
+                        }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Ver reporte',
+                        'View report'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+            </a>
+
+            }
 
         </div>
 
     </div>
+
+    } @else {
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+
+            <lucide-angular [img]="BarChart3" class="h-5 w-5 text-gray-500">
+            </lucide-angular>
+
+        </div>
+
+
+        <h2 class="mt-4 font-semibold text-gray-900">
+
+            {{
+            t(
+            'Sin información de reportes disponible',
+            'No report information available'
+            )
+            }}
+
+        </h2>
+
+
+        <p class="mt-1 text-sm text-gray-500">
+
+            {{
+            t(
+            'Su usuario no posee permisos para visualizar indicadores de reportes.',
+            'Your user does not have permission to view report indicators.'
+            )
+            }}
+
+        </p>
+
+    </div>
+
+    }
+
 
 </div>

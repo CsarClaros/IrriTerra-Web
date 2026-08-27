@@ -1,50 +1,493 @@
-<div class="bg-white rounded-xl shadow-lg overflow-hidden">
-    <div class="overflow-x-auto">
+<div class="min-w-0 w-full max-w-full space-y-6">
 
-        <table class="w-full">
 
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs text-gray-500">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs text-gray-500">Email</th>
-                    <th class="px-6 py-3 text-left text-xs text-gray-500">Rol</th>
-                    <th class="px-6 py-3 text-left text-xs text-gray-500">Estado</th>
-                    <th class="px-6 py-3 text-left text-xs text-gray-500">Acciones</th>
-                </tr>
-            </thead>
+    <!-- Encabezado -->
 
-            <tbody>
-                @for (user of usuarios; track user.id) {
-                <tr class="hover:bg-gray-50">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-                    <td class="px-6 py-4">{{ user.nombre }}</td>
-                    <td class="px-6 py-4">{{ user.email }}</td>
 
-                    <td class="px-6 py-4">
-                        <span>{{ user.rol }}</span>
-                    </td>
+        <div>
 
-                    <td class="px-6 py-4">
-                        <span>{{ user.estado }}</span>
-                    </td>
+            <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">
 
-                    <td class="px-6 py-4 flex gap-2">
+                {{
+                t(
+                'Usuarios',
+                'Users'
+                )
+                }}
 
-                        <button (click)="edit.emit(user)" class="text-blue-600">
-                            Editar
-                        </button>
+            </h1>
 
-                        <button (click)="deactivate(user.id)" class="text-red-600">
-                            Desactivar
-                        </button>
 
-                    </td>
+            <p class="mt-1 text-sm text-gray-500">
 
-                </tr>
-                }
-            </tbody>
+                {{
+                t(
+                'Administración de usuarios, roles y sucursales asignadas.',
+                'Manage users, roles and assigned branches.'
+                )
+                }}
 
-        </table>
+            </p>
+
+        </div>
+
+
+        @if (
+        puedeCrear()
+        ) {
+
+        <button type="button" (click)="abrirCrear()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
+
+            <lucide-angular [img]="Plus" class="h-4 w-4">
+            </lucide-angular>
+
+
+            {{
+            t(
+            'Nuevo usuario',
+            'New user'
+            )
+            }}
+
+        </button>
+
+        }
 
     </div>
+
+
+    <!-- Mensajes -->
+
+    @if (
+    mensajeExito()
+    ) {
+
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-700">
+
+        {{ mensajeExito() }}
+
+    </div>
+
+    }
+
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!-- Herramientas -->
+
+    <div
+        class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
+
+
+        <div class="relative flex-1">
+
+            <lucide-angular [img]="Search" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400">
+            </lucide-angular>
+
+
+            <input type="search" [value]="busqueda()" (input)="actualizarBusqueda($event)" [placeholder]="
+                    t(
+                        'Buscar por nombre, CI, usuario, rol...',
+                        'Search by name, ID, username, role...'
+                    )
+                "
+                class="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+        </div>
+
+
+        <button type="button" [disabled]="cargando()" (click)="cargarUsuarios()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+            </lucide-angular>
+
+
+            {{
+            t(
+            'Actualizar',
+            'Refresh'
+            )
+            }}
+
+        </button>
+
+    </div>
+
+
+    <!-- Tabla -->
+
+    <div class="min-w-0 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+
+        @if (
+        cargando()
+        ) {
+
+        <div class="px-6 py-16 text-center text-sm text-gray-500">
+
+            {{
+            t(
+            'Cargando usuarios...',
+            'Loading users...'
+            )
+            }}
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-[980px] w-full">
+
+
+                <thead class="border-b border-gray-200 bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Usuario',
+                            'User'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Contacto',
+                            'Contact'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Rol',
+                            'Role'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Sucursal',
+                            'Branch'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Estado',
+                            'Status'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Acciones',
+                            'Actions'
+                            )
+                            }}
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100">
+
+                    @for (
+                    usuario of usuariosFiltrados();
+                    track usuario.id_usuario
+                    ) {
+
+                    <tr class="transition hover:bg-gray-50">
+
+
+                        <!-- Usuario -->
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex items-center gap-3">
+
+
+                                @if (
+                                usuario.foto
+                                ) {
+
+                                <img [src]="usuario.foto" [alt]="nombreCompleto(usuario)"
+                                    class="h-10 w-10 shrink-0 rounded-xl border border-gray-200 object-cover">
+
+                                } @else {
+
+                                <div
+                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-sm font-semibold text-gray-600">
+
+                                    {{ iniciales(usuario) }}
+
+                                </div>
+
+                                }
+
+
+                                <div class="min-w-0">
+
+                                    <p class="font-medium text-gray-900">
+
+                                        {{
+                                        nombreCompleto(
+                                        usuario
+                                        )
+                                        }}
+
+                                    </p>
+
+
+                                    <p class="mt-0.5 text-xs text-gray-500">
+
+                                        @{{ usuario.usuario }}
+                                        ·
+                                        CI {{ usuario.ci }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Contacto -->
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm text-gray-700">
+
+                                {{
+                                usuario.correo
+                                || '-'
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-0.5 text-xs text-gray-500">
+
+                                {{
+                                usuario.telefono
+                                || '-'
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-sm text-gray-700">
+
+                            {{
+                            usuario.rol
+                            ?.nombre
+                            || '-'
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4 text-sm text-gray-700">
+
+                            {{
+                            usuario.sucursal
+                            ?.nombre
+                            || '-'
+                            }}
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <span [class]="
+                                            'inline-flex rounded-full px-2.5 py-1 text-xs font-medium '
+                                            +
+                                            claseEstado(
+                                                usuario.estado_registro
+                                            )
+                                        ">
+
+                                {{
+                                nombreEstado(
+                                usuario.estado_registro
+                                )
+                                }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Acciones -->
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex justify-end gap-2">
+
+
+                                @if (
+                                puedeEditar()
+                                ) {
+
+                                <button type="button" (click)="abrirEditar(usuario)"
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-50">
+
+                                    <lucide-angular [img]="Edit3" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+
+                                    {{
+                                    t(
+                                    'Editar',
+                                    'Edit'
+                                    )
+                                    }}
+
+                                </button>
+
+                                }
+
+
+                                @if (
+                                puedeEliminar()
+                                &&
+                                usuario.estado_registro === 'A'
+                                ) {
+
+                                <button type="button" [disabled]="
+                                                    procesandoId()
+                                                    === usuario.id_usuario
+                                                " (click)="desactivar(usuario)"
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50">
+
+                                    <lucide-angular [img]="Trash2" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+
+                                    {{
+                                    t(
+                                    'Desactivar',
+                                    'Deactivate'
+                                    )
+                                    }}
+
+                                </button>
+
+                                }
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    } @empty {
+
+                    <tr>
+
+                        <td colspan="6" class="px-6 py-16 text-center">
+
+                            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+
+                                <lucide-angular [img]="Users" class="h-5 w-5 text-gray-500">
+                                </lucide-angular>
+
+                            </div>
+
+
+                            <p class="mt-3 text-sm text-gray-500">
+
+                                {{
+                                t(
+                                'No se encontraron usuarios.',
+                                'No users found.'
+                                )
+                                }}
+
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </div>
+
+
 </div>
+
+
+<!-- ================================================================ -->
+<!-- MODAL -->
+<!-- ================================================================ -->
+
+@if (
+modalAbierto()
+) {
+
+<app-user-form-modal [modo]="modoModal()" [usuario]="usuarioSeleccionado()" (cerrar)="cerrarModal()"
+    (guardado)="usuarioGuardado($event)">
+
+</app-user-form-modal>
+
+}

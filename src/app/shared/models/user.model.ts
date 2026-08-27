@@ -1,57 +1,80 @@
-export interface RolResumen{
+export interface RolResumen {
 
     id_rol: number;
 
     nombre: string;
 }
 
-export interface SucursalResumen{
+export interface SucursalResumen {
 
     id_sucursal: number;
 
     nombre: string;
 }
 
-export interface Usuario{
+export interface Usuario {
 
-    id_usuario: number;
+    id_usuario:
+    number;
 
-    ci: string;
+    id_rol:
+    number;
 
-    usuario: string;
+    id_sucursal:
+    number;
 
-    nombre: string;
+    ci:
+    string;
 
-    apellido_paterno: string;
+    usuario:
+    string;
 
-    apellido_materno: string | null;
+    nombre:
+    string;
 
-    correo: string | null;
+    apellido_paterno:
+    string;
 
-    telefono: string | null;
+    apellido_materno:
+    string | null;
 
-    direccion: string | null;
+    correo:
+    string | null;
 
-    foto: string | null;
+    telefono:
+    string | null;
 
-    ultimo_acceso: string | null;
-    
-    estado_registro: string;
+    direccion:
+    string | null;
 
-    rol: RolResumen | null;
+    foto:
+    string | null;
 
-    sucursal: SucursalResumen | null;
+    ultimo_acceso:
+    string | null;
 
-    permisos?: string[];
+    estado_registro:
+    string;
 
-    created_at: string | null;
+    rol:
+    RolResumen | null;
 
-    updated_at: string | null;
+    sucursal:
+    SucursalResumen | null;
+
+    permisos?:
+    string[];
+
+    created_at:
+    string | null;
+
+    updated_at:
+    string | null;
+
 }
-
 export interface UsuarioAutenticado
-    extends Usuario{
+    extends Usuario {
 
-        permisos: string[];
+    permisos: string[];
 
-    }
+}

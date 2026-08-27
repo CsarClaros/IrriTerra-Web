@@ -80,3 +80,16 @@ export interface ResourceResponse<T> {
     data: T;
 
 }
+
+export interface ActualizarPerfilRequest {
+
+    correo:
+        string | null;
+
+    telefono:
+        string | null;
+
+    direccion:
+        string | null;
+
+}

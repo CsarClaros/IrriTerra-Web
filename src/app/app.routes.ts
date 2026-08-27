@@ -606,22 +606,22 @@ export const routes:
 
                         },
 
-                        {
+                        // {
 
-                            path: 'create',
+                        //     path: 'create',
 
-                            component:
-                                UserCreate,
+                        //     component:
+                        //         UserCreate,
 
-                            canActivate: [
+                        //     canActivate: [
 
-                                permissionGuard(
-                                    'usuario.crear'
-                                )
+                        //         permissionGuard(
+                        //             'usuario.crear'
+                        //         )
 
-                            ]
+                        //     ]
 
-                        },
+                        // },
 
                         {
 

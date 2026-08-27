@@ -1,188 +1,935 @@
-<div class="space-y-6">
+<div class="min-w-0 w-full max-w-full space-y-6">
 
-    <!-- HEADER -->
-    <div>
-        <h1 class="text-3xl mb-2">
-            {{ t('Configuración', 'Settings') }}
-        </h1>
-        <p class="text-gray-600">
-            {{ t('Configuración general de la empresa', 'General company settings') }}
-        </p>
+
+    <!-- ================================================================ -->
+    <!-- ENCABEZADO -->
+    <!-- ================================================================ -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+
+        <div>
+
+            <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">
+
+                {{
+                t(
+                'Configuración',
+                'Settings'
+                )
+                }}
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Información de su perfil y cuenta de usuario.',
+                'Your profile and account information.'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+
+        <button type="button" [disabled]="cargando()" (click)="refrescarPerfil()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+            </lucide-angular>
+
+
+            {{
+            t(
+            'Actualizar',
+            'Refresh'
+            )
+            }}
+
+        </button>
+
     </div>
 
-    <!-- COMPANY FORM -->
-    <div class="bg-white rounded-xl shadow-lg p-8">
 
-        <h2 class="text-2xl mb-6">
-            {{ t('Información de la Empresa', 'Company Information') }}
-        </h2>
+    <!-- ================================================================ -->
+    <!-- ERROR -->
+    <!-- ================================================================ -->
 
-        <form (ngSubmit)="handleSubmit()" class="space-y-6">
+    @if (
+    errorMensaje()
+    ) {
 
-            <!-- LOGO -->
-            <div>
-                <label class="block mb-2 text-sm text-gray-600">
-                    {{ t('Logo de la Empresa', 'Company Logo') }}
-                </label>
+    <div class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
 
-                <div class="flex items-center space-x-4">
+        {{ errorMensaje() }}
 
-                    <div class="w-24 h-24 bg-primary rounded-lg flex items-center justify-center text-white text-2xl">
-                        IT
+    </div>
+
+    }
+
+    @if (
+    mensajeExito()
+    ) {
+
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-700">
+
+        {{ mensajeExito() }}
+
+    </div>
+
+    }
+
+
+    <!-- ================================================================ -->
+    <!-- PERFIL -->
+    <!-- ================================================================ -->
+
+    @if (
+    usuario();
+    as usuarioActual
+    ) {
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+
+        <!-- ======================================================== -->
+        <!-- CABECERA DEL PERFIL -->
+        <!-- ======================================================== -->
+
+        <div class="border-b border-gray-100 p-6 lg:p-8">
+
+
+            <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+
+                <!-- Avatar -->
+
+                <div class="relative shrink-0">
+
+
+                    @if (
+                    usuarioActual.foto
+                    ) {
+
+                    <img [src]="usuarioActual.foto" [alt]="nombreCompleto()"
+                        class="h-20 w-20 rounded-2xl border border-gray-200 object-cover">
+
+                    } @else {
+
+                    <div
+                        class="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary text-2xl font-semibold text-white">
+
+                        {{ iniciales() }}
+
                     </div>
 
-                    <button type="button"
-                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center">
+                    }
 
-                        <lucide-icon [img]="Upload" class="w-4 h-4 mr-2"></lucide-icon>
 
-                        {{ t('Subir Logo', 'Upload Logo') }}
-                    </button>
+                    <label
+                        class="absolute -bottom-2 -right-2 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-gray-900 text-white shadow transition hover:bg-gray-700">
 
-                </div>
-            </div>
+                        <lucide-angular [img]="Camera" class="h-4 w-4">
+                        </lucide-angular>
 
-            <!-- FIELDS -->
-            <div class="grid md:grid-cols-2 gap-4">
 
-                <div>
-                    <label class="block mb-2 text-sm text-gray-600">
-                        {{ t('Nombre de la Empresa', 'Company Name') }}
+                        <input type="file" accept="image/jpeg,image/png,image/webp" [disabled]="subiendoFoto()"
+                            (change)="seleccionarFoto($event)" class="hidden">
+
                     </label>
 
-                    <input type="text" [(ngModel)]="config.nombreEmpresa" name="nombreEmpresa"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
 
-                <div>
-                    <label class="block mb-2 text-sm text-gray-600">
-                        {{ t('Correo', 'Email') }}
-                    </label>
 
-                    <input type="email" [(ngModel)]="config.correo" name="correo"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
+                <!-- Datos principales -->
 
-                <div>
-                    <label class="block mb-2 text-sm text-gray-600">
-                        {{ t('Teléfono', 'Phone') }}
-                    </label>
+                <div class="min-w-0 flex-1">
 
-                    <input type="tel" [(ngModel)]="config.telefono" name="telefono"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
 
-                <div>
-                    <label class="block mb-2 text-sm text-gray-600">
-                        {{ t('Idioma', 'Language') }}
-                    </label>
+                    <div class="flex flex-wrap items-center gap-3">
 
-                    <select [(ngModel)]="config.idioma" name="idioma"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
-                    </select>
+                        <h2 class="text-xl font-semibold text-gray-900 sm:text-2xl">
 
-                </div>
+                            {{ nombreCompleto() }}
 
-                <div class="md:col-span-2">
-                    <label class="block mb-2 text-sm text-gray-600">
-                        {{ t('Dirección', 'Address') }}
-                    </label>
+                        </h2>
 
-                    <input type="text" [(ngModel)]="config.direccion" name="direccion"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
 
-            </div>
+                        <span [class]="
+                                    'inline-flex rounded-full px-2.5 py-1 text-xs font-medium '
+                                    +
+                                    claseEstado(
+                                        usuarioActual.estado_registro
+                                    )
+                                ">
 
-            <!-- SAVE -->
-            <div class="pt-6 border-t border-gray-200">
+                            {{
+                            nombreEstado(
+                            usuarioActual.estado_registro
+                            )
+                            }}
 
-                <button type="submit"
-                    class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center">
-                    <lucide-icon [img]="Save" class="w-5 h-5 mr-2"></lucide-icon>
-                    {{ t('Guardar Cambios', 'Save Changes') }}
-                </button>
+                        </span>
 
-            </div>
+                    </div>
 
-        </form>
-    </div>
 
-    <!-- SYSTEM SETTINGS -->
-    <div class="bg-white rounded-xl shadow-lg p-8">
+                    <p class="mt-1 text-sm text-gray-500">
 
-        <h2 class="text-2xl mb-6">
-            {{ t('Configuración del Sistema', 'System Settings') }}
-        </h2>
+                        @{{ usuarioActual.usuario }}
 
-        <div class="space-y-6">
-
-            <!-- SWITCH 1 -->
-            <div class="flex items-center justify-between">
-
-                <div>
-                    <h3 class="mb-1">{{ t('Notificaciones por Email', 'Email Notifications') }}</h3>
-                    <p class="text-sm text-gray-600">
-                        {{ t('Recibir notificaciones de ventas y stock', 'Receive sales and stock notifications') }}
                     </p>
+
+
+                    <div class="mt-3 flex flex-wrap gap-2">
+
+
+                        <span
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700">
+
+                            <lucide-angular [img]="ShieldCheck" class="h-3.5 w-3.5">
+                            </lucide-angular>
+
+                            {{ rol() }}
+
+                        </span>
+
+
+                        <span
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700">
+
+                            <lucide-angular [img]="Building2" class="h-3.5 w-3.5">
+                            </lucide-angular>
+
+                            {{ sucursal() }}
+
+                        </span>
+
+
+                    </div>
+
+                    <div class="mt-4">
+
+
+                        <button type="button" (click)="editarPerfil()"
+                            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                            <lucide-angular [img]="Pencil" class="h-4 w-4">
+                            </lucide-angular>
+
+
+                            {{
+                            t(
+                            'Editar perfil',
+                            'Edit profile'
+                            )
+                            }}
+
+                        </button>
+
+                    </div>
+
                 </div>
-
-                <input type="checkbox" class="w-5 h-5 accent-primary" checked />
-
-            </div>
-
-            <!-- SWITCH 2 -->
-            <div class="flex items-center justify-between">
-
-                <div>
-                    <h3 class="mb-1">{{ t('Alertas de Stock Bajo', 'Low Stock Alerts') }}</h3>
-                    <p class="text-sm text-gray-600">
-                        {{ t('Notificar cuando el stock esté bajo', 'Notify when stock is low') }}
-                    </p>
-                </div>
-
-                <input type="checkbox" class="w-5 h-5 accent-primary" checked />
-
-            </div>
-
-            <!-- SWITCH 3 -->
-            <div class="flex items-center justify-between">
-
-                <div>
-                    <h3 class="mb-1">{{ t('Modo Oscuro', 'Dark Mode') }}</h3>
-                    <p class="text-sm text-gray-600">
-                        {{ t('Activar tema oscuro', 'Enable dark theme') }}
-                    </p>
-                </div>
-
-                <input type="checkbox" class="w-5 h-5 accent-primary" />
 
             </div>
 
         </div>
+
+
+
+
+        <!-- ======================================================== -->
+        <!-- INFORMACIÓN PERSONAL -->
+        <!-- ======================================================== -->
+
+        <div class="p-6 lg:p-8">
+
+
+            <div class="mb-5">
+
+                <h3 class="text-lg font-semibold text-gray-900">
+
+                    {{
+                    t(
+                    'Información personal',
+                    'Personal information'
+                    )
+                    }}
+
+                </h3>
+
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    {{
+                    t(
+                    'Datos asociados actualmente a su cuenta.',
+                    'Data currently associated with your account.'
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+
+                <!-- CI -->
+
+                <div class="min-w-0 rounded-xl border border-gray-200 p-4">
+
+                    <div class="flex items-start gap-3">
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+
+                            <lucide-angular [img]="IdCard" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                CI
+
+                            </p>
+
+
+                            <p class="mt-1 break-words text-sm font-medium text-gray-900">
+
+                                {{ usuarioActual.ci }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Usuario -->
+
+                <div class="min-w-0 rounded-xl border border-gray-200 p-4">
+
+                    <div class="flex items-start gap-3">
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+
+                            <lucide-angular [img]="UserRound" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                {{
+                                t(
+                                'Usuario',
+                                'Username'
+                                )
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-1 break-words text-sm font-medium text-gray-900">
+
+                                {{ usuarioActual.usuario }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Correo -->
+
+                <div class="min-w-0 rounded-xl border border-gray-200 p-4">
+
+                    <div class="flex items-start gap-3">
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+
+                            <lucide-angular [img]="Mail" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                {{
+                                t(
+                                'Correo',
+                                'Email'
+                                )
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-1 break-words text-sm font-medium text-gray-900">
+
+                                {{
+                                usuarioActual.correo
+                                ||
+                                t(
+                                'No registrado',
+                                'Not registered'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Teléfono -->
+
+                <div class="min-w-0 rounded-xl border border-gray-200 p-4">
+
+                    <div class="flex items-start gap-3">
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+
+                            <lucide-angular [img]="Phone" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                {{
+                                t(
+                                'Teléfono',
+                                'Phone'
+                                )
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-1 break-words text-sm font-medium text-gray-900">
+
+                                {{
+                                usuarioActual.telefono
+                                ||
+                                t(
+                                'No registrado',
+                                'Not registered'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Dirección -->
+
+                <div class="min-w-0 rounded-xl border border-gray-200 p-4 md:col-span-2">
+
+                    <div class="flex items-start gap-3">
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+
+                            <lucide-angular [img]="MapPin" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                {{
+                                t(
+                                'Dirección',
+                                'Address'
+                                )
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-1 break-words text-sm font-medium text-gray-900">
+
+                                {{
+                                usuarioActual.direccion
+                                ||
+                                t(
+                                'No registrada',
+                                'Not registered'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- SECURITY -->
-    <div class="bg-white rounded-xl shadow-lg p-8">
+    @if (
+    editando()
+    ) {
 
-        <h2 class="text-2xl mb-6">
-            {{ t('Seguridad', 'Security') }}
-        </h2>
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:p-8">
 
-        <div class="space-y-4">
 
-            <button class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                {{ t('Cambiar Contraseña', 'Change Password') }}
+        <div class="mb-6">
+
+            <h3 class="text-lg font-semibold text-gray-900">
+
+                {{
+                t(
+                'Editar perfil',
+                'Edit profile'
+                )
+                }}
+
+            </h3>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Actualice sus datos de contacto.',
+                'Update your contact information.'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+
+            <!-- Correo -->
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    {{
+                    t(
+                    'Correo electrónico',
+                    'Email'
+                    )
+                    }}
+
+                </label>
+
+
+                <input type="email" [(ngModel)]="formPerfil.correo"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+
+                @if (
+                errorCampo(
+                'correo'
+                );
+                as error
+                ) {
+
+                <p class="mt-1 text-xs text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- Teléfono -->
+
+            <div>
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    {{
+                    t(
+                    'Teléfono',
+                    'Phone'
+                    )
+                    }}
+
+                </label>
+
+
+                <input type="text" maxlength="20" [(ngModel)]="formPerfil.telefono"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+
+                @if (
+                errorCampo(
+                'telefono'
+                );
+                as error
+                ) {
+
+                <p class="mt-1 text-xs text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- Dirección -->
+
+            <div class="md:col-span-2">
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                    {{
+                    t(
+                    'Dirección',
+                    'Address'
+                    )
+                    }}
+
+                </label>
+
+
+                <input type="text" maxlength="255" [(ngModel)]="formPerfil.direccion"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+
+                @if (
+                errorCampo(
+                'direccion'
+                );
+                as error
+                ) {
+
+                <p class="mt-1 text-xs text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-6 flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end">
+
+
+            <button type="button" [disabled]="guardando()" (click)="cancelarEdicion()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+                <lucide-angular [img]="X" class="h-4 w-4">
+                </lucide-angular>
+
+
+                {{
+                t(
+                'Cancelar',
+                'Cancel'
+                )
+                }}
+
             </button>
 
-            <button
-                class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors ml-0 md:ml-4">
-                {{ t('Configurar 2FA', 'Setup 2FA') }}
+
+            <button type="button" [disabled]="guardando()" (click)="guardarPerfil()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50">
+
+                <lucide-angular [img]="Save" class="h-4 w-4">
+                </lucide-angular>
+
+
+                @if (
+                guardando()
+                ) {
+
+                {{
+                t(
+                'Guardando...',
+                'Saving...'
+                )
+                }}
+
+                } @else {
+
+                {{
+                t(
+                'Guardar cambios',
+                'Save changes'
+                )
+                }}
+
+                }
+
             </button>
 
         </div>
+
     </div>
+
+    }
+
+
+    <!-- ============================================================ -->
+    <!-- CUENTA Y ACCESO -->
+    <!-- ============================================================ -->
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:p-8">
+
+
+        <div class="mb-5">
+
+            <h3 class="text-lg font-semibold text-gray-900">
+
+                {{
+                t(
+                'Cuenta y acceso',
+                'Account and access'
+                )
+                }}
+
+            </h3>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Información relacionada con sus permisos y acceso al ERP.',
+                'Information related to your permissions and ERP access.'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+
+            <!-- Rol -->
+
+            <div class="rounded-xl bg-gray-50 p-4">
+
+                <div class="flex items-center gap-2 text-gray-500">
+
+                    <lucide-angular [img]="ShieldCheck" class="h-4 w-4">
+                    </lucide-angular>
+
+
+                    <p class="text-xs font-medium uppercase tracking-wide">
+
+                        {{
+                        t(
+                        'Rol',
+                        'Role'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <p class="mt-2 text-sm font-semibold text-gray-900">
+
+                    {{ rol() }}
+
+                </p>
+
+            </div>
+
+
+            <!-- Sucursal -->
+
+            <div class="rounded-xl bg-gray-50 p-4">
+
+                <div class="flex items-center gap-2 text-gray-500">
+
+                    <lucide-angular [img]="Building2" class="h-4 w-4">
+                    </lucide-angular>
+
+
+                    <p class="text-xs font-medium uppercase tracking-wide">
+
+                        {{
+                        t(
+                        'Sucursal',
+                        'Branch'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <p class="mt-2 text-sm font-semibold text-gray-900">
+
+                    {{ sucursal() }}
+
+                </p>
+
+            </div>
+
+
+            <!-- Permisos -->
+
+            <div class="rounded-xl bg-gray-50 p-4">
+
+                <div class="flex items-center gap-2 text-gray-500">
+
+                    <lucide-angular [img]="User" class="h-4 w-4">
+                    </lucide-angular>
+
+
+                    <p class="text-xs font-medium uppercase tracking-wide">
+
+                        {{
+                        t(
+                        'Permisos',
+                        'Permissions'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <p class="mt-2 text-sm font-semibold text-gray-900">
+
+                    {{ cantidadPermisos() }}
+
+                </p>
+
+            </div>
+
+
+            <!-- Último acceso -->
+
+            <div class="rounded-xl bg-gray-50 p-4">
+
+                <div class="flex items-center gap-2 text-gray-500">
+
+                    <lucide-angular [img]="Clock3" class="h-4 w-4">
+                    </lucide-angular>
+
+
+                    <p class="text-xs font-medium uppercase tracking-wide">
+
+                        {{
+                        t(
+                        'Último acceso',
+                        'Last access'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+
+                <p class="mt-2 text-sm font-semibold text-gray-900">
+
+                    {{
+                    formatearFecha(
+                    usuarioActual.ultimo_acceso
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    } @else {
+
+    <!-- ============================================================ -->
+    <!-- SIN SESIÓN -->
+    <!-- ============================================================ -->
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
+
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+
+            <lucide-angular [img]="User" class="h-5 w-5 text-gray-500">
+            </lucide-angular>
+
+        </div>
+
+
+        <p class="mt-4 text-sm text-gray-500">
+
+            {{
+            t(
+            'No se encontró información del usuario autenticado.',
+            'Authenticated user information was not found.'
+            )
+            }}
+
+        </p>
+
+    </div>
+
+    }
+
 
 </div>
