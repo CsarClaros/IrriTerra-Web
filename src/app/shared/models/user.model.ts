@@ -3,6 +3,8 @@ export interface RolResumen {
     id_rol: number;
 
     nombre: string;
+
+    nivel: number;
 }
 
 export interface SucursalResumen {

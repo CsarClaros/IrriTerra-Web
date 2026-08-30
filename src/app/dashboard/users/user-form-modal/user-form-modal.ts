@@ -1,912 +1,1029 @@
 import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  signal
+    Component,
+    computed,
+    EventEmitter,
+    inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    signal
 } from '@angular/core';
 
 import {
-  CommonModule
+    CommonModule
 } from '@angular/common';
 
 import {
-  FormsModule
+    FormsModule
 } from '@angular/forms';
 
 import {
-  HttpErrorResponse
+    HttpErrorResponse
 } from '@angular/common/http';
 
 import {
-  finalize,
-  forkJoin
+    finalize,
+    forkJoin
 } from 'rxjs';
 
 import {
-  Camera,
-  LucideAngularModule,
-  Save,
-  UserRound,
-  X
+    Camera,
+    LucideAngularModule,
+    Save,
+    UserRound,
+    X
 } from 'lucide-angular';
 
 import {
-  UsuarioService
+    UsuarioService
 } from '../../../core/services/seguridad/usuario.service';
 
 import {
-  RolService
+    RolService
 } from '../../../core/services/seguridad/rol.service';
 
 import {
-  SucursalService
+    SucursalService
 } from '../../../core/services/organizacion/sucursal.service';
 
 import {
-  LanguageService
+    LanguageService
 } from '../../../core/services/language.service';
 
 import {
-  RolResumen,
-  Usuario
+    RolResumen,
+    Usuario
 } from '../../../shared/models/user.model';
 
 import {
-  Sucursal
+    Sucursal
 } from '../../../shared/models/sucursal.model';
 
 import {
-  ModoFormularioUsuario,
-  UsuarioFormData
+    ModoFormularioUsuario,
+    UsuarioFormData
 } from '../../../shared/models/usuario-form.model';
+
+import {
+    SessionService
+} from '../../../core/services/session.service';
 
 
 @Component({
-  selector:
-      'app-user-form-modal',
+    selector:
+        'app-user-form-modal',
 
-  standalone:
-      true,
+    standalone:
+        true,
 
-  imports: [
-      CommonModule,
-      FormsModule,
-      LucideAngularModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        LucideAngularModule
+    ],
 
-  templateUrl:
-      './user-form-modal.html',
+    templateUrl:
+        './user-form-modal.html',
 
-  styleUrl:
-      './user-form-modal.css'
+    styleUrl:
+        './user-form-modal.css'
 })
 export class UserFormModal
-  implements OnInit, OnDestroy {
+    implements OnInit, OnDestroy {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Entradas
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Entradas
+    |--------------------------------------------------------------------------
+    */
 
-  @Input({
-      required:
-          true
-  })
-  modo:
-      ModoFormularioUsuario =
-      'CREAR';
+    @Input({
+        required:
+            true
+    })
+    modo:
+        ModoFormularioUsuario =
+        'CREAR';
 
 
-  @Input()
-  usuario:
-      Usuario | null =
-      null;
+    @Input()
+    usuario:
+        Usuario | null =
+        null;
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Salidas
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Salidas
+    |--------------------------------------------------------------------------
+    */
 
-  @Output()
-  cerrar =
-      new EventEmitter<void>();
+    @Output()
+    cerrar =
+        new EventEmitter<void>();
 
 
-  @Output()
-  guardado =
-      new EventEmitter<
-          Usuario
-      >();
+    @Output()
+    guardado =
+        new EventEmitter<
+            Usuario
+        >();
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Dependencias
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Dependencias
+    |--------------------------------------------------------------------------
+    */
 
-  private readonly usuarioService =
-      inject(
-          UsuarioService
-      );
+    private readonly usuarioService =
+        inject(
+            UsuarioService
+        );
 
 
-  private readonly rolService =
-      inject(
-          RolService
-      );
+    private readonly rolService =
+        inject(
+            RolService
+        );
 
 
-  private readonly sucursalService =
-      inject(
-          SucursalService
-      );
+    private readonly sucursalService =
+        inject(
+            SucursalService
+        );
 
 
-  private readonly languageService =
-      inject(
-          LanguageService
-      );
+    private readonly languageService =
+        inject(
+            LanguageService
+        );
 
+    private readonly sessionService =
+        inject(
+            SessionService
+        );
 
-  /*
-  |--------------------------------------------------------------------------
-  | Estado
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Estado
+    |--------------------------------------------------------------------------
+    */
 
-  readonly cargandoCatalogos =
-      signal(
-          true
-      );
+    readonly cargandoCatalogos =
+        signal(
+            true
+        );
 
 
-  readonly guardando =
-      signal(
-          false
-      );
+    readonly guardando =
+        signal(
+            false
+        );
 
 
-  readonly errorMensaje =
-      signal(
-          ''
-      );
+    readonly errorMensaje =
+        signal(
+            ''
+        );
 
 
-  readonly erroresFormulario =
-      signal<
-          Record<
-              string,
-              string[]
-          >
-      >(
-          {}
-      );
+    readonly erroresFormulario =
+        signal<
+            Record<
+                string,
+                string[]
+            >
+        >(
+            {}
+        );
 
 
-  readonly roles =
-      signal<
-          RolResumen[]
-      >(
-          []
-      );
+    readonly roles =
+        signal<
+            RolResumen[]
+        >(
+            []
+        );
 
 
-  readonly sucursales =
-      signal<
-          Sucursal[]
-      >(
-          []
-      );
+    readonly sucursales =
+        signal<
+            Sucursal[]
+        >(
+            []
+        );
 
 
-  previewFoto:
-      string | null =
-      null;
+    previewFoto:
+        string | null =
+        null;
 
 
-  private previewTemporal:
-      string | null =
-      null;
+    private previewTemporal:
+        string | null =
+        null;
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Formulario
-  |--------------------------------------------------------------------------
-  */
+    readonly rolesAsignables =
+        computed(
+            () => {
 
-  form:
-      UsuarioFormData = {
+                const rolActual =
+                    this.sessionService
+                        .rol();
 
-          id_rol:
-              null,
 
-          id_sucursal:
-              null,
+                if (
+                    !rolActual
+                ) {
 
-          ci:
-              '',
+                    return [];
 
-          nombre:
-              '',
+                }
 
-          apellido_paterno:
-              '',
 
-          apellido_materno:
-              '',
+                switch (
+                rolActual.nombre
+                ) {
 
-          correo:
-              '',
+                    case 'SuperAdministrador':
 
-          telefono:
-              '',
+                        return this.roles()
+                            .filter(
+                                rol =>
+                                    rol.nivel
+                                    <=
+                                    rolActual.nivel
+                            );
 
-          direccion:
-              '',
 
-          foto:
-              null
+                    case 'Administrador':
 
-      };
+                        return this.roles()
+                            .filter(
+                                rol =>
+                                    rol.nivel
+                                    <=
+                                    rolActual.nivel
+                            );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Iconos
-  |--------------------------------------------------------------------------
-  */
+                    case 'Gerente':
 
-  readonly Camera =
-      Camera;
+                        return this.roles()
+                            .filter(
+                                rol =>
+                                    rol.nivel
+                                    <
+                                    rolActual.nivel
+                            );
 
 
-  readonly Save =
-      Save;
+                    default:
 
+                        return [];
 
-  readonly UserRound =
-      UserRound;
+                }
 
+            }
+        );
 
-  readonly X =
-      X;
 
+    /*
+    |--------------------------------------------------------------------------
+    | Formulario
+    |--------------------------------------------------------------------------
+    */
 
-  /*
-  |--------------------------------------------------------------------------
-  | Inicialización
-  |--------------------------------------------------------------------------
-  */
+    form:
+        UsuarioFormData = {
 
-  ngOnInit(): void {
+            id_rol:
+                null,
 
-      this.cargarFormulario();
+            id_sucursal:
+                null,
 
-      this.cargarCatalogos();
+            ci:
+                '',
 
-  }
+            nombre:
+                '',
 
+            apellido_paterno:
+                '',
 
-  ngOnDestroy(): void {
+            apellido_materno:
+                '',
 
-      this.liberarPreview();
+            correo:
+                '',
 
-  }
+            telefono:
+                '',
 
+            direccion:
+                '',
 
-  /*
-  |--------------------------------------------------------------------------
-  | Formulario
-  |--------------------------------------------------------------------------
-  */
+            foto:
+                null
 
-  private cargarFormulario(): void {
+        };
 
-      if (
-          this.modo
-          !== 'EDITAR'
-          ||
-          ! this.usuario
-      ) {
 
-          return;
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos
+    |--------------------------------------------------------------------------
+    */
 
-      }
+    readonly Camera =
+        Camera;
 
 
-      this.form = {
+    readonly Save =
+        Save;
 
-          id_rol:
-              this.usuario.id_rol,
 
-          id_sucursal:
-              this.usuario.id_sucursal,
+    readonly UserRound =
+        UserRound;
 
-          ci:
-              this.usuario.ci,
 
-          nombre:
-              this.usuario.nombre,
+    readonly X =
+        X;
 
-          apellido_paterno:
-              this.usuario.apellido_paterno,
 
-          apellido_materno:
-              this.usuario.apellido_materno
-              ?? '',
+    /*
+    |--------------------------------------------------------------------------
+    | Inicialización
+    |--------------------------------------------------------------------------
+    */
 
-          correo:
-              this.usuario.correo
-              ?? '',
+    ngOnInit(): void {
 
-          telefono:
-              this.usuario.telefono
-              ?? '',
+        this.cargarFormulario();
 
-          direccion:
-              this.usuario.direccion
-              ?? '',
+        this.cargarCatalogos();
 
-          foto:
-              null
+    }
 
-      };
 
+    ngOnDestroy(): void {
 
-      this.previewFoto =
-          this.usuario.foto;
+        this.liberarPreview();
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Catálogos
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Formulario
+    |--------------------------------------------------------------------------
+    */
 
-  private cargarCatalogos(): void {
+    private cargarFormulario(): void {
 
-      this.cargandoCatalogos.set(
-          true
-      );
+        if (
+            this.modo
+            !== 'EDITAR'
+            ||
+            !this.usuario
+        ) {
 
+            return;
 
-      forkJoin({
+        }
 
-          roles:
-              this.rolService
-                  .listar(),
 
-          sucursales:
-              this.sucursalService
-                  .listar()
+        this.form = {
 
-      })
-          .pipe(
+            id_rol:
+                this.usuario.id_rol,
 
-              finalize(
-                  () =>
-                      this.cargandoCatalogos
-                          .set(
-                              false
-                          )
-              )
+            id_sucursal:
+                this.usuario.id_sucursal,
 
-          )
-          .subscribe({
+            ci:
+                this.usuario.ci,
 
-              next:
-                  response => {
+            nombre:
+                this.usuario.nombre,
 
-                      this.roles.set(
-                          response
-                              .roles
-                              .data
-                      );
+            apellido_paterno:
+                this.usuario.apellido_paterno,
 
+            apellido_materno:
+                this.usuario.apellido_materno
+                ?? '',
 
-                      this.sucursales.set(
-                          response
-                              .sucursales
-                              .data
-                      );
+            correo:
+                this.usuario.correo
+                ?? '',
 
-                  },
+            telefono:
+                this.usuario.telefono
+                ?? '',
 
+            direccion:
+                this.usuario.direccion
+                ?? '',
 
-              error:
-                  (
-                      error:
-                          HttpErrorResponse
-                  ) => {
+            foto:
+                null
 
-                      this.errorMensaje.set(
-                          this.mensajeError(
-                              error
-                          )
-                      );
+        };
 
-                  }
 
-          });
+        this.previewFoto =
+            this.usuario.foto;
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Foto
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Catálogos
+    |--------------------------------------------------------------------------
+    */
 
-  seleccionarFoto(
-      event:
-          Event
-  ): void {
+    private cargarCatalogos(): void {
 
-      const input =
-          event.target as HTMLInputElement;
+        this.cargandoCatalogos.set(
+            true
+        );
 
 
-      const archivo =
-          input.files
-              ?.item(
-                  0
-              );
+        forkJoin({
 
+            roles:
+                this.rolService
+                    .listar(),
 
-      if (
-          ! archivo
-      ) {
+            sucursales:
+                this.sucursalService
+                    .listar()
 
-          return;
+        })
+            .pipe(
 
-      }
+                finalize(
+                    () =>
+                        this.cargandoCatalogos
+                            .set(
+                                false
+                            )
+                )
 
+            )
+            .subscribe({
 
-      const permitidos = [
+                next:
+                    response => {
 
-          'image/jpeg',
+                        this.roles.set(
+                            response
+                                .roles
+                                .data
+                        );
 
-          'image/png',
 
-          'image/webp'
+                        this.sucursales.set(
+                            response
+                                .sucursales
+                                .data
+                        );
 
-      ];
+                    },
 
 
-      if (
-          ! permitidos.includes(
-              archivo.type
-          )
-      ) {
+                error:
+                    (
+                        error:
+                            HttpErrorResponse
+                    ) => {
 
-          this.errorMensaje.set(
-              this.t(
-                  'La fotografía debe ser JPG, PNG o WEBP.',
-                  'The photo must be JPG, PNG or WEBP.'
-              )
-          );
+                        this.errorMensaje.set(
+                            this.mensajeError(
+                                error
+                            )
+                        );
 
+                    }
 
-          input.value =
-              '';
+            });
 
+    }
 
-          return;
 
-      }
+    /*
+    |--------------------------------------------------------------------------
+    | Foto
+    |--------------------------------------------------------------------------
+    */
 
+    seleccionarFoto(
+        event:
+            Event
+    ): void {
 
-      if (
-          archivo.size
-          >
-          2 * 1024 * 1024
-      ) {
+        const input =
+            event.target as HTMLInputElement;
 
-          this.errorMensaje.set(
-              this.t(
-                  'La fotografía no puede superar los 2 MB.',
-                  'The photo cannot exceed 2 MB.'
-              )
-          );
 
+        const archivo =
+            input.files
+                ?.item(
+                    0
+                );
 
-          input.value =
-              '';
 
+        if (
+            !archivo
+        ) {
 
-          return;
+            return;
 
-      }
+        }
 
 
-      this.liberarPreview();
+        const permitidos = [
 
+            'image/jpeg',
 
-      this.form.foto =
-          archivo;
+            'image/png',
 
+            'image/webp'
 
-      this.previewTemporal =
-          URL.createObjectURL(
-              archivo
-          );
+        ];
 
 
-      this.previewFoto =
-          this.previewTemporal;
+        if (
+            !permitidos.includes(
+                archivo.type
+            )
+        ) {
 
+            this.errorMensaje.set(
+                this.t(
+                    'La fotografía debe ser JPG, PNG o WEBP.',
+                    'The photo must be JPG, PNG or WEBP.'
+                )
+            );
 
-      this.errorMensaje.set(
-          ''
-      );
 
-  }
+            input.value =
+                '';
 
 
-  private liberarPreview(): void {
+            return;
 
-      if (
-          this.previewTemporal
-      ) {
+        }
 
-          URL.revokeObjectURL(
-              this.previewTemporal
-          );
 
+        if (
+            archivo.size
+            >
+            2 * 1024 * 1024
+        ) {
 
-          this.previewTemporal =
-              null;
+            this.errorMensaje.set(
+                this.t(
+                    'La fotografía no puede superar los 2 MB.',
+                    'The photo cannot exceed 2 MB.'
+                )
+            );
 
-      }
 
-  }
+            input.value =
+                '';
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Guardar
-  |--------------------------------------------------------------------------
-  */
+            return;
 
-  guardar(): void {
+        }
 
-      if (
-          this.guardando()
-          ||
-          ! this.formularioValido()
-      ) {
 
-          return;
+        this.liberarPreview();
 
-      }
 
+        this.form.foto =
+            archivo;
 
-      this.guardando.set(
-          true
-      );
 
+        this.previewTemporal =
+            URL.createObjectURL(
+                archivo
+            );
 
-      this.errorMensaje.set(
-          ''
-      );
 
+        this.previewFoto =
+            this.previewTemporal;
 
-      this.erroresFormulario.set(
-          {}
-      );
 
+        this.errorMensaje.set(
+            ''
+        );
 
-      const request$ =
+    }
 
-          this.modo
-          === 'CREAR'
 
-              ? this.usuarioService
-                  .crear(
-                      this.form
-                  )
+    private liberarPreview(): void {
 
-              : this.usuarioService
-                  .actualizar(
+        if (
+            this.previewTemporal
+        ) {
 
-                      this.usuario!
-                          .id_usuario,
+            URL.revokeObjectURL(
+                this.previewTemporal
+            );
 
-                      this.form
 
-                  );
+            this.previewTemporal =
+                null;
 
+        }
 
-      request$
-          .pipe(
+    }
 
-              finalize(
-                  () =>
-                      this.guardando
-                          .set(
-                              false
-                          )
-              )
 
-          )
-          .subscribe({
+    /*
+    |--------------------------------------------------------------------------
+    | Guardar
+    |--------------------------------------------------------------------------
+    */
 
-              next:
-                  usuario => {
+    guardar(): void {
 
-                      this.guardado.emit(
-                          usuario
-                      );
+        if (
+            this.guardando()
+            ||
+            !this.formularioValido()
+        ) {
 
-                  },
+            return;
 
+        }
 
-              error:
-                  (
-                      error:
-                          HttpErrorResponse
-                  ) => {
 
-                      if (
-                          error.status
-                          === 422
-                          &&
-                          error.error
-                              ?.errors
-                      ) {
+        this.guardando.set(
+            true
+        );
 
-                          this.erroresFormulario.set(
-                              error.error.errors
-                          );
 
-                      }
+        this.errorMensaje.set(
+            ''
+        );
 
 
-                      this.errorMensaje.set(
-                          this.mensajeError(
-                              error
-                          )
-                      );
+        this.erroresFormulario.set(
+            {}
+        );
 
-                  }
 
-          });
+        const request$ =
 
-  }
+            this.modo
+                === 'CREAR'
 
+                ? this.usuarioService
+                    .crear(
+                        this.form
+                    )
 
-  formularioValido(): boolean {
+                : this.usuarioService
+                    .actualizar(
 
-      return (
+                        this.usuario!
+                            .id_usuario,
 
-          this.form.id_rol
-          !== null
+                        this.form
 
-          &&
+                    );
 
-          this.form.id_sucursal
-          !== null
 
-          &&
+        request$
+            .pipe(
 
-          this.form.ci
-              .trim()
-              .length
-          > 0
+                finalize(
+                    () =>
+                        this.guardando
+                            .set(
+                                false
+                            )
+                )
 
-          &&
+            )
+            .subscribe({
 
-          this.form.nombre
-              .trim()
-              .length
-          > 0
+                next:
+                    usuario => {
 
-          &&
+                        this.guardado.emit(
+                            usuario
+                        );
 
-          this.form
-              .apellido_paterno
-              .trim()
-              .length
-          > 0
+                    },
 
-      );
 
-  }
+                error:
+                    (
+                        error:
+                            HttpErrorResponse
+                    ) => {
 
+                        if (
+                            error.status
+                            === 422
+                            &&
+                            error.error
+                                ?.errors
+                        ) {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Error de campo
-  |--------------------------------------------------------------------------
-  */
+                            this.erroresFormulario.set(
+                                error.error.errors
+                            );
 
-  errorCampo(
-      campo:
-          string
-  ): string | null {
+                        }
 
-      return (
-          this.erroresFormulario()[
-              campo
-          ]
-              ?.at(
-                  0
-              )
-          ?? null
-      );
 
-  }
+                        this.errorMensaje.set(
+                            this.mensajeError(
+                                error
+                            )
+                        );
 
+                    }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Presentación
-  |--------------------------------------------------------------------------
-  */
+            });
 
-  titulo(): string {
+    }
 
-      return this.modo
-      === 'CREAR'
 
-          ? this.t(
-              'Registrar usuario',
-              'Register user'
-          )
+    formularioValido(): boolean {
 
-          : this.t(
-              'Editar usuario',
-              'Edit user'
-          );
+        return (
 
-  }
+            this.form.id_rol
+            !== null
 
+            &&
 
-  textoBoton(): string {
+            this.form.id_sucursal
+            !== null
 
-      return this.modo
-      === 'CREAR'
+            &&
 
-          ? this.t(
-              'Registrar usuario',
-              'Register user'
-          )
+            this.form.ci
+                .trim()
+                .length
+            > 0
 
-          : this.t(
-              'Guardar cambios',
-              'Save changes'
-          );
+            &&
 
-  }
+            this.form.nombre
+                .trim()
+                .length
+            > 0
 
+            &&
 
-  iniciales(): string {
+            this.form
+                .apellido_paterno
+                .trim()
+                .length
+            > 0
 
-      const nombre =
-          this.form.nombre
-              .trim()
-              .charAt(
-                  0
-              )
-              .toUpperCase();
+        );
 
+    }
 
-      const apellido =
-          this.form
-              .apellido_paterno
-              .trim()
-              .charAt(
-                  0
-              )
-              .toUpperCase();
 
+    /*
+    |--------------------------------------------------------------------------
+    | Error de campo
+    |--------------------------------------------------------------------------
+    */
 
-      return (
-          `${nombre}${apellido}`
-          || 'U'
-      );
+    errorCampo(
+        campo:
+            string
+    ): string | null {
 
-  }
+        return (
+            this.erroresFormulario()[
+                campo
+            ]
+                ?.at(
+                    0
+                )
+            ?? null
+        );
 
+    }
 
-  /*
-  |--------------------------------------------------------------------------
-  | Idioma
-  |--------------------------------------------------------------------------
-  */
 
-  t(
-      es:
-          string,
+    /*
+    |--------------------------------------------------------------------------
+    | Presentación
+    |--------------------------------------------------------------------------
+    */
 
-      en:
-          string
-  ): string {
+    titulo(): string {
 
-      return this.languageService
-          .t(
-              es,
-              en
-          );
+        return this.modo
+            === 'CREAR'
 
-  }
+            ? this.t(
+                'Registrar usuario',
+                'Register user'
+            )
 
+            : this.t(
+                'Editar usuario',
+                'Edit user'
+            );
 
-  /*
-  |--------------------------------------------------------------------------
-  | Errores
-  |--------------------------------------------------------------------------
-  */
+    }
 
-  private mensajeError(
-      error:
-          HttpErrorResponse
-  ): string {
 
-      if (
-          error.status === 0
-      ) {
+    textoBoton(): string {
 
-          return this.t(
-              'No fue posible conectar con el servidor.',
-              'Unable to connect to the server.'
-          );
+        return this.modo
+            === 'CREAR'
 
-      }
+            ? this.t(
+                'Registrar usuario',
+                'Register user'
+            )
 
+            : this.t(
+                'Guardar cambios',
+                'Save changes'
+            );
 
-      if (
-          error.status === 403
-      ) {
+    }
 
-          return this.t(
-              'No tiene permisos para realizar esta operación.',
-              'You do not have permission to perform this operation.'
-          );
 
-      }
+    iniciales(): string {
 
+        const nombre =
+            this.form.nombre
+                .trim()
+                .charAt(
+                    0
+                )
+                .toUpperCase();
 
-      if (
-          error.status === 422
-      ) {
 
-          return this.t(
-              'Revise los datos ingresados.',
-              'Please review the entered data.'
-          );
+        const apellido =
+            this.form
+                .apellido_paterno
+                .trim()
+                .charAt(
+                    0
+                )
+                .toUpperCase();
 
-      }
 
+        return (
+            `${nombre}${apellido}`
+            || 'U'
+        );
 
-      if (
-          typeof error.error
-              ?.message
-          === 'string'
-      ) {
+    }
 
-          return error.error.message;
 
-      }
+    /*
+    |--------------------------------------------------------------------------
+    | Idioma
+    |--------------------------------------------------------------------------
+    */
 
+    t(
+        es:
+            string,
 
-      return this.t(
-          'No fue posible guardar el usuario.',
-          'Unable to save the user.'
-      );
+        en:
+            string
+    ): string {
 
-  }
+        return this.languageService
+            .t(
+                es,
+                en
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Errores
+    |--------------------------------------------------------------------------
+    */
+
+    private mensajeError(
+        error: HttpErrorResponse
+    ): string {
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Error de conexión
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            error.status === 0
+        ) {
+    
+            return this.t(
+                'No fue posible conectar con el servidor.',
+                'Unable to connect to the server.'
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Error de permisos
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            error.status === 403
+        ) {
+    
+            return this.t(
+                'No tiene permisos para realizar esta operación.',
+                'You do not have permission to perform this operation.'
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Validación de campos
+        |--------------------------------------------------------------------------
+        */
+    
+        const errores =
+            error.error
+                ?.errors;
+    
+    
+        if (
+            error.status === 422
+            &&
+            errores
+            &&
+            typeof errores === 'object'
+        ) {
+    
+            return this.t(
+                'Revise los datos ingresados.',
+                'Please review the entered data.'
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Mensaje enviado por el backend
+        |--------------------------------------------------------------------------
+        */
+    
+        const mensaje =
+            error.error
+                ?.message;
+    
+    
+        if (
+            typeof mensaje === 'string'
+            &&
+            mensaje.trim()
+        ) {
+    
+            return mensaje;
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Error genérico
+        |--------------------------------------------------------------------------
+        */
+    
+        return this.t(
+            'No fue posible completar la operación.',
+            'The operation could not be completed.'
+        );
+    
+    }
 
 }

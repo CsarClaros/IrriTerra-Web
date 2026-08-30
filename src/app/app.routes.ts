@@ -140,9 +140,6 @@ import {
     UserList
 } from './dashboard/users/user-list/user-list';
 
-import {
-    UserCreate
-} from './dashboard/users/user-create/user-create';
 
 import {
     Roles
@@ -606,22 +603,6 @@ export const routes:
 
                         },
 
-                        // {
-
-                        //     path: 'create',
-
-                        //     component:
-                        //         UserCreate,
-
-                        //     canActivate: [
-
-                        //         permissionGuard(
-                        //             'usuario.crear'
-                        //         )
-
-                        //     ]
-
-                        // },
 
                         {
 

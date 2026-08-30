@@ -25,7 +25,8 @@ import {
   RefreshCcw,
   Search,
   Trash2,
-  Users
+  Users,
+  RotateCcw
 } from 'lucide-angular';
 
 import {
@@ -309,6 +310,9 @@ export class UserList
 
   readonly Users =
     Users;
+
+  readonly RotateCcw =
+    RotateCcw;
 
 
   /*
@@ -829,6 +833,183 @@ export class UserList
       'No fue posible procesar la operación.',
       'Unable to process the operation.'
     );
+
+  }
+
+  esUsuarioActual(
+    usuario:
+      Usuario
+  ): boolean {
+
+    return (
+      this.sessionService
+        .usuario()
+        ?.id_usuario
+      ===
+      usuario.id_usuario
+    );
+
+  }
+
+  reactivar(
+    usuario:
+      Usuario
+  ): void {
+
+    if (
+      !this.puedeEditar()
+    ) {
+
+      return;
+
+    }
+
+
+    const confirmar =
+      window.confirm(
+
+        this.t(
+          `¿Reactivar al usuario ${usuario.usuario}?`,
+          `Reactivate user ${usuario.usuario}?`
+        )
+
+      );
+
+
+    if (
+      !confirmar
+    ) {
+
+      return;
+
+    }
+
+
+    this.procesandoId.set(
+      usuario.id_usuario
+    );
+
+
+    this.errorMensaje.set(
+      ''
+    );
+
+
+    this.mensajeExito.set(
+      ''
+    );
+
+
+    this.usuarioService
+      .reactivar(
+        usuario.id_usuario
+      )
+      .pipe(
+
+        finalize(
+          () =>
+            this.procesandoId
+              .set(
+                null
+              )
+        )
+
+      )
+      .subscribe({
+
+        next:
+          () => {
+
+            this.mensajeExito.set(
+              this.t(
+                'Usuario reactivado correctamente.',
+                'User reactivated successfully.'
+              )
+            );
+
+
+            this.cargarUsuarios();
+
+          },
+
+
+        error:
+          (
+            error:
+              HttpErrorResponse
+          ) => {
+
+            this.errorMensaje.set(
+              this.mensajeError(
+                error
+              )
+            );
+
+          }
+
+      });
+
+  }
+
+
+
+  puedeGestionarUsuario(
+    usuario:
+      Usuario
+  ): boolean {
+
+    const actual =
+      this.sessionService
+        .usuario();
+
+
+    if (
+      !actual?.rol
+      ||
+      !usuario.rol
+    ) {
+
+      return false;
+
+    }
+
+
+    switch (
+    actual.rol.nombre
+    ) {
+
+      case 'SuperAdministrador':
+
+        return (
+          usuario.rol.nivel
+          <=
+          actual.rol.nivel
+        );
+
+
+      case 'Administrador':
+
+        return (
+          usuario.rol.nivel
+          <=
+          actual.rol.nivel
+        );
+
+
+      case 'Gerente':
+
+        return (
+          usuario.rol.nivel
+          <
+          actual.rol.nivel
+        );
+
+
+      default:
+
+        return false;
+
+    }
 
   }
 

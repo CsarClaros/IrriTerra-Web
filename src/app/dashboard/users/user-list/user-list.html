@@ -378,6 +378,10 @@
 
                                 @if (
                                 puedeEditar()
+                                &&
+                                puedeGestionarUsuario(
+                                usuario
+                                )
                                 ) {
 
                                 <button type="button" (click)="abrirEditar(usuario)"
@@ -403,17 +407,20 @@
                                 puedeEliminar()
                                 &&
                                 usuario.estado_registro === 'A'
+                                &&
+                                ! esUsuarioActual(usuario)
+                                &&
+                                puedeGestionarUsuario(usuario)
                                 ) {
 
                                 <button type="button" [disabled]="
-                                                    procesandoId()
-                                                    === usuario.id_usuario
-                                                " (click)="desactivar(usuario)"
+            procesandoId()
+            === usuario.id_usuario
+        " (click)="desactivar(usuario)"
                                     class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50">
 
                                     <lucide-angular [img]="Trash2" class="h-3.5 w-3.5">
                                     </lucide-angular>
-
 
                                     {{
                                     t(
@@ -426,6 +433,33 @@
 
                                 }
 
+                                @if (
+                                puedeEditar()
+                                &&
+                                usuario.estado_registro === 'I'
+                                &&
+                                puedeGestionarUsuario(usuario)
+                                ) {
+
+                                <button type="button" [disabled]="
+            procesandoId()
+            === usuario.id_usuario
+        " (click)="reactivar(usuario)"
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-emerald-600 transition hover:bg-emerald-50 disabled:opacity-50">
+
+                                    <lucide-angular [img]="RotateCcw" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+                                    {{
+                                    t(
+                                    'Reactivar',
+                                    'Reactivate'
+                                    )
+                                    }}
+
+                                </button>
+
+                                }
                             </div>
 
                         </td>

@@ -363,4 +363,40 @@ export class UsuarioService {
 
     }
 
+    /*
+|--------------------------------------------------------------------------
+| Reactivar
+|--------------------------------------------------------------------------
+*/
+
+    reactivar(
+        id:
+            number
+    ): Observable<
+        Usuario
+    > {
+
+        return this.api
+            .patch<
+                Usuario |
+                ApiResourceResponse<
+                    Usuario
+                >
+            >(
+                `usuario/${id}/reactivar`,
+                {}
+            )
+            .pipe(
+
+                map(
+                    response =>
+                        this.unwrapUsuario(
+                            response
+                        )
+                )
+
+            );
+
+    }
+
 }
