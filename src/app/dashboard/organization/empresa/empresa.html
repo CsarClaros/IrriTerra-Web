@@ -1,0 +1,530 @@
+<div class="mx-auto w-full max-w-6xl space-y-6">
+
+
+    <!-- ========================================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================================= -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+        <div>
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+
+                    <lucide-angular [img]="Building2" class="h-5 w-5">
+                    </lucide-angular>
+
+                </div>
+
+
+                <div>
+
+                    <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">
+
+                        {{
+                        t(
+                        'Empresa',
+                        'Company'
+                        )
+                        }}
+
+                    </h1>
+
+
+                    <p class="mt-1 text-sm text-gray-500">
+
+                        {{
+                        t(
+                        'Información corporativa utilizada por el ERP y el sitio público.',
+                        'Corporate information used by the ERP and public website.'
+                        )
+                        }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button type="button" [disabled]="
+                cargando()
+                ||
+                guardando()
+            " (click)="cargarEmpresa()"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+            <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+            </lucide-angular>
+
+            {{
+            t(
+            'Actualizar',
+            'Refresh'
+            )
+            }}
+
+        </button>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- MENSAJES -->
+    <!-- ========================================================= -->
+
+    @if (
+    mensajeExito()
+    ) {
+
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-700">
+
+        {{ mensajeExito() }}
+
+    </div>
+
+    }
+
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="flex gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-4 w-4 shrink-0">
+        </lucide-angular>
+
+        <span>
+            {{ errorMensaje() }}
+        </span>
+
+    </div>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- CARGANDO -->
+    <!-- ========================================================= -->
+
+    @if (
+    cargando()
+    &&
+    !empresa()
+    ) {
+
+    <div class="rounded-xl border border-gray-200 bg-white px-6 py-16 text-center text-sm text-gray-500">
+
+        {{
+        t(
+        'Cargando información de la empresa...',
+        'Loading company information...'
+        )
+        }}
+
+    </div>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- FORMULARIO -->
+    <!-- ========================================================= -->
+
+    @else if (
+    empresa()
+    ) {
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="space-y-6">
+
+
+        <!-- ================================================= -->
+        <!-- LOGO -->
+        <!-- ================================================= -->
+
+        <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <div class="border-b border-gray-100 pb-4">
+
+                <h2 class="font-semibold text-gray-900">
+
+                    {{
+                    t(
+                    'Identidad visual',
+                    'Visual identity'
+                    )
+                    }}
+
+                </h2>
+
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    {{
+                    t(
+                    'Este logo podrá utilizarse en el sitio público.',
+                    'This logo can be used on the public website.'
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+
+            <div class="mt-6 flex flex-col gap-6 sm:flex-row sm:items-center">
+
+                <div
+                    class="flex h-40 w-full items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-5 sm:w-56">
+
+                    @if (
+                    logoVisible();
+                    as logo
+                    ) {
+
+                    <img [src]="logo" [alt]="
+                                    empresa()?.nombre
+                                    || 'Logo'
+                                " class="max-h-full max-w-full object-contain" />
+
+                    } @else {
+
+                    <div class="text-center text-gray-400">
+
+                        <lucide-angular [img]="ImageOff" class="mx-auto h-10 w-10">
+                        </lucide-angular>
+
+
+                        <p class="mt-2 text-xs">
+
+                            {{
+                            t(
+                            'Sin logo',
+                            'No logo'
+                            )
+                            }}
+
+                        </p>
+
+                    </div>
+
+                    }
+
+                </div>
+
+
+                <div class="flex-1">
+
+                    @if (
+                    puedeEditar()
+                    ) {
+
+                    <label
+                        class="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                        <lucide-angular [img]="Upload" class="h-4 w-4">
+                        </lucide-angular>
+
+                        {{
+                        t(
+                        'Cambiar logo',
+                        'Change logo'
+                        )
+                        }}
+
+
+                        <input type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" (change)="
+                                        seleccionarLogo(
+                                            $event
+                                        )
+                                    " class="hidden" />
+
+                    </label>
+
+
+                    <p class="mt-2 text-xs text-gray-500">
+
+                        JPG, PNG o WEBP · Máximo 5 MB.
+
+                    </p>
+
+
+                    @if (
+                    logoSeleccionado()
+                    ) {
+
+                    <p class="mt-2 text-sm font-medium text-primary">
+
+                        {{
+                        logoSeleccionado()
+                        ?.name
+                        }}
+
+                    </p>
+
+                    }
+
+                    }
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- INFORMACIÓN -->
+        <!-- ================================================= -->
+
+        <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <div class="border-b border-gray-100 pb-4">
+
+                <h2 class="font-semibold text-gray-900">
+
+                    {{
+                    t(
+                    'Información general',
+                    'General information'
+                    )
+                    }}
+
+                </h2>
+
+            </div>
+
+
+            <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+
+
+                <!-- Nombre -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Nombre',
+                        'Name'
+                        )
+                        }}
+                        *
+
+                    </label>
+
+
+                    <input type="text" formControlName="nombre" [readonly]="
+                                !puedeEditar()
+                            "
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50" />
+
+                </div>
+
+
+                <!-- NIT -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        NIT *
+
+                    </label>
+
+
+                    <input type="text" formControlName="nit" [readonly]="
+                                !puedeEditar()
+                            "
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50" />
+
+                </div>
+
+
+                <!-- Teléfono -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Teléfono',
+                        'Phone'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <input type="text" formControlName="telefono" [readonly]="
+                                !puedeEditar()
+                            "
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50" />
+
+                </div>
+
+
+                <!-- Correo -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Correo',
+                        'Email'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <input type="email" formControlName="correo" [readonly]="
+                                !puedeEditar()
+                            "
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50" />
+
+                </div>
+
+
+                <!-- Dirección -->
+
+                <div class="md:col-span-2">
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Dirección',
+                        'Address'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <input type="text" formControlName="direccion" [readonly]="
+                                !puedeEditar()
+                            "
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50" />
+
+                </div>
+
+
+                <!-- Sitio web -->
+
+                <div class="md:col-span-2">
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Sitio web',
+                        'Website'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <input type="text" formControlName="sitio_web" [readonly]="
+                                !puedeEditar()
+                            " placeholder="https://..."
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50" />
+
+                </div>
+
+
+                <!-- Observaciones -->
+
+                <div class="md:col-span-2">
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Observaciones',
+                        'Notes'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <textarea rows="4" formControlName="observaciones" [readonly]="
+                                !puedeEditar()
+                            "
+                        class="w-full resize-y rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 read-only:bg-gray-50">
+                        </textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- GUARDAR -->
+        <!-- ================================================= -->
+
+        @if (
+        puedeEditar()
+        ) {
+
+        <div class="flex justify-end">
+
+            <button type="submit" [disabled]="
+                            guardando()
+                            ||
+                            form.invalid
+                        "
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50">
+
+                @if (
+                guardando()
+                ) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white">
+                </span>
+
+                {{
+                t(
+                'Guardando...',
+                'Saving...'
+                )
+                }}
+
+                } @else {
+
+                <lucide-angular [img]="Save" class="h-4 w-4">
+                </lucide-angular>
+
+                {{
+                t(
+                'Guardar cambios',
+                'Save changes'
+                )
+                }}
+
+                }
+
+            </button>
+
+        </div>
+
+        }
+
+    </form>
+
+    }
+
+</div>

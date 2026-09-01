@@ -28,7 +28,9 @@ import {
   User,
   Users,
   X,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Building2,
+  MapPinned
 } from 'lucide-angular';
 
 import {
@@ -178,6 +180,11 @@ export class DashboardLayout {
   readonly ArrowRightLeft =
     ArrowRightLeft;
 
+  readonly Building2 =
+    Building2;
+
+    readonly MapPinned =
+    MapPinned;
 
 
   /*
@@ -298,6 +305,51 @@ export class DashboardLayout {
         ]
 
       },
+
+      {
+        path:
+          '/dashboard/empresa',
+
+        icon:
+          Building2,
+
+        label: {
+
+          es:
+            'Empresa',
+
+          en:
+            'Company'
+
+        },
+
+        permisos: [
+          'empresa.ver'
+        ]
+      },
+
+      {
+        path:
+            '/dashboard/sucursales',
+    
+        icon:
+            MapPinned,
+    
+        label: {
+    
+            es:
+                'Sucursales',
+    
+            en:
+                'Branches'
+    
+        },
+    
+        permisos: [
+            'sucursal.ver'
+        ]
+    },
+    
 
       {
 

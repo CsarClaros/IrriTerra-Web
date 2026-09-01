@@ -207,6 +207,30 @@ import {
 } from './dashboard/purchases/purchase-create/purchase-create';
 import { ProductDetail } from './pages/product-detail/product-detail';
 
+/*
+|--------------------------------------------------------------------------
+| Organización
+|--------------------------------------------------------------------------
+*/
+
+import {
+    EmpresaAdmin
+} from './dashboard/organization/empresa/empresa';
+
+/*
+|--------------------------------------------------------------------------
+| Sucursales
+|--------------------------------------------------------------------------
+*/
+
+import {
+    SucursalList
+} from './dashboard/organization/sucursales/sucursal-list/sucursal-list';
+
+import {
+    SucursalForm
+} from './dashboard/organization/sucursales/sucursal-form/sucursal-form';
+
 
 
 
@@ -637,28 +661,6 @@ export const routes:
 
                 /*
                 |--------------------------------------------------------------------------
-                | Reporte de inventario
-                |--------------------------------------------------------------------------
-                */
-
-                // {
-                //     path: 'reports/inventory',
-
-                //     component:
-                //         StockReport,
-
-                //     canActivate: [
-
-                //         permissionGuard(
-                //             'reporte_inventario.ver'
-                //         )
-
-                //     ]
-                // },
-
-
-                /*
-                |--------------------------------------------------------------------------
                 | Centro de reportes
                 |--------------------------------------------------------------------------
                 */
@@ -683,6 +685,75 @@ export const routes:
 
                         )
 
+                    ]
+                },
+
+                /*
+|--------------------------------------------------------------------------
+| Empresa
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path: 'empresa',
+
+                    component:
+                        EmpresaAdmin,
+
+                    canActivate: [
+                        permissionGuard(
+                            'empresa.ver'
+                        )
+                    ]
+                },
+
+                /*
+|--------------------------------------------------------------------------
+| Sucursales
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path:
+                        'sucursales',
+
+                    component:
+                        SucursalList,
+
+                    canActivate: [
+                        permissionGuard(
+                            'sucursal.ver'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'sucursales/crear',
+
+                    component:
+                        SucursalForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'sucursal.crear'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'sucursales/:id/editar',
+
+                    component:
+                        SucursalForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'sucursal.editar'
+                        )
                     ]
                 },
 

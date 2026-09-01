@@ -153,7 +153,7 @@
 
         <div class="overflow-x-auto">
 
-            <table class="min-w-[980px] w-full">
+            <table class="min-w-[1120px] w-full">
 
 
                 <thead class="border-b border-gray-200 bg-gray-50">
@@ -373,7 +373,7 @@
 
                         <td class="px-5 py-4">
 
-                            <div class="flex justify-end gap-2">
+                            <div class="flex flex-wrap justify-end gap-2">
 
 
                                 @if (
@@ -395,6 +395,61 @@
                                     t(
                                     'Editar',
                                     'Edit'
+                                    )
+                                    }}
+
+                                </button>
+
+                                }
+
+                                <!-- Restablecer contraseña -->
+
+                                @if (
+                                puedeRestablecerPassword()
+                                &&
+                                usuario.estado_registro === 'A'
+                                &&
+                                !esUsuarioActual(
+                                usuario
+                                )
+                                &&
+                                puedeGestionarUsuario(
+                                usuario
+                                )
+                                ) {
+
+                                <button type="button" [disabled]="
+            procesandoId()
+            ===
+            usuario.id_usuario
+        " (click)="
+            restablecerPassword(
+                usuario
+            )
+        " class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-amber-600 transition hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-50">
+
+                                    @if (
+                                    procesandoId()
+                                    ===
+                                    usuario.id_usuario
+                                    ) {
+
+                                    <span
+                                        class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-200 border-t-amber-600">
+                                    </span>
+
+                                    } @else {
+
+                                    <lucide-angular [img]="KeyRound" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+                                    }
+
+
+                                    {{
+                                    t(
+                                    'Restablecer contraseña',
+                                    'Reset password'
                                     )
                                     }}
 

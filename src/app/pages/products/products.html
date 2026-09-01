@@ -1,39 +1,59 @@
-<div
-    class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50">
 
 
-    <!-- Hero -->
+    <!-- ========================================================= -->
+    <!-- HERO -->
+    <!-- ========================================================= -->
 
-    <section
-        class="bg-primary py-16 text-white">
+    <section class="relative overflow-hidden bg-primary text-white">
 
-        <div
-            class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <!-- Decoración -->
 
-            <div
-                class="max-w-3xl">
+        <div class="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full bg-white/5">
+        </div>
 
-                <h1
-                    class="text-4xl font-semibold lg:text-5xl">
+
+        <div class="pointer-events-none absolute -bottom-48 left-1/3 h-96 w-96 rounded-full bg-black/5">
+        </div>
+
+
+        <div class="relative mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8 lg:pb-24 lg:pt-20">
+
+            <div class="max-w-3xl">
+
+                <div
+                    class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/90">
 
                     {{
-                        t(
-                            'Nuestros productos',
-                            'Our products'
-                        )
+                    t(
+                    'Catálogo Irriterra',
+                    'Irriterra Catalog'
+                    )
+                    }}
+
+                </div>
+
+
+                <h1 class="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+
+                    {{
+                    t(
+                    'Equipos para potenciar su trabajo',
+                    'Equipment to power your work'
+                    )
                     }}
 
                 </h1>
 
 
-                <p
-                    class="mt-4 text-lg text-white/80">
+                <p class="mt-5 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
 
                     {{
-                        t(
-                            'Equipos y soluciones para el sector agrícola.',
-                            'Equipment and solutions for the agricultural sector.'
-                        )
+                    t(
+                    'Explore nuestras soluciones, compare modelos y encuentre la presentación adecuada para sus
+                    necesidades.',
+                    'Explore our solutions, compare models and find the right option for your needs.'
+                    )
                     }}
 
                 </p>
@@ -45,220 +65,191 @@
     </section>
 
 
-    <main
-        class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <!-- ========================================================= -->
+    <!-- CONTENIDO -->
+    <!-- ========================================================= -->
+
+    <main class="relative mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
 
 
-        <!-- Filtros -->
+        <!-- ===================================================== -->
+        <!-- FILTROS -->
+        <!-- ===================================================== -->
 
-        <div
-            class="mb-8 space-y-5">
+        <section class="relative z-10 -mt-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
 
-            <div
-                class="relative max-w-xl">
-
-                <lucide-angular
-                    [img]="Search"
-
-                    class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400">
-
-                </lucide-angular>
+            <div class="flex flex-col gap-5">
 
 
-                <input
-                    type="text"
+                <!-- Buscador -->
 
-                    [value]="busqueda()"
+                <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 
-                    (input)="
-                        actualizarBusqueda(
-                            $event
-                        )
-                    "
+                    <div class="relative w-full lg:max-w-xl">
 
-                    [placeholder]="
-                        t(
-                            'Buscar productos...',
-                            'Search products...'
-                        )
-                    "
-
-                    class="w-full rounded-xl border border-gray-300 bg-white py-3 pl-12 pr-4 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-
-            </div>
+                        <lucide-angular [img]="Search"
+                            class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400">
+                        </lucide-angular>
 
 
-            <div
-                class="flex flex-wrap gap-2">
+                        <input type="text" [value]="busqueda()" (input)="
+                                actualizarBusqueda(
+                                    $event
+                                )
+                            " [placeholder]="
+                                t(
+                                    'Buscar por producto, modelo, marca o variante...',
+                                    'Search by product, model, brand or variant...'
+                                )
+                            "
+                            class="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pl-12 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/10" />
 
-                <button
-                    type="button"
-
-                    (click)="
-                        seleccionarCategoria(
-                            null
-                        )
-                    "
-
-                    class="rounded-full px-4 py-2 text-sm font-medium transition"
-
-                    [class.bg-primary]="
-                        idCategoria() === null
-                    "
-
-                    [class.text-white]="
-                        idCategoria() === null
-                    "
-
-                    [class.bg-white]="
-                        idCategoria() !== null
-                    "
-
-                    [class.text-gray-700]="
-                        idCategoria() !== null
-                    ">
-
-                    {{
-                        t(
-                            'Todos',
-                            'All'
-                        )
-                    }}
-
-                </button>
+                    </div>
 
 
-                @for (
-                    categoria
-                    of categorias();
-                    track categoria.id_categoria
-                ) {
+                    <div class="flex items-center justify-between gap-4 lg:justify-end">
 
-                    <button
-                        type="button"
+                        <p class="text-sm text-gray-500">
 
-                        (click)="
-                            seleccionarCategoria(
-                                categoria.id_categoria
+                            <span class="font-semibold text-gray-900">
+
+                                {{
+                                productosFiltrados()
+                                .length
+                                }}
+
+                            </span>
+
+                            {{
+                            productosFiltrados().length === 1
+
+                            ? t(
+                            'producto',
+                            'product'
                             )
-                        "
 
-                        class="rounded-full px-4 py-2 text-sm font-medium transition"
-
-                        [class.bg-primary]="
-                            idCategoria()
-                            ===
-                            categoria.id_categoria
-                        "
-
-                        [class.text-white]="
-                            idCategoria()
-                            ===
-                            categoria.id_categoria
-                        "
-
-                        [class.bg-white]="
-                            idCategoria()
-                            !==
-                            categoria.id_categoria
-                        "
-
-                        [class.text-gray-700]="
-                            idCategoria()
-                            !==
-                            categoria.id_categoria
-                        ">
-
-                        {{ categoria.nombre }}
-
-                    </button>
-
-                }
-
-            </div>
-
-        </div>
-
-
-        <!-- Cargando -->
-
-        @if (cargando()) {
-
-            <div
-                class="py-24 text-center">
-
-                <div
-                    class="mx-auto h-9 w-9 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
-
-                </div>
-
-
-                <p
-                    class="mt-4 text-gray-500">
-
-                    {{
-                        t(
-                            'Cargando productos...',
-                            'Loading products...'
-                        )
-                    }}
-
-                </p>
-
-            </div>
-
-        }
-
-
-        <!-- Error -->
-
-        @else if (errorMensaje()) {
-
-            <div
-                class="rounded-xl border border-red-200 bg-red-50 p-6">
-
-                <div
-                    class="flex gap-3">
-
-                    <lucide-angular
-                        [img]="CircleAlert"
-                        class="h-5 w-5 text-red-600">
-
-                    </lucide-angular>
-
-
-                    <div>
-
-                        <p
-                            class="text-red-700">
-
-                            {{ errorMensaje() }}
+                            : t(
+                            'productos',
+                            'products'
+                            )
+                            }}
 
                         </p>
 
 
-                        <button
-                            type="button"
+                        @if (
+                        hayFiltrosActivos()
+                        ) {
 
-                            (click)="cargarCatalogo()"
-
-                            class="mt-4 inline-flex items-center gap-2 text-sm font-medium text-red-700">
-
-                            <lucide-angular
-                                [img]="RefreshCw"
-                                class="h-4 w-4">
-
-                            </lucide-angular>
+                        <button type="button" (click)="limpiarFiltros()"
+                            class="text-sm font-medium text-primary transition hover:text-primary/80">
 
                             {{
-                                t(
-                                    'Reintentar',
-                                    'Retry'
-                                )
+                            t(
+                            'Limpiar filtros',
+                            'Clear filters'
+                            )
                             }}
 
                         </button>
+
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- Categorías -->
+
+                <div class="border-t border-gray-100 pt-5">
+
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+
+                        {{
+                        t(
+                        'Categorías',
+                        'Categories'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <div class="flex flex-wrap gap-2">
+
+                        <button type="button" (click)="
+                                seleccionarCategoria(
+                                    null
+                                )
+                            " class="rounded-full border px-4 py-2 text-sm font-medium transition"
+                            [class.border-primary]="
+                                idCategoria() === null
+                            " [class.bg-primary]="
+                                idCategoria() === null
+                            " [class.text-white]="
+                                idCategoria() === null
+                            " [class.border-gray-200]="
+                                idCategoria() !== null
+                            " [class.bg-white]="
+                                idCategoria() !== null
+                            " [class.text-gray-600]="
+                                idCategoria() !== null
+                            ">
+
+                            {{
+                            t(
+                            'Todos',
+                            'All'
+                            )
+                            }}
+
+                        </button>
+
+
+                        @for (
+                        categoria
+                        of categorias();
+                        track categoria.id_categoria
+                        ) {
+
+                        <button type="button" (click)="
+                                    seleccionarCategoria(
+                                        categoria.id_categoria
+                                    )
+                                "
+                            class="rounded-full border px-4 py-2 text-sm font-medium transition hover:border-primary/40"
+                            [class.border-primary]="
+                                    idCategoria()
+                                    ===
+                                    categoria.id_categoria
+                                " [class.bg-primary]="
+                                    idCategoria()
+                                    ===
+                                    categoria.id_categoria
+                                " [class.text-white]="
+                                    idCategoria()
+                                    ===
+                                    categoria.id_categoria
+                                " [class.border-gray-200]="
+                                    idCategoria()
+                                    !==
+                                    categoria.id_categoria
+                                " [class.bg-white]="
+                                    idCategoria()
+                                    !==
+                                    categoria.id_categoria
+                                " [class.text-gray-600]="
+                                    idCategoria()
+                                    !==
+                                    categoria.id_categoria
+                                ">
+
+                            {{ categoria.nombre }}
+
+                        </button>
+
+                        }
 
                     </div>
 
@@ -266,688 +257,594 @@
 
             </div>
 
-        }
+        </section>
 
 
-        <!-- Productos -->
+        <!-- ===================================================== -->
+        <!-- CARGANDO -->
+        <!-- ===================================================== -->
 
-        @else if (
-            productosFiltrados().length > 0
+        @if (
+        cargando()
         ) {
 
-            <div
-                class="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+        <section class="mt-10">
+
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
                 @for (
-                    producto
-                    of productosFiltrados();
-                    track producto.id_producto
+                item
+                of [1, 2, 3, 4, 5, 6];
+                track item
                 ) {
 
-                    @let imagen =
-                        imagenPrincipal(
-                            producto
-                        );
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
 
-                    @let ruta =
-                        rutaImagen(
-                            imagen
-                        );
-
-                    @let precio =
-                        precioDesde(
-                            producto
-                        );
+                    <div class="aspect-[4/3] animate-pulse bg-gray-100">
+                    </div>
 
 
-                    <article
-                        class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="space-y-4 p-5">
 
-
-                        <!-- Imagen -->
-
-                        <div
-                            class="flex aspect-square items-center justify-center bg-gray-50 p-6">
-
-                            @if (
-                                imagen
-                                &&
-                                ruta
-                                &&
-                                ! imagenConError(
-                                    imagen
-                                )
-                            ) {
-
-                                <img
-                                    [src]="ruta"
-
-                                    [alt]="producto.nombre"
-
-                                    (error)="
-                                        registrarErrorImagen(
-                                            imagen
-                                        )
-                                    "
-
-                                    class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
-                                />
-
-                            } @else {
-
-                                <div
-                                    class="text-center text-gray-400">
-
-                                    <lucide-angular
-                                        [img]="ImageOff"
-                                        class="mx-auto h-12 w-12">
-
-                                    </lucide-angular>
-
-                                </div>
-
-                            }
-
+                        <div class="h-4 w-24 animate-pulse rounded bg-gray-100">
                         </div>
 
 
-                        <!-- Datos -->
-
-                        <div
-                            class="p-6">
-
-                            <p
-                                class="text-xs font-medium uppercase tracking-wide text-primary">
-
-                                {{
-                                    producto
-                                        .categoria
-                                        ?.nombre
-                                    ?? ''
-                                }}
-
-                            </p>
-
-
-                            <h2
-                                class="mt-2 text-xl font-semibold text-gray-900">
-
-                                {{ producto.nombre }}
-
-                            </h2>
-
-
-                            @if (
-                                producto.marca
-                                ||
-                                producto.modelo
-                            ) {
-
-                                <p
-                                    class="mt-1 text-sm text-gray-500">
-
-                                    {{ producto.marca }}
-
-                                    @if (
-                                        producto.marca
-                                        &&
-                                        producto.modelo
-                                    ) {
-
-                                        ·
-
-                                    }
-
-                                    {{ producto.modelo }}
-
-                                </p>
-
-                            }
-
-
-                            @if (
-                                producto.descripcion
-                            ) {
-
-                                <p
-                                    class="mt-4 line-clamp-3 text-sm leading-6 text-gray-600">
-
-                                    {{ producto.descripcion }}
-
-                                </p>
-
-                            }
-
-
-                            <div
-                                class="mt-6 flex items-end justify-between gap-4">
-
-                                <div>
-
-                                    @if (
-                                        precio !== null
-                                    ) {
-
-                                        <p
-                                            class="text-xs text-gray-500">
-
-                                            {{
-                                                producto.variantes.length > 1
-                                                ? t(
-                                                    'Desde',
-                                                    'From'
-                                                )
-                                                : t(
-                                                    'Precio',
-                                                    'Price'
-                                                )
-                                            }}
-
-                                        </p>
-
-
-                                        <p
-                                            class="text-xl font-semibold text-primary">
-
-                                            Bs
-                                            {{
-                                                precio
-                                                | number:'1.2-2'
-                                            }}
-
-                                        </p>
-
-                                    } @else {
-
-                                        <p
-                                            class="text-sm font-medium text-gray-500">
-
-                                            {{
-                                                t(
-                                                    'Consultar precio',
-                                                    'Request price'
-                                                )
-                                            }}
-
-                                        </p>
-
-                                    }
-
-                                </div>
-
-
-                                <button
-                                    type="button"
-
-                                    (click)="
-                                        abrirDetalle(
-                                            producto
-                                        )
-                                    "
-
-                                    class="rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary hover:text-white">
-
-                                    {{
-                                        t(
-                                            'Ver detalles',
-                                            'View details'
-                                        )
-                                    }}
-
-                                </button>
-
-                            </div>
-
+                        <div class="h-6 w-3/4 animate-pulse rounded bg-gray-100">
                         </div>
 
-                    </article>
+
+                        <div class="h-4 w-1/2 animate-pulse rounded bg-gray-100">
+                        </div>
+
+
+                        <div class="h-10 animate-pulse rounded bg-gray-100">
+                        </div>
+
+                    </div>
+
+                </div>
 
                 }
 
             </div>
 
+        </section>
+
         }
 
 
-        <!-- Sin resultados -->
+        <!-- ===================================================== -->
+        <!-- ERROR -->
+        <!-- ===================================================== -->
 
-        @else {
+        @else if (
+        errorMensaje()
+        ) {
 
-            <div
-                class="py-24 text-center">
+        <section class="py-16">
 
-                <lucide-angular
-                    [img]="Package"
-                    class="mx-auto h-12 w-12 text-gray-300">
+            <div class="mx-auto max-w-2xl rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
 
-                </lucide-angular>
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+
+                    <lucide-angular [img]="CircleAlert" class="h-6 w-6 text-red-600">
+                    </lucide-angular>
+
+                </div>
 
 
-                <h2
-                    class="mt-4 font-medium text-gray-900">
+                <h2 class="mt-4 text-lg font-semibold text-gray-900">
 
                     {{
-                        t(
-                            'No encontramos productos',
-                            'No products found'
-                        )
+                    t(
+                    'No pudimos cargar el catálogo',
+                    'We could not load the catalog'
+                    )
                     }}
 
                 </h2>
 
 
-                <p
-                    class="mt-2 text-sm text-gray-500">
+                <p class="mt-2 text-sm text-red-700">
+
+                    {{ errorMensaje() }}
+
+                </p>
+
+
+                <button type="button" (click)="cargarCatalogo()"
+                    class="mt-6 inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
+
+                    <lucide-angular [img]="RefreshCw" class="h-4 w-4">
+                    </lucide-angular>
 
                     {{
-                        t(
-                            'Pruebe con otra búsqueda o categoría.',
-                            'Try another search or category.'
-                        )
+                    t(
+                    'Reintentar',
+                    'Retry'
+                    )
+                    }}
+
+                </button>
+
+            </div>
+
+        </section>
+
+        }
+
+
+        <!-- ===================================================== -->
+        <!-- PRODUCTOS -->
+        <!-- ===================================================== -->
+
+        @else if (
+        productosFiltrados().length > 0
+        ) {
+
+        <section class="mt-10">
+
+            <div class="mb-6">
+
+                <p class="text-xs font-semibold uppercase tracking-wider text-primary">
+
+                    {{
+                    t(
+                    'Nuestro catálogo',
+                    'Our catalog'
+                    )
                     }}
 
                 </p>
 
+
+                <h2 class="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
+
+                    {{
+                    idCategoria() === null
+
+                    ? t(
+                    'Todos los productos',
+                    'All products'
+                    )
+
+                    : t(
+                    'Productos disponibles',
+                    'Available products'
+                    )
+                    }}
+
+                </h2>
+
             </div>
 
-        }
 
-    </main>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
+                @for (
+                producto
+                of productosFiltrados();
+                track producto.id_producto
+                ) {
 
-    <!--
-    ========================================================================
-    MODAL DETALLE
-    ========================================================================
-    -->
-
-    @if (
-        productoSeleccionado();
-        as producto
-    ) {
-
-        <div
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-
-            (click)="cerrarDetalle()">
+                @let imagen =
+                imagenPrincipal(
+                producto
+                );
 
 
-            <div
-                class="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl"
-
-                (click)="
-                    $event.stopPropagation()
-                ">
+                @let ruta =
+                rutaImagen(
+                imagen
+                );
 
 
-                <!-- Encabezado -->
+                @let precio =
+                precioDesde(
+                producto
+                );
 
-                <div
-                    class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
 
-                    <div>
+                <a [routerLink]="[
+                                '/productos',
+                                producto.id_producto
+                            ]" [attr.aria-label]="
+                                t(
+                                    'Ver producto',
+                                    'View product'
+                                )
+                                +
+                                ': '
+                                +
+                                producto.nombre
+                            "
+                    class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl">
 
-                        <p
-                            class="text-xs font-medium uppercase tracking-wide text-primary">
+
+                    <!-- ================================= -->
+                    <!-- IMAGEN -->
+                    <!-- ================================= -->
+
+                    <div class="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-gray-50 p-7">
+
+
+                        <!-- Categoría -->
+
+                        @if (
+                        producto.categoria
+                        ) {
+
+                        <span
+                            class="absolute left-4 top-4 z-10 rounded-full border border-gray-200 bg-white/95 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-primary shadow-sm backdrop-blur">
 
                             {{
-                                producto
-                                    .categoria
-                                    ?.nombre
-                                ?? ''
+                            producto
+                            .categoria
+                            ?.nombre
+                            }}
+
+                        </span>
+
+                        }
+
+
+                        <!-- Número de variantes -->
+
+                        @if (
+                        producto.variantes.length > 0
+                        ) {
+
+                        <span
+                            class="absolute right-4 top-4 z-10 rounded-full bg-gray-900/80 px-3 py-1.5 text-xs font-medium text-white backdrop-blur">
+
+                            {{
+                            producto
+                            .variantes
+                            .length
+                            }}
+
+                            {{
+                            producto
+                            .variantes
+                            .length === 1
+
+                            ? t(
+                            'variante',
+                            'variant'
+                            )
+
+                            : t(
+                            'variantes',
+                            'variants'
+                            )
+                            }}
+
+                        </span>
+
+                        }
+
+
+                        @if (
+                        imagen
+                        &&
+                        ruta
+                        &&
+                        !imagenConError(
+                        imagen
+                        )
+                        ) {
+
+                        <img [src]="ruta" [alt]="producto.nombre" (error)="
+                                            registrarErrorImagen(
+                                                imagen
+                                            )
+                                        "
+                            class="h-full w-full object-contain transition duration-500 ease-out group-hover:scale-105" />
+
+                        } @else {
+
+                        <div class="text-center text-gray-300">
+
+                            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white">
+
+                                <lucide-angular [img]="ImageOff" class="h-8 w-8">
+                                </lucide-angular>
+
+                            </div>
+
+
+                            <p class="mt-3 text-xs text-gray-400">
+
+                                {{
+                                t(
+                                'Imagen no disponible',
+                                'Image unavailable'
+                                )
+                                }}
+
+                            </p>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+
+                    <!-- ================================= -->
+                    <!-- INFORMACIÓN -->
+                    <!-- ================================= -->
+
+                    <div class="flex flex-1 flex-col p-5 sm:p-6">
+
+
+                        <!-- Marca / modelo -->
+
+                        @if (
+                        producto.marca
+                        ||
+                        producto.modelo
+                        ) {
+
+                        <p class="text-xs font-medium uppercase tracking-wider text-gray-400">
+
+                            {{ producto.marca }}
+
+                            @if (
+                            producto.marca
+                            &&
+                            producto.modelo
+                            ) {
+
+                            <span class="mx-1">
+                                ·
+                            </span>
+
+                            }
+
+                            {{ producto.modelo }}
+
+                        </p>
+
+                        }
+
+
+                        <!-- Nombre -->
+
+                        <h3
+                            class="mt-2 text-xl font-semibold leading-snug text-gray-900 transition group-hover:text-primary">
+
+                            {{ producto.nombre }}
+
+                        </h3>
+
+
+                        <!-- Descripción -->
+
+                        @if (
+                        producto.descripcion
+                        ) {
+
+                        <p class="mt-3 line-clamp-2 text-sm leading-6 text-gray-500">
+
+                            {{
+                            producto
+                            .descripcion
                             }}
 
                         </p>
 
+                        } @else {
 
-                        <h2
-                            class="text-xl font-semibold text-gray-900">
+                        <p class="mt-3 text-sm leading-6 text-gray-400">
 
-                            {{ producto.nombre }}
+                            {{
+                            t(
+                            'Consulte características y presentaciones disponibles.',
+                            'View available features and options.'
+                            )
+                            }}
 
-                        </h2>
+                        </p>
 
-                    </div>
-
-
-                    <button
-                        type="button"
-
-                        (click)="cerrarDetalle()"
-
-                        class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
-
-                        <lucide-angular
-                            [img]="X"
-                            class="h-5 w-5">
-
-                        </lucide-angular>
-
-                    </button>
-
-                </div>
+                        }
 
 
-                <div
-                    class="grid grid-cols-1 gap-8 p-6 lg:grid-cols-2">
+                        <!-- Separador flexible -->
 
-
-                    <!-- Imagen -->
-
-                    <div>
-
-                        @let principal =
-                            imagenPrincipal(
-                                producto
-                            );
-
-                        @let rutaPrincipal =
-                            rutaImagen(
-                                principal
-                            );
-
-
-                        <div
-                            class="flex aspect-square items-center justify-center rounded-xl bg-gray-50 p-6">
-
-                            @if (
-                                principal
-                                &&
-                                rutaPrincipal
-                                &&
-                                ! imagenConError(
-                                    principal
-                                )
-                            ) {
-
-                                <img
-                                    [src]="rutaPrincipal"
-
-                                    [alt]="producto.nombre"
-
-                                    (error)="
-                                        registrarErrorImagen(
-                                            principal
-                                        )
-                                    "
-
-                                    class="h-full w-full object-contain"
-                                />
-
-                            } @else {
-
-                                <lucide-angular
-                                    [img]="ImageOff"
-                                    class="h-16 w-16 text-gray-300">
-
-                                </lucide-angular>
-
-                            }
-
+                        <div class="flex-1">
                         </div>
 
-                    </div>
+
+                        <!-- ================================= -->
+                        <!-- FOOTER -->
+                        <!-- ================================= -->
+
+                        <div class="mt-6 border-t border-gray-100 pt-5">
+
+                            <div class="flex items-end justify-between gap-4">
 
 
-                    <!-- Información -->
+                                <!-- Precio -->
 
-                    <div>
+                                <div class="min-w-0">
 
-                        @if (
-                            producto.marca
-                            ||
-                            producto.modelo
-                        ) {
-
-                            <div
-                                class="mb-5 flex flex-wrap gap-2">
-
-                                @if (
-                                    producto.marca
-                                ) {
-
-                                    <span
-                                        class="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
-
-                                        {{ producto.marca }}
-
-                                    </span>
-
-                                }
-
-
-                                @if (
-                                    producto.modelo
-                                ) {
-
-                                    <span
-                                        class="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
-
-                                        {{ producto.modelo }}
-
-                                    </span>
-
-                                }
-
-                            </div>
-
-                        }
-
-
-                        @if (
-                            producto.descripcion
-                        ) {
-
-                            <p
-                                class="leading-7 text-gray-600">
-
-                                {{ producto.descripcion }}
-
-                            </p>
-
-                        }
-
-
-                        <!-- Variantes -->
-
-                        <div
-                            class="mt-7">
-
-                            <h3
-                                class="font-semibold text-gray-900">
-
-                                {{
-                                    t(
-                                        'Presentaciones disponibles',
-                                        'Available options'
-                                    )
-                                }}
-
-                            </h3>
-
-
-                            @if (
-                                producto.variantes.length > 0
-                            ) {
-
-                                <div
-                                    class="mt-3 divide-y divide-gray-200 rounded-xl border border-gray-200">
-
-                                    @for (
-                                        variante
-                                        of producto.variantes;
-                                        track variante.id_producto_variante
+                                    @if (
+                                    precio !== null
                                     ) {
 
-                                        <div
-                                            class="flex items-center justify-between gap-4 p-4">
+                                    <p class="text-xs text-gray-400">
 
-                                            <div>
+                                        {{
+                                        producto
+                                        .variantes
+                                        .length > 1
 
-                                                <p
-                                                    class="font-medium text-gray-900">
+                                        ? t(
+                                        'Desde',
+                                        'From'
+                                        )
 
-                                                    {{ variante.nombre }}
+                                        : t(
+                                        'Precio',
+                                        'Price'
+                                        )
+                                        }}
 
-                                                </p>
-
-
-                                                @if (
-                                                    variante.codigo_comercial
-                                                ) {
-
-                                                    <p
-                                                        class="mt-1 text-xs text-gray-500">
-
-                                                        {{
-                                                            variante.codigo_comercial
-                                                        }}
-
-                                                    </p>
-
-                                                }
-
-                                            </div>
+                                    </p>
 
 
-                                            <div
-                                                class="text-right">
+                                    <p class="mt-0.5 text-xl font-semibold tracking-tight text-primary">
 
-                                                @if (
-                                                    variante.precio_venta
-                                                    !== null
-                                                ) {
+                                        Bs
+                                        {{
+                                        precio
+                                        | number:'1.2-2'
+                                        }}
 
-                                                    <p
-                                                        class="font-semibold text-primary">
+                                    </p>
 
-                                                        Bs
-                                                        {{
-                                                            variante.precio_venta
-                                                            | number:'1.2-2'
-                                                        }}
+                                    } @else {
 
-                                                    </p>
+                                    <p class="text-xs text-gray-400">
 
-                                                } @else {
+                                        {{
+                                        t(
+                                        'Precio',
+                                        'Price'
+                                        )
+                                        }}
 
-                                                    <p
-                                                        class="text-sm text-gray-500">
-
-                                                        {{
-                                                            t(
-                                                                'Consultar',
-                                                                'Request price'
-                                                            )
-                                                        }}
-
-                                                    </p>
-
-                                                }
+                                    </p>
 
 
-                                                <p
-                                                    class="mt-1 text-xs text-gray-400">
+                                    <p class="mt-0.5 text-sm font-semibold text-gray-700">
 
-                                                    {{
-                                                        variante.unidad_medida
-                                                    }}
+                                        {{
+                                        t(
+                                        'Consultar precio',
+                                        'Request price'
+                                        )
+                                        }}
 
-                                                </p>
-
-                                            </div>
-
-                                        </div>
+                                    </p>
 
                                     }
 
                                 </div>
 
-                            } @else {
 
-                                <p
-                                    class="mt-2 text-sm text-gray-500">
+                                <!-- Ver producto -->
 
-                                    {{
+                                <div class="flex items-center gap-2 text-sm font-semibold text-primary">
+
+                                    <span class="hidden sm:inline">
+
+                                        {{
                                         t(
-                                            'Consulte las presentaciones disponibles.',
-                                            'Contact us for available options.'
+                                        'Ver producto',
+                                        'View product'
                                         )
-                                    }}
+                                        }}
 
-                                </p>
-
-                            }
-
-                        </div>
+                                    </span>
 
 
-                        <!-- Acciones -->
+                                    <span
+                                        class="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 transition duration-300 group-hover:bg-primary group-hover:text-white">
 
-                        <div
-                            class="mt-7 flex flex-wrap gap-3">
+                                        <lucide-angular [img]="ArrowRight"
+                                            class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5">
+                                        </lucide-angular>
 
-                            <a
-                                routerLink="/contactos"
+                                    </span>
 
-                                (click)="cerrarDetalle()"
+                                </div>
 
-                                class="rounded-lg bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary/90">
-
-                                {{
-                                    t(
-                                        'Solicitar información',
-                                        'Request information'
-                                    )
-                                }}
-
-                            </a>
-
-
-                            @if (
-                                rutaArchivo(
-                                    producto.catalogo_pdf
-                                );
-                                as catalogo
-                            ) {
-
-                                <a
-                                    [href]="catalogo"
-
-                                    target="_blank"
-
-                                    rel="noopener noreferrer"
-
-                                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
-
-                                    <lucide-angular
-                                        [img]="FileText"
-                                        class="h-4 w-4">
-
-                                    </lucide-angular>
-
-
-                                    {{
-                                        t(
-                                            'Ver catálogo PDF',
-                                            'View PDF catalog'
-                                        )
-                                    }}
-
-                                </a>
-
-                            }
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                </a>
+
+                }
 
             </div>
 
-        </div>
+        </section>
 
-    }
+        }
+
+
+        <!-- ===================================================== -->
+        <!-- SIN RESULTADOS -->
+        <!-- ===================================================== -->
+
+        @else {
+
+        <section class="py-20">
+
+            <div class="mx-auto max-w-lg text-center">
+
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm">
+
+                    <lucide-angular [img]="Package" class="h-8 w-8 text-gray-300">
+                    </lucide-angular>
+
+                </div>
+
+
+                <h2 class="mt-5 text-xl font-semibold text-gray-900">
+
+                    {{
+                    t(
+                    'No encontramos productos',
+                    'No products found'
+                    )
+                    }}
+
+                </h2>
+
+
+                <p class="mt-2 text-sm leading-6 text-gray-500">
+
+                    {{
+                    t(
+                    'No hay productos que coincidan con la búsqueda o categoría seleccionada.',
+                    'There are no products matching your search or selected category.'
+                    )
+                    }}
+
+                </p>
+
+
+                @if (
+                hayFiltrosActivos()
+                ) {
+
+                <button type="button" (click)="limpiarFiltros()"
+                    class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90">
+
+                    {{
+                    t(
+                    'Mostrar todos los productos',
+                    'Show all products'
+                    )
+                    }}
+
+                </button>
+
+                }
+
+            </div>
+
+        </section>
+
+        }
+
+    </main>
 
 </div>

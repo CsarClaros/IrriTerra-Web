@@ -26,7 +26,8 @@ import {
   Search,
   Trash2,
   Users,
-  RotateCcw
+  RotateCcw,
+  KeyRound
 } from 'lucide-angular';
 
 import {
@@ -199,6 +200,22 @@ export class UserList
           )
     );
 
+  /*
+|--------------------------------------------------------------------------
+| Restablecer contraseña
+|--------------------------------------------------------------------------
+*/
+
+  readonly puedeRestablecerPassword =
+    computed(
+      () =>
+        this.sessionService
+          .tieneTodosLosPermisos([
+            'usuario.crear',
+            'usuario.editar'
+          ])
+    );
+
 
   readonly puedeEliminar =
     computed(
@@ -313,6 +330,9 @@ export class UserList
 
   readonly RotateCcw =
     RotateCcw;
+
+  readonly KeyRound =
+    KeyRound;
 
 
   /*
@@ -539,6 +559,199 @@ export class UserList
 
 
     this.cargarUsuarios();
+
+  }
+
+  /*
+|--------------------------------------------------------------------------
+| Restablecer contraseña
+|--------------------------------------------------------------------------
+*/
+
+  restablecerPassword(
+    usuario:
+      Usuario
+  ): void {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Permisos
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      !this.puedeRestablecerPassword()
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Jerarquía
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      !this.puedeGestionarUsuario(
+        usuario
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Solo usuarios activos
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      usuario.estado_registro
+      !== 'A'
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | No restablecer la propia contraseña
+    |--------------------------------------------------------------------------
+    |
+    | Para la cuenta actual ya existe
+    | Cambiar contraseña.
+    |
+    */
+
+    if (
+      this.esUsuarioActual(
+        usuario
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Confirmación
+    |--------------------------------------------------------------------------
+    */
+
+    const confirmar =
+      window.confirm(
+
+        this.t(
+
+          `¿Restablecer la contraseña de ${this.nombreCompleto(usuario)}?\n\nLa contraseña volverá a ser su carnet de identidad.`,
+
+          `Reset the password for ${this.nombreCompleto(usuario)}?\n\nThe password will be reset to the user's ID number.`
+
+        )
+
+      );
+
+
+    if (
+      !confirmar
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Estado
+    |--------------------------------------------------------------------------
+    */
+
+    this.procesandoId.set(
+      usuario.id_usuario
+    );
+
+
+    this.errorMensaje.set(
+      ''
+    );
+
+
+    this.mensajeExito.set(
+      ''
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Solicitud
+    |--------------------------------------------------------------------------
+    */
+
+    this.usuarioService
+      .restablecerPassword(
+        usuario.id_usuario
+      )
+      .pipe(
+
+        finalize(
+          () => {
+
+            this.procesandoId.set(
+              null
+            );
+
+          }
+        )
+
+      )
+      .subscribe({
+
+        next:
+          () => {
+
+            this.mensajeExito.set(
+
+              this.t(
+
+                `La contraseña de ${usuario.usuario} fue restablecida correctamente. Ahora puede ingresar utilizando su carnet de identidad.`,
+
+                `The password for ${usuario.usuario} was reset successfully. The user can now sign in using their ID number.`
+
+              )
+
+            );
+
+          },
+
+
+        error:
+          (
+            error:
+              HttpErrorResponse
+          ) => {
+
+            this.errorMensaje.set(
+
+              this.mensajeError(
+                error
+              )
+
+            );
+
+          }
+
+      });
 
   }
 

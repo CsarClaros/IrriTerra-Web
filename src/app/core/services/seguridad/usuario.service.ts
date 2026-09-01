@@ -206,6 +206,28 @@ export class UsuarioService {
             );
 
     }
+    
+    /*
+|--------------------------------------------------------------------------
+| Restablecer contraseña
+|--------------------------------------------------------------------------
+*/
+
+    restablecerPassword(
+        idUsuario: number
+    ): Observable<{
+        message: string;
+    }> {
+
+        return this.api
+            .patch<{
+                message: string;
+            }>(
+                `usuario/${idUsuario}/restablecer-password`,
+                {}
+            );
+
+    }
 
 
     /*
@@ -398,5 +420,7 @@ export class UsuarioService {
             );
 
     }
+
+
 
 }

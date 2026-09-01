@@ -1,0 +1,468 @@
+<div class="mx-auto w-full max-w-7xl space-y-6">
+
+
+    <!-- ========================================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================================= -->
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div class="flex items-center gap-3">
+
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+
+                <lucide-angular [img]="Building2" class="h-5 w-5">
+                </lucide-angular>
+
+            </div>
+
+
+            <div>
+
+                <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">
+
+                    {{
+                    t(
+                    'Sucursales',
+                    'Branches'
+                    )
+                    }}
+
+                </h1>
+
+
+                <p class="mt-1 text-sm text-gray-500">
+
+                    {{
+                    t(
+                    'Administración de sucursales y ubicaciones.',
+                    'Manage branches and locations.'
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        @if (
+        puedeCrear()
+        ) {
+
+        <a routerLink="/dashboard/sucursales/crear"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
+
+            <lucide-angular [img]="Plus" class="h-4 w-4">
+            </lucide-angular>
+
+            {{
+            t(
+            'Nueva sucursal',
+            'New branch'
+            )
+            }}
+
+        </a>
+
+        }
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- ERROR -->
+    <!-- ========================================================= -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="flex gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-4 w-4 shrink-0">
+        </lucide-angular>
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- FILTROS -->
+    <!-- ========================================================= -->
+
+    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+
+        <div class="flex flex-col gap-3 sm:flex-row">
+
+            <div class="relative flex-1">
+
+                <lucide-angular [img]="Search" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400">
+                </lucide-angular>
+
+
+                <input type="text" (input)="
+                        actualizarBusqueda(
+                            $event
+                        )
+                    " [placeholder]="
+                        t(
+                            'Buscar por nombre, código, ciudad, teléfono...',
+                            'Search by name, code, city, phone...'
+                        )
+                    "
+                    class="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+            </div>
+
+
+            <button type="button" [disabled]="
+                    cargando()
+                " (click)="cargar()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+                <lucide-angular [img]="RefreshCcw" class="h-4 w-4">
+                </lucide-angular>
+
+                {{
+                t(
+                'Actualizar',
+                'Refresh'
+                )
+                }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TABLA -->
+    <!-- ========================================================= -->
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+        @if (
+        cargando()
+        ) {
+
+        <div class="px-6 py-16 text-center text-sm text-gray-500">
+
+            {{
+            t(
+            'Cargando sucursales...',
+            'Loading branches...'
+            )
+            }}
+
+        </div>
+
+        } @else {
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-[1050px] w-full">
+
+                <thead class="border-b border-gray-200 bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Sucursal',
+                            'Branch'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Ubicación',
+                            'Location'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Contacto',
+                            'Contact'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Mapa',
+                            'Map'
+                            )
+                            }}
+
+                        </th>
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+
+                            {{
+                            t(
+                            'Acciones',
+                            'Actions'
+                            )
+                            }}
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100">
+
+                    @for (
+                    sucursal
+                    of sucursalesFiltradas();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <tr class="transition hover:bg-gray-50">
+
+
+                        <!-- Sucursal -->
+
+                        <td class="px-5 py-4">
+
+                            <p class="font-medium text-gray-900">
+
+                                {{ sucursal.nombre }}
+
+                            </p>
+
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                {{ sucursal.codigo }}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- Ubicación -->
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm text-gray-700">
+
+                                {{
+                                sucursal.ciudad
+                                }},
+                                {{
+                                sucursal.departamento
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-1 max-w-xs truncate text-xs text-gray-500">
+
+                                {{
+                                sucursal.direccion
+                                || '-'
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- Contacto -->
+
+                        <td class="px-5 py-4">
+
+                            <p class="text-sm text-gray-700">
+
+                                {{
+                                sucursal.telefono
+                                || '-'
+                                }}
+
+                            </p>
+
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                {{
+                                sucursal.correo
+                                || '-'
+                                }}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- Maps -->
+
+                        <td class="px-5 py-4">
+
+                            @if (
+                            sucursal.url_maps
+                            ) {
+
+                            <a [href]="
+                                                sucursal.url_maps
+                                            " target="_blank" rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
+
+                                <lucide-angular [img]="ExternalLink" class="h-3.5 w-3.5">
+                                </lucide-angular>
+
+                                {{
+                                t(
+                                'Abrir mapa',
+                                'Open map'
+                                )
+                                }}
+
+                            </a>
+
+                            } @else {
+
+                            <span class="text-sm text-gray-400">
+
+                                -
+
+                            </span>
+
+                            }
+
+                        </td>
+
+
+                        <!-- Acciones -->
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex flex-wrap justify-end gap-2">
+
+
+                                @if (
+                                puedeEditar()
+                                ) {
+
+                                <a [routerLink]="[
+                                                    '/dashboard/sucursales',
+                                                    sucursal.id_sucursal,
+                                                    'editar'
+                                                ]"
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-blue-600 transition hover:bg-blue-50">
+
+                                    <lucide-angular [img]="Edit3" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+                                    {{
+                                    t(
+                                    'Editar',
+                                    'Edit'
+                                    )
+                                    }}
+
+                                </a>
+
+                                }
+
+
+                                @if (
+                                puedeEliminar()
+                                ) {
+
+                                <button type="button" [disabled]="
+                                                    procesandoId()
+                                                    ===
+                                                    sucursal.id_sucursal
+                                                " (click)="
+                                                    desactivar(
+                                                        sucursal
+                                                    )
+                                                "
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50">
+
+                                    <lucide-angular [img]="Trash2" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+                                    {{
+                                    t(
+                                    'Desactivar',
+                                    'Deactivate'
+                                    )
+                                    }}
+
+                                </button>
+
+                                }
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    } @empty {
+
+                    <tr>
+
+                        <td colspan="5" class="px-6 py-16 text-center">
+
+                            <lucide-angular [img]="Building2" class="mx-auto h-8 w-8 text-gray-300">
+                            </lucide-angular>
+
+
+                            <p class="mt-3 text-sm text-gray-500">
+
+                                {{
+                                t(
+                                'No se encontraron sucursales.',
+                                'No branches found.'
+                                )
+                                }}
+
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        }
+
+    </div>
+
+</div>
