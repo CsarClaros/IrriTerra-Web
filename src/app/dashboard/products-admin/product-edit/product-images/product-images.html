@@ -1,7 +1,8 @@
 <div class="space-y-6">
 
-
-    <!-- Encabezado -->
+    <!-- ============================================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ============================================================= -->
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
@@ -12,7 +13,6 @@
                 Galería de imágenes
 
             </h2>
-
 
             <p class="mt-1 text-sm text-gray-500">
 
@@ -26,10 +26,9 @@
         <div class="flex gap-2">
 
             <button type="button" (click)="cargarImagenes()" [disabled]="cargando()"
-                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60">
 
                 <lucide-angular [img]="RefreshCw" class="h-4 w-4" [class.animate-spin]="cargando()">
-
                 </lucide-angular>
 
                 Actualizar
@@ -38,14 +37,13 @@
 
 
             @if (
-            ! mostrarFormulario()
+            !mostrarFormulario()
             ) {
 
             <button type="button" (click)="nuevaImagen()"
                 class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
 
                 <lucide-angular [img]="Plus" class="h-4 w-4">
-
                 </lucide-angular>
 
                 Nueva imagen
@@ -59,14 +57,17 @@
     </div>
 
 
-    <!-- Error -->
+    <!-- ============================================================= -->
+    <!-- ERROR GENERAL -->
+    <!-- ============================================================= -->
 
-    @if (errorMensaje()) {
+    @if (
+    errorMensaje()
+    ) {
 
     <div role="alert" class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
 
         <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5">
-
         </lucide-angular>
 
         <p class="text-sm">
@@ -80,31 +81,51 @@
     }
 
 
-    <!-- Formulario -->
+    <!-- ============================================================= -->
+    <!-- FORMULARIO -->
+    <!-- ============================================================= -->
 
-    @if (mostrarFormulario()) {
+    @if (
+    mostrarFormulario()
+    ) {
 
     <form #imagenForm="ngForm" (ngSubmit)="guardar()" class="rounded-xl border border-primary/20 bg-primary/5 p-5">
 
 
-        <div class="mb-5 flex items-start justify-between">
+        <!-- ===================================================== -->
+        <!-- ENCABEZADO FORMULARIO -->
+        <!-- ===================================================== -->
+
+        <div class="mb-5 flex items-start justify-between gap-4">
 
             <div>
 
                 <h3 class="font-semibold text-gray-900">
 
                     {{
-                    idEditando()
+                    idEditando() !== null
                     ? 'Editar imagen'
-                    : 'Nueva imagen'
+                    : 'Nuevas imágenes'
                     }}
 
                 </h3>
 
+
                 <p class="mt-1 text-sm text-gray-500">
 
-                    Seleccione una imagen y defina
+                    @if (
+                    idEditando() !== null
+                    ) {
+
+                    Puede reemplazar el archivo o modificar
+                    la configuración de la imagen.
+
+                    } @else {
+
+                    Seleccione una o varias imágenes y defina
                     su posición en la galería.
+
+                    }
 
                 </p>
 
@@ -112,10 +133,9 @@
 
 
             <button type="button" (click)="cerrarFormulario()" [disabled]="guardando()"
-                class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-white">
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-white disabled:opacity-50">
 
                 <lucide-angular [img]="X" class="h-5 w-5">
-
                 </lucide-angular>
 
             </button>
@@ -126,177 +146,251 @@
         <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
 
 
-            <!-- Archivo -->
+            <!-- ================================================= -->
+            <!-- CREACIÓN MÚLTIPLE -->
+            <!-- ================================================= -->
 
-            <div class="md:col-span-2">
+            @if (
+            idEditando() === null
+            ) {
 
-                <label for="imagen_producto" class="mb-2 block text-sm font-medium text-gray-700">
+            <div class="md:col-span-3">
 
-                    {{
-                    idEditando()
-                    ? 'Reemplazar imagen'
-                    : 'Imagen'
-                    }}
+                <label for="imagenes_producto" class="mb-2 block text-sm font-medium text-gray-700">
 
-                    @if (!idEditando()) {
+                    Imágenes
 
                     <span class="text-red-500">
                         *
                     </span>
 
-                    }
-
                 </label>
 
 
-                <input id="imagen_producto" name="imagen_producto" type="file" multiple
-                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                    (change)="seleccionarImagenes($event)" [disabled]="guardando()" class="block w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-700 file:mr-4 file:border-0 file:bg-primary/10 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20" />
-
-@if (
-    imagenesPendientes().length > 0
-) {
-
-    <div
-        class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-
-        @for (
-            imagen
-            of imagenesPendientes();
-            track imagen.id
-        ) {
-
-            <div
-                class="overflow-hidden rounded-xl border border-gray-200 bg-white">
-
-                <!-- Preview -->
-
-                <div
-                    class="relative flex aspect-square items-center justify-center bg-gray-50 p-3">
-
-                    <img
-                        [src]="imagen.vistaPrevia"
-                        [alt]="imagen.archivo.name"
-                        class="h-full w-full object-contain"
-                    />
+                <input id="imagenes_producto" name="imagenes_producto" type="file" multiple
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" (change)="
+                                seleccionarImagenes(
+                                    $event
+                                )
+                            " [disabled]="guardando()"
+                    class="block w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-700 file:mr-4 file:border-0 file:bg-primary/10 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20 disabled:opacity-60" />
 
 
-                    <button
-                        type="button"
-                        (click)="eliminarPendiente(imagen.id)"
-                        class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow">
+                <p class="mt-1.5 text-xs text-gray-500">
 
-                        <lucide-angular
-                            [img]="X"
-                            class="h-4 w-4">
-                        </lucide-angular>
+                    Puede seleccionar varias imágenes.
+                    Formatos JPG, PNG o WEBP.
+                    Máximo 5 MB por archivo.
 
-                    </button>
-
-                </div>
+                </p>
 
 
-                <!-- Configuración -->
+                @if (
+                errorCampo('imagen');
+                as error
+                ) {
 
-                <div class="space-y-4 p-4">
+                <p class="mt-1.5 text-sm text-red-600">
 
-                    <p
-                        class="truncate text-sm font-medium text-gray-700">
+                    {{ error }}
 
-                        {{ imagen.archivo.name }}
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- ============================================= -->
+            <!-- IMÁGENES PENDIENTES -->
+            <!-- ============================================= -->
+
+            @if (
+            imagenesPendientes().length > 0
+            ) {
+
+            <div class="md:col-span-3">
+
+                <div class="mb-3 flex items-center justify-between gap-3">
+
+                    <p class="text-sm font-medium text-gray-700">
+
+                        Imágenes seleccionadas
 
                     </p>
 
 
-                    <!-- Orden -->
+                    <span class="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
 
-                    <div>
+                        {{
+                        imagenesPendientes().length
+                        }}
 
-                        <label
-                            class="mb-1 block text-xs font-medium text-gray-600">
+                        {{
+                        imagenesPendientes().length === 1
+                        ? 'imagen'
+                        : 'imágenes'
+                        }}
 
-                            Orden
+                    </span>
 
-                        </label>
+                </div>
 
 
-                        <select
-                            [ngModel]="imagen.orden"
-                            (ngModelChange)="
-                                cambiarOrdenPendiente(
-                                    imagen.id,
-                                    $event
-                                )
-                            "
-                            [name]="'orden_' + imagen.id"
-                            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
 
-                            @for (
-                                orden
-                                of ordenesDisponibles(imagen);
-                                track orden
-                            ) {
+                    @for (
+                    imagen
+                    of imagenesPendientes();
+                    track imagen.id
+                    ) {
 
-                                <option
-                                    [ngValue]="orden">
+                    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
-                                    {{ orden }}
 
-                                </option>
+                        <!-- Preview -->
 
-                            }
+                        <div class="relative flex aspect-square items-center justify-center bg-gray-50 p-3">
 
-                        </select>
+                            <img [src]="imagen.vistaPrevia" [alt]="imagen.archivo.name"
+                                class="h-full w-full object-contain" />
+
+
+                            <button type="button" (click)="
+                                                    eliminarPendiente(
+                                                        imagen.id
+                                                    )
+                                                " [disabled]="guardando()"
+                                class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-600 shadow transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50">
+
+                                <lucide-angular [img]="X" class="h-4 w-4">
+                                </lucide-angular>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- Configuración -->
+
+                        <div class="space-y-4 p-4">
+
+                            <p class="truncate text-sm font-medium text-gray-700" [title]="imagen.archivo.name">
+
+                                {{ imagen.archivo.name }}
+
+                            </p>
+
+
+                            <!-- Orden -->
+
+                            <div>
+
+                                <label class="mb-1 block text-xs font-medium text-gray-600">
+
+                                    Orden
+
+                                </label>
+
+
+                                <select [ngModel]="imagen.orden" (ngModelChange)="
+                                                        cambiarOrdenPendiente(
+                                                            imagen.id,
+                                                            $event
+                                                        )
+                                                    " [name]="'orden_' + imagen.id" [disabled]="guardando()"
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60">
+
+                                    @for (
+                                    orden
+                                    of ordenesDisponibles(
+                                    imagen
+                                    );
+                                    track orden
+                                    ) {
+
+                                    <option [ngValue]="orden">
+
+                                        {{ orden }}
+
+                                    </option>
+
+                                    }
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Principal -->
+
+                            <label class="flex cursor-pointer items-center gap-2">
+
+                                <input type="radio" name="imagen_principal_pendiente" [checked]="imagen.es_principal"
+                                    (change)="
+                                                        marcarPrincipalPendiente(
+                                                            imagen.id
+                                                        )
+                                                    " [disabled]="guardando()"
+                                    class="h-4 w-4 border-gray-300 text-primary focus:ring-primary" />
+
+
+                                <span class="text-sm text-gray-700">
+
+                                    Imagen principal
+
+                                </span>
+
+                            </label>
+
+                        </div>
 
                     </div>
 
-
-                    <!-- Principal -->
-
-                    <label
-                        class="flex cursor-pointer items-center gap-2">
-
-                        <input
-                            type="radio"
-                            name="imagen_principal_pendiente"
-
-                            [checked]="imagen.es_principal"
-
-                            (change)="
-                                marcarPrincipalPendiente(
-                                    imagen.id
-                                )
-                            "
-                        />
-
-                        <span class="text-sm text-gray-700">
-
-                            Imagen principal
-
-                        </span>
-
-                    </label>
+                    }
 
                 </div>
 
             </div>
 
-        }
+            }
 
-    </div>
+            }
 
-}
+
+            <!-- ================================================= -->
+            <!-- EDICIÓN INDIVIDUAL -->
+            <!-- ================================================= -->
+
+            @else {
+
+            <!-- Archivo nuevo -->
+
+            <div class="md:col-span-3">
+
+                <label for="imagen_edicion" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Reemplazar imagen
+
+                </label>
+
+
+                <input id="imagen_edicion" name="imagen_edicion" type="file"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" (change)="
+                                seleccionarImagenEdicion(
+                                    $event
+                                )
+                            " [disabled]="guardando()"
+                    class="block w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-700 file:mr-4 file:border-0 file:bg-primary/10 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20 disabled:opacity-60" />
+
 
                 <p class="mt-1.5 text-xs text-gray-500">
 
-                    JPG, PNG o WEBP. Máximo 5 MB.
+                    Si no selecciona una imagen nueva,
+                    se conservará el archivo actual.
 
-                    @if (idEditando()) {
-
-                    Si no selecciona otra imagen,
-                    se conservará la actual.
-
-                    }
+                    JPG, PNG o WEBP.
+                    Máximo 5 MB.
 
                 </p>
 
@@ -319,24 +413,40 @@
                 formData.imagen
                 ) {
 
-                <p class="mt-2 text-xs font-medium text-gray-600">
+                <div class="mt-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2">
 
-                    Archivo seleccionado:
-                    {{ formData.imagen.name }}
+                    <p class="text-xs text-gray-500">
 
-                </p>
+                        Nuevo archivo seleccionado
+
+                    </p>
+
+                    <p class="mt-0.5 truncate text-sm font-medium text-gray-700">
+
+                        {{ formData.imagen.name }}
+
+                    </p>
+
+                </div>
 
                 }
 
             </div>
 
-            <!-- Vista previa -->
+
+            <!-- ============================================= -->
+            <!-- VISTA PREVIA EDICIÓN -->
+            <!-- ============================================= -->
 
             @let preview =
             vistaPrevia()
-            || rutaActual();
+            ||
+            rutaActual();
 
-            @if (preview) {
+
+            @if (
+            preview
+            ) {
 
             <div class="md:col-span-3">
 
@@ -348,7 +458,7 @@
 
 
                 <div
-                    class="flex h-64 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white p-4">
+                    class="flex h-72 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white p-4">
 
                     <img [src]="preview" alt="Vista previa de la imagen" class="h-full w-full object-contain" />
 
@@ -358,22 +468,28 @@
 
             }
 
-            <!-- Orden -->
+
+            <!-- ============================================= -->
+            <!-- ORDEN -->
+            <!-- ============================================= -->
 
             <div>
 
                 <label for="orden_imagen" class="mb-2 block text-sm font-medium text-gray-700">
 
                     Orden
-                    <span class="text-red-500">*</span>
+
+                    <span class="text-red-500">
+                        *
+                    </span>
 
                 </label>
 
 
                 <input id="orden_imagen" name="orden_imagen" type="number" [(ngModel)]="
-                            formData.orden
-                        " required min="1" step="1" [disabled]="guardando()"
-                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+                                formData.orden
+                            " required min="1" step="1" [disabled]="guardando()"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60" />
 
 
                 @if (
@@ -392,15 +508,18 @@
             </div>
 
 
-            <!-- Principal -->
+            <!-- ============================================= -->
+            <!-- PRINCIPAL -->
+            <!-- ============================================= -->
 
-            <div class="md:col-span-3">
+            <div class="md:col-span-2">
 
-                <label class="inline-flex cursor-pointer items-center gap-3">
+                <label
+                    class="flex h-full cursor-pointer items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
 
                     <input type="checkbox" name="es_principal" [(ngModel)]="
-                                formData.es_principal
-                            " [disabled]="guardando()"
+                                    formData.es_principal
+                                " [disabled]="guardando()"
                         class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />
 
 
@@ -412,9 +531,11 @@
 
                         </span>
 
+
                         <span class="block text-xs text-gray-500">
 
-                            Se utilizará como imagen destacada del producto.
+                            Se utilizará como imagen destacada
+                            dentro de esta galería.
 
                         </span>
 
@@ -424,15 +545,19 @@
 
             </div>
 
+            }
+
         </div>
 
 
-        <!-- Acciones -->
+        <!-- ===================================================== -->
+        <!-- ACCIONES -->
+        <!-- ===================================================== -->
 
         <div class="mt-5 flex justify-end gap-3 border-t border-primary/10 pt-5">
 
             <button type="button" (click)="cerrarFormulario()" [disabled]="guardando()"
-                class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700">
+                class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60">
 
                 Cancelar
 
@@ -443,13 +568,20 @@
                         guardando()
                         ||
                         imagenForm.invalid
+                        ||
+                        (
+                            idEditando() === null
+                            &&
+                            imagenesPendientes().length === 0
+                        )
                     "
-                class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60">
 
-                @if (guardando()) {
+                @if (
+                guardando()
+                ) {
 
                 <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
-
                 </span>
 
                 Guardando...
@@ -457,10 +589,20 @@
                 } @else {
 
                 <lucide-angular [img]="Save" class="h-4 w-4">
-
                 </lucide-angular>
 
-                Guardar imagen
+
+                @if (
+                idEditando() !== null
+                ) {
+
+                Guardar cambios
+
+                } @else {
+
+                Guardar imágenes
+
+                }
 
                 }
 
@@ -473,15 +615,19 @@
     }
 
 
-    <!-- Cargando -->
+    <!-- ============================================================= -->
+    <!-- CARGANDO -->
+    <!-- ============================================================= -->
 
-    @if (cargando()) {
+    @if (
+    cargando()
+    ) {
 
     <div class="rounded-xl border border-gray-200 bg-white p-10 text-center">
 
         <div class="mx-auto mb-3 h-7 w-7 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
-
         </div>
+
 
         <p class="text-sm text-gray-500">
 
@@ -494,14 +640,15 @@
     }
 
 
-    <!-- Galería -->
+    <!-- ============================================================= -->
+    <!-- GALERÍA -->
+    <!-- ============================================================= -->
 
     @else if (
     imagenes().length > 0
     ) {
 
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-
 
         @for (
         imagen
@@ -516,7 +663,6 @@
 
             <div class="relative flex aspect-square items-center justify-center bg-gray-50 p-4">
 
-
                 @let ruta =
                 rutaImagen(
                 imagen
@@ -526,23 +672,22 @@
                 @if (
                 ruta
                 &&
-                ! imagenConError(
+                !imagenConError(
                 imagen
                 )
                 ) {
 
                 <img [src]="ruta" alt="Imagen del producto" (error)="
-            registrarErrorImagen(
-                imagen
-            )
-        " class="h-full w-full object-contain" />
+                                    registrarErrorImagen(
+                                        imagen
+                                    )
+                                " class="h-full w-full object-contain" />
 
                 } @else {
 
                 <div class="text-center text-gray-400">
 
                     <lucide-angular [img]="ImageOff" class="mx-auto h-10 w-10">
-
                     </lucide-angular>
 
 
@@ -565,7 +710,6 @@
                     class="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-white shadow">
 
                     <lucide-angular [img]="Star" class="h-3 w-3">
-
                     </lucide-angular>
 
                     Principal
@@ -581,44 +725,83 @@
 
             <div class="border-t border-gray-200 p-4">
 
-                <div class="flex items-start justify-between gap-3">
+                <!-- <div class="mb-3">
 
-                    <!-- <div class="min-w-0"> -->
+                    <p class="text-xs text-gray-500">
 
-                    <!-- <p class="text-xs text-gray-500">
+                        Orden {{ imagen.orden }}
 
-                            Orden {{ imagen.orden }}
-
-                        </p> -->
+                    </p>
 
 
-                    <!-- <p class="mt-1 truncate text-sm text-gray-700" [title]="
+                    <p class="mt-1 truncate text-xs text-gray-400" [title]="
+                                    imagen.ruta_imagen
+                                    || ''
+                                ">
+
+                        {{
                         imagen.ruta_imagen
-                        || ''
-                    ">
+                        || 'Ruta no disponible'
+                        }}
 
-                            {{
-                            imagen.ruta_imagen
-                            || 'Ruta no disponible'
-                            }}
+                    </p>
 
-                        </p> -->
+                </div> -->
 
-                    <!-- </div> -->
 
+                <div class="flex items-center justify-end gap-1">
+
+                    <!-- Editar -->
 
                     <button type="button" (click)="
                                     editarImagen(
                                         imagen
                                     )
+                                " [disabled]="
+                                    eliminandoId()
+                                    !== null
                                 "
-                        class="inline-flex flex-shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-primary transition hover:bg-primary/10">
+                        class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-primary transition hover:bg-primary/10 disabled:opacity-50">
 
                         <lucide-angular [img]="Pencil" class="h-4 w-4">
-
                         </lucide-angular>
 
                         Editar
+
+                    </button>
+
+
+                    <!-- Eliminar -->
+
+                    <button type="button" (click)="
+                                    eliminarImagen(
+                                        imagen
+                                    )
+                                " [disabled]="
+                                    eliminandoId()
+                                    !== null
+                                "
+                        class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50">
+
+                        @if (
+                        eliminandoId()
+                        ===
+                        imagen.id_producto_imagen
+                        ) {
+
+                        <span class="h-4 w-4 animate-spin rounded-full border-2 border-red-200 border-t-red-600">
+                        </span>
+
+                        Eliminando...
+
+                        } @else {
+
+                        <lucide-angular [img]="Trash2" class="h-4 w-4">
+                        </lucide-angular>
+
+                        Eliminar
+
+                        }
 
                     </button>
 
@@ -635,10 +818,12 @@
     }
 
 
-    <!-- Vacío -->
+    <!-- ============================================================= -->
+    <!-- VACÍO -->
+    <!-- ============================================================= -->
 
     @else if (
-    ! errorMensaje()
+    !errorMensaje()
     ) {
 
     <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
@@ -646,7 +831,6 @@
         <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm">
 
             <lucide-angular [img]="Image" class="h-6 w-6">
-
             </lucide-angular>
 
         </div>
@@ -667,10 +851,9 @@
 
 
         <button type="button" (click)="nuevaImagen()"
-            class="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white">
+            class="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
 
             <lucide-angular [img]="Plus" class="h-4 w-4">
-
             </lucide-angular>
 
             Registrar primera imagen

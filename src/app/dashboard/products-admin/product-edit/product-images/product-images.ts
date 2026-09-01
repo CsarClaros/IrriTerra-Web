@@ -34,6 +34,7 @@ import {
     RefreshCw,
     Save,
     Star,
+    Trash2,
     X,
     LucideAngularModule
 } from 'lucide-angular';
@@ -167,6 +168,13 @@ export class ProductImages
         >({});
 
 
+
+    readonly eliminandoId =
+        signal<number | null>(
+            null
+        );
+
+
     /*
     |--------------------------------------------------------------------------
     | Estado
@@ -273,6 +281,8 @@ export class ProductImages
     readonly X =
         X;
 
+    readonly Trash2 =
+        Trash2;
 
     /*
     |--------------------------------------------------------------------------
@@ -1737,5 +1747,275 @@ export class ProductImages
     }
 
 
+    /*
+|--------------------------------------------------------------------------
+| Eliminar imagen guardada
+|--------------------------------------------------------------------------
+*/
 
+    eliminarImagen(
+        imagen:
+            ProductoImagen
+    ): void {
+
+        if (
+            this.eliminandoId()
+            !== null
+        ) {
+
+            return;
+
+        }
+
+
+        const confirmado =
+            window.confirm(
+                imagen.es_principal
+
+                    ? 'Esta es la imagen principal. ¿Desea eliminarla igualmente?'
+
+                    : '¿Desea eliminar esta imagen?'
+            );
+
+
+        if (
+            !confirmado
+        ) {
+
+            return;
+
+        }
+
+
+        this.errorMensaje.set(
+            ''
+        );
+
+
+        this.eliminandoId.set(
+            imagen.id_producto_imagen
+        );
+
+
+        this.imagenService
+            .eliminar(
+                imagen.id_producto_imagen
+            )
+            .pipe(
+
+                finalize(
+                    () => {
+
+                        this.eliminandoId.set(
+                            null
+                        );
+
+                    }
+                )
+
+            )
+            .subscribe({
+
+                next:
+                    () => {
+
+                        this.cargarImagenes();
+
+                    },
+
+
+                error:
+                    (
+                        error:
+                            HttpErrorResponse
+                    ) => {
+
+                        this.procesarError(
+                            error
+                        );
+
+                    }
+
+            });
+
+    }
+
+    /*
+|--------------------------------------------------------------------------
+| Seleccionar imagen durante edición
+|--------------------------------------------------------------------------
+*/
+
+    seleccionarImagenEdicion(
+        event: Event
+    ): void {
+
+        const input =
+            event.target as HTMLInputElement;
+
+
+        const archivo =
+            input.files?.[0]
+            ?? null;
+
+
+        if (
+            !archivo
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Formatos permitidos
+        |--------------------------------------------------------------------------
+        */
+
+        const tiposPermitidos = [
+
+            'image/jpeg',
+
+            'image/png',
+
+            'image/webp'
+
+        ];
+
+
+        if (
+            !tiposPermitidos.includes(
+                archivo.type
+            )
+        ) {
+
+            this.agregarErrorCampo(
+
+                'imagen',
+
+                'La imagen debe estar en formato JPG, JPEG, PNG o WEBP.'
+
+            );
+
+
+            input.value = '';
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tamaño máximo
+        |--------------------------------------------------------------------------
+        */
+
+        const maximo =
+            5 * 1024 * 1024;
+
+
+        if (
+            archivo.size > maximo
+        ) {
+
+            this.agregarErrorCampo(
+
+                'imagen',
+
+                'La imagen no puede superar los 5 MB.'
+
+            );
+
+
+            input.value = '';
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Limpiar error anterior
+        |--------------------------------------------------------------------------
+        */
+
+        this.erroresCampos.update(
+            errores => {
+
+                const nuevos = {
+                    ...errores
+                };
+
+
+                delete nuevos[
+                    'imagen'
+                ];
+
+
+                return nuevos;
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Guardar File para actualización
+        |--------------------------------------------------------------------------
+        */
+
+        this.formData = {
+
+            ...this.formData,
+
+            imagen:
+                archivo
+
+        };
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Liberar preview anterior
+        |--------------------------------------------------------------------------
+        */
+
+        const previewAnterior =
+            this.vistaPrevia();
+
+
+        if (
+            previewAnterior
+            &&
+            previewAnterior.startsWith(
+                'blob:'
+            )
+        ) {
+
+            URL.revokeObjectURL(
+                previewAnterior
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nueva vista previa
+        |--------------------------------------------------------------------------
+        */
+
+        this.vistaPrevia.set(
+
+            URL.createObjectURL(
+                archivo
+            )
+
+        );
+
+    }
 }
