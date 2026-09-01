@@ -31,7 +31,8 @@ import {
   ArrowRightLeft,
   Building2,
   MapPinned,
-  Tags
+  Tags,
+  Truck
 } from 'lucide-angular';
 
 import {
@@ -190,6 +191,9 @@ export class DashboardLayout {
   readonly Tags =
     Tags;
 
+  readonly Truck =
+    Truck;
+
 
   /*
   |--------------------------------------------------------------------------
@@ -287,6 +291,28 @@ export class DashboardLayout {
       },
 
       {
+        path:
+          '/dashboard/proveedores',
+
+        icon:
+          Truck,
+
+        label: {
+
+          es:
+            'Proveedores',
+
+          en:
+            'Providers'
+
+        },
+
+        permisos: [
+          'proveedor.ver'
+        ]
+      },
+
+      {
 
         path:
           '/dashboard/products',
@@ -309,28 +335,28 @@ export class DashboardLayout {
         ]
 
       },
-      
+
       {
         path:
-            '/dashboard/categorias',
-    
+          '/dashboard/categorias',
+
         icon:
-            Tags,
-    
+          Tags,
+
         label: {
-    
-            es:
-                'Categorías',
-    
-            en:
-                'Categories'
-    
+
+          es:
+            'Categorías',
+
+          en:
+            'Categories'
+
         },
-    
+
         permisos: [
-            'categoria.ver'
+          'categoria.ver'
         ]
-    },
+      },
 
       {
         path:

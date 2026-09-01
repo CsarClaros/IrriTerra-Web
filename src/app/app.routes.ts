@@ -246,6 +246,21 @@ import {
 } from './dashboard/products-admin/categories/category-form/category-form';
 
 
+/*
+|--------------------------------------------------------------------------
+| Proveedores
+|--------------------------------------------------------------------------
+*/
+
+import {
+    ProviderList
+} from './dashboard/purchases/providers/provider-list/provider-list';
+
+import {
+    ProviderForm
+} from './dashboard/purchases/providers/provider-form/provider-form';
+
+
 
 
 /*
@@ -941,6 +956,57 @@ export const routes:
                         )
                     ]
                 },
+
+                /*
+|--------------------------------------------------------------------------
+| Proveedores
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path:
+                        'proveedores',
+
+                    component:
+                        ProviderList,
+
+                    canActivate: [
+                        permissionGuard(
+                            'proveedor.ver'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'proveedores/crear',
+
+                    component:
+                        ProviderForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'proveedor.crear'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'proveedores/:id/editar',
+
+                    component:
+                        ProviderForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'proveedor.editar'
+                        )
+                    ]
+                },
+
             ]
 
         },
