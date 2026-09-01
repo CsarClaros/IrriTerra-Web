@@ -6,6 +6,8 @@ export interface Categoria {
 
     descripcion: string | null;
 
+    observaciones: string | null;
+
     estado_registro: string;
 
     created_at?: string | null;
@@ -21,6 +23,6 @@ export interface CategoriaRequest {
 
     descripcion?: string | null;
 
-    estado_registro?: string;
+    observaciones?: string | null;
 
 }

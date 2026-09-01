@@ -1,0 +1,336 @@
+<div class="mx-auto w-full max-w-4xl space-y-6">
+
+
+    <!-- ========================================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================================= -->
+
+    <div class="flex items-start gap-4">
+
+        <a routerLink="/dashboard/categorias"
+            class="mt-1 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 transition hover:bg-gray-50">
+
+            <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+            </lucide-angular>
+
+        </a>
+
+
+        <div>
+
+            <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">
+
+                {{
+                esEdicion()
+
+                ? t(
+                'Editar categoría',
+                'Edit category'
+                )
+
+                : t(
+                'Nueva categoría',
+                'New category'
+                )
+                }}
+
+            </h1>
+
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{
+                t(
+                'Defina la información utilizada para organizar los productos.',
+                'Define the information used to organize products.'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- ERROR -->
+    <!-- ========================================================= -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <div class="flex gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-4 w-4 shrink-0">
+        </lucide-angular>
+
+        {{ errorMensaje() }}
+
+    </div>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- CARGANDO -->
+    <!-- ========================================================= -->
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="rounded-xl border border-gray-200 bg-white py-16 text-center text-sm text-gray-500">
+
+        {{
+        t(
+        'Cargando categoría...',
+        'Loading category...'
+        )
+        }}
+
+    </div>
+
+    } @else {
+
+
+    <!-- ===================================================== -->
+    <!-- FORMULARIO -->
+    <!-- ===================================================== -->
+
+    <form [formGroup]="form" (ngSubmit)="
+                guardar()
+            " class="space-y-6">
+
+
+        <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+
+
+            <!-- Título sección -->
+
+            <div class="flex items-center gap-3 border-b border-gray-100 pb-4">
+
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+
+                    <lucide-angular [img]="Tags" class="h-4 w-4">
+                    </lucide-angular>
+
+                </div>
+
+
+                <h2 class="font-semibold text-gray-900">
+
+                    {{
+                    t(
+                    'Información de la categoría',
+                    'Category information'
+                    )
+                    }}
+
+                </h2>
+
+            </div>
+
+
+            <div class="mt-6 space-y-5">
+
+
+                <!-- Nombre -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Nombre',
+                        'Name'
+                        )
+                        }}
+                        *
+
+                    </label>
+
+
+                    <input type="text" formControlName="nombre" maxlength="150" [placeholder]="
+                                t(
+                                    'Ej. Motobombas',
+                                    'E.g. Water pumps'
+                                )
+                            "
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                    @if (
+                    form.controls.nombre.touched
+                    &&
+                    form.controls.nombre.hasError(
+                    'required'
+                    )
+                    ) {
+
+                    <p class="mt-1.5 text-xs text-red-600">
+
+                        {{
+                        t(
+                        'El nombre es obligatorio.',
+                        'Name is required.'
+                        )
+                        }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+
+                <!-- Descripción -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Descripción',
+                        'Description'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <textarea rows="4" maxlength="255" formControlName="descripcion" [placeholder]="
+                                t(
+                                    'Descripción breve de la categoría.',
+                                    'Short category description.'
+                                )
+                            "
+                        class="w-full resize-y rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+                        </textarea>
+
+
+                    <div class="mt-1 flex justify-end">
+
+                        <span class="text-xs text-gray-400">
+
+                            {{
+                            form.controls
+                            .descripcion
+                            .value
+                            ?.length
+                            ?? 0
+                            }}/255
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Observaciones -->
+
+                <div>
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Observaciones',
+                        'Notes'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <textarea rows="4" formControlName="observaciones" [placeholder]="
+                                t(
+                                    'Información interna adicional.',
+                                    'Additional internal information.'
+                                )
+                            "
+                        class="w-full resize-y rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
+                        </textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- ACCIONES -->
+        <!-- ================================================= -->
+
+        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+            <a routerLink="/dashboard/categorias"
+                class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+
+                {{
+                t(
+                'Cancelar',
+                'Cancel'
+                )
+                }}
+
+            </a>
+
+
+            <button type="submit" [disabled]="
+                        guardando()
+                        ||
+                        form.invalid
+                    "
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50">
+
+                @if (
+                guardando()
+                ) {
+
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white">
+                </span>
+
+                {{
+                t(
+                'Guardando...',
+                'Saving...'
+                )
+                }}
+
+                } @else {
+
+                <lucide-angular [img]="Save" class="h-4 w-4">
+                </lucide-angular>
+
+
+                {{
+                esEdicion()
+
+                ? t(
+                'Guardar cambios',
+                'Save changes'
+                )
+
+                : t(
+                'Registrar categoría',
+                'Create category'
+                )
+                }}
+
+                }
+
+            </button>
+
+        </div>
+
+    </form>
+
+    }
+
+</div>

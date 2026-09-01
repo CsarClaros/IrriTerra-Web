@@ -30,7 +30,8 @@ import {
   X,
   ArrowRightLeft,
   Building2,
-  MapPinned
+  MapPinned,
+  Tags
 } from 'lucide-angular';
 
 import {
@@ -183,8 +184,11 @@ export class DashboardLayout {
   readonly Building2 =
     Building2;
 
-    readonly MapPinned =
+  readonly MapPinned =
     MapPinned;
+
+  readonly Tags =
+    Tags;
 
 
   /*
@@ -305,6 +309,28 @@ export class DashboardLayout {
         ]
 
       },
+      
+      {
+        path:
+            '/dashboard/categorias',
+    
+        icon:
+            Tags,
+    
+        label: {
+    
+            es:
+                'Categorías',
+    
+            en:
+                'Categories'
+    
+        },
+    
+        permisos: [
+            'categoria.ver'
+        ]
+    },
 
       {
         path:
@@ -330,26 +356,26 @@ export class DashboardLayout {
 
       {
         path:
-            '/dashboard/sucursales',
-    
+          '/dashboard/sucursales',
+
         icon:
-            MapPinned,
-    
+          MapPinned,
+
         label: {
-    
-            es:
-                'Sucursales',
-    
-            en:
-                'Branches'
-    
+
+          es:
+            'Sucursales',
+
+          en:
+            'Branches'
+
         },
-    
+
         permisos: [
-            'sucursal.ver'
+          'sucursal.ver'
         ]
-    },
-    
+      },
+
 
       {
 

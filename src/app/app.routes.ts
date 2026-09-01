@@ -231,6 +231,20 @@ import {
     SucursalForm
 } from './dashboard/organization/sucursales/sucursal-form/sucursal-form';
 
+/*
+|--------------------------------------------------------------------------
+| Categorías
+|--------------------------------------------------------------------------
+*/
+
+import {
+    CategoryList
+} from './dashboard/products-admin/categories/category-list/category-list';
+
+import {
+    CategoryForm
+} from './dashboard/products-admin/categories/category-form/category-form';
+
 
 
 
@@ -875,6 +889,56 @@ export const routes:
                             'compra.ver'
                         )
 
+                    ]
+                },
+
+                /*
+|--------------------------------------------------------------------------
+| Categorías
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path:
+                        'categorias',
+
+                    component:
+                        CategoryList,
+
+                    canActivate: [
+                        permissionGuard(
+                            'categoria.ver'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'categorias/crear',
+
+                    component:
+                        CategoryForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'categoria.crear'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'categorias/:id/editar',
+
+                    component:
+                        CategoryForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'categoria.editar'
+                        )
                     ]
                 },
             ]

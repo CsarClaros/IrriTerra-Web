@@ -23,38 +23,77 @@ import {
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn:
+        'root'
 })
 export class CategoriaService {
 
+    /*
+    |--------------------------------------------------------------------------
+    | Dependencias
+    |--------------------------------------------------------------------------
+    */
+
     private readonly api =
-        inject(ApiService);
+        inject(
+            ApiService
+        );
 
 
-    listar():
-        Observable<
-            ApiCollectionResponse<Categoria>
-        > {
+    /*
+    |--------------------------------------------------------------------------
+    | Listar
+    |--------------------------------------------------------------------------
+    */
+
+    listar(
+        incluirInactivas:
+            boolean = false
+    ): Observable<
+        ApiCollectionResponse<
+            Categoria
+        >
+    > {
+
+        const endpoint =
+            incluirInactivas
+
+                ? 'categoria?incluir_inactivas=1'
+
+                : 'categoria';
+
 
         return this.api
             .get<
-                ApiCollectionResponse<Categoria>
+                ApiCollectionResponse<
+                    Categoria
+                >
             >(
-                'categoria'
+                endpoint
             );
 
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Obtener
+    |--------------------------------------------------------------------------
+    */
+
     obtener(
         id: number
     ): Observable<
-        ApiResourceResponse<Categoria>
+        ApiResourceResponse<
+            Categoria
+        >
     > {
 
         return this.api
             .get<
-                ApiResourceResponse<Categoria>
+                ApiResourceResponse<
+                    Categoria
+                >
             >(
                 `categoria/${id}`
             );
@@ -62,15 +101,26 @@ export class CategoriaService {
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Crear
+    |--------------------------------------------------------------------------
+    */
+
     crear(
-        data: CategoriaRequest
+        data:
+            CategoriaRequest
     ): Observable<
-        ApiResourceResponse<Categoria>
+        ApiResourceResponse<
+            Categoria
+        >
     > {
 
         return this.api
             .post<
-                ApiResourceResponse<Categoria>
+                ApiResourceResponse<
+                    Categoria
+                >
             >(
                 'categoria',
                 data
@@ -79,16 +129,27 @@ export class CategoriaService {
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Actualizar
+    |--------------------------------------------------------------------------
+    */
+
     actualizar(
         id: number,
-        data: CategoriaRequest
+        data:
+            CategoriaRequest
     ): Observable<
-        ApiResourceResponse<Categoria>
+        ApiResourceResponse<
+            Categoria
+        >
     > {
 
         return this.api
             .put<
-                ApiResourceResponse<Categoria>
+                ApiResourceResponse<
+                    Categoria
+                >
             >(
                 `categoria/${id}`,
                 data
@@ -97,13 +158,46 @@ export class CategoriaService {
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Desactivar
+    |--------------------------------------------------------------------------
+    */
+
     eliminar(
         id: number
-    ): Observable<void> {
+    ): Observable<{
+        message: string;
+    }> {
 
         return this.api
-            .delete<void>(
+            .delete<{
+                message: string;
+            }>(
                 `categoria/${id}`
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reactivar
+    |--------------------------------------------------------------------------
+    */
+
+    reactivar(
+        id: number
+    ): Observable<{
+        message: string;
+    }> {
+
+        return this.api
+            .patch<{
+                message: string;
+            }>(
+                `categoria/${id}/reactivar`,
+                {}
             );
 
     }
