@@ -30,13 +30,11 @@
                 track item.path
                 ) {
 
-                <a 
-                    [routerLink]="item.path" routerLinkActive="bg-primary text-white" [routerLinkActiveOptions]="{
+                <a [routerLink]="item.path" routerLinkActive="bg-primary text-white" [routerLinkActiveOptions]="{
                     exact: item.path === '/dashboard'
-                    }" 
+                    }"
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
-                        (click)="closeSidebar()"
-                >
+                    (click)="closeSidebar()">
 
                     <lucide-icon [img]="item.icon" class="w-5 h-5">
                     </lucide-icon>
@@ -88,25 +86,57 @@
 
             <div class="flex items-center space-x-4">
 
-                <!-- NOTIFICATIONS -->
-                <button class="relative p-2 rounded-lg hover:bg-gray-100">
-                    <lucide-icon [img]="Bell" class="w-6 h-6 text-gray-600"></lucide-icon>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                
 
                 <!-- USER -->
-                <div class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+                <a routerLink="/dashboard/settings"
+                    class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
 
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                        <lucide-icon [img]="User" class="w-5 h-5 text-white"></lucide-icon>
+                    <!-- PHOTO -->
+                    @if (
+                    fotoActual()
+                    ) {
+
+                    <img [src]="fotoActual()!" [alt]="nombreCompleto()"
+                        class="w-9 h-9 rounded-full object-cover border border-gray-200" />
+
+                    }
+                    @else {
+
+                    <div
+                        class="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white text-xs font-semibold">
+
+                        {{
+                        iniciales()
+                        }}
+
                     </div>
 
-                    <div class="hidden sm:block">
-                        <p class="text-sm">Admin</p>
-                        <p class="text-xs text-gray-500">admin@irriterra.com</p>
+                    }
+
+
+                    <!-- INFO -->
+                    <div class="hidden sm:block min-w-0">
+
+                        <p class="text-sm font-medium text-gray-800 truncate max-w-48">
+
+                            {{
+                            nombreCompleto()
+                            }}
+
+                        </p>
+
+                        <p class="text-xs text-gray-500 truncate max-w-48">
+
+                            {{
+                            rolActual()
+                            }}
+
+                        </p>
+
                     </div>
 
-                </div>
+                </a>
 
             </div>
 

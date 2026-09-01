@@ -6,22 +6,31 @@ import {
 export interface ProductoImagen {
 
     id_producto_imagen:
-        number;
+    number;
 
     id_producto?:
-        number | null;
+    number | null;
+
+    id_producto_variante?:
+    number | null;
 
     ruta_imagen:
-        string | null;
+    string | null;
 
     orden:
-        number;
+    number;
 
     es_principal:
-        boolean;
+    boolean;
 
     estado_registro:
-        string;
+    string;
+
+    texto_alternativo?:
+    string | null;
+
+    observaciones?:
+    string | null;
 
 
     /*
@@ -31,7 +40,7 @@ export interface ProductoImagen {
     */
 
     producto?:
-        Producto | null;
+    Producto | null;
 
 
     /*
@@ -41,10 +50,10 @@ export interface ProductoImagen {
     */
 
     created_at?:
-        string | null;
+    string | null;
 
     updated_at?:
-        string | null;
+    string | null;
 
 }
 
@@ -52,18 +61,24 @@ export interface ProductoImagen {
 export interface ProductoImagenRequest {
 
     id_producto:
-        number;
+    number;
 
-    ruta:
-        string;
+    id_producto_variante?:
+    number | null;
+
+    imagen?:
+    File | null;
 
     orden:
-        number;
+    number;
 
     es_principal:
-        boolean;
+    boolean;
 
-    estado_registro?:
-        string;
+    texto_alternativo?:
+    string | null;
+
+    observaciones?:
+    string | null;
 
 }

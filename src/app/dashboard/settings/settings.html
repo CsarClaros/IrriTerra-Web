@@ -511,6 +511,10 @@
 
     </div>
 
+    <!-- ======================================================== -->
+    <!-- EDITAR PERFIL -->
+    <!-- ======================================================== -->
+
     @if (
     editando()
     ) {
@@ -724,6 +728,95 @@
 
 
     <!-- ============================================================ -->
+    <!-- SEGURIDAD -->
+    <!-- ============================================================ -->
+
+    <section class="rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="flex flex-col gap-4 border-b border-gray-100 p-6 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100">
+
+                        <lucide-icon [img]="KeyRound" class="h-5 w-5 text-gray-700">
+                        </lucide-icon>
+
+                    </div>
+
+
+                    <div>
+
+                        <h2 class="text-lg font-semibold text-gray-900">
+
+                            {{
+                            t(
+                            'Seguridad',
+                            'Security'
+                            )
+                            }}
+
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+
+                            {{
+                            t(
+                            'Administre las credenciales de su cuenta.',
+                            'Manage your account credentials.'
+                            )
+                            }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button type="button" (click)="abrirCambioContrasena()"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800">
+
+                <lucide-icon [img]="LockKeyhole" class="h-4 w-4">
+                </lucide-icon>
+
+                {{
+                t(
+                'Cambiar contraseña',
+                'Change password'
+                )
+                }}
+
+            </button>
+
+        </div>
+
+
+        <div class="p-6">
+
+            <p class="max-w-2xl text-sm leading-6 text-gray-600">
+
+                {{
+                t(
+                'Al cambiar la contraseña se cerrarán las sesiones activas y deberá iniciar sesión nuevamente.',
+                'Changing your password will close active sessions and require you to sign in again.'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+
+    <!-- ============================================================ -->
     <!-- CUENTA Y ACCESO -->
     <!-- ============================================================ -->
 
@@ -930,6 +1023,385 @@
     </div>
 
     }
+    
 
 
 </div>
+
+@if (
+    mostrarCambioContrasena()
+) {
+
+    <div
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+
+        <div
+            class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+
+            <!-- HEADER -->
+
+            <div
+                class="flex items-center justify-between border-b border-gray-100 px-6 py-5">
+
+                <div>
+
+                    <h2
+                        class="text-lg font-semibold text-gray-900">
+
+                        {{
+                            t(
+                                'Cambiar contraseña',
+                                'Change password'
+                            )
+                        }}
+
+                    </h2>
+
+                    <p
+                        class="mt-1 text-sm text-gray-500">
+
+                        {{
+                            t(
+                                'Ingrese su contraseña actual y defina una nueva.',
+                                'Enter your current password and choose a new one.'
+                            )
+                        }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                (ngSubmit)="cambiarContrasena()"
+                class="space-y-5 p-6">
+
+
+                <!-- ERROR GENERAL -->
+
+                @if (
+                    errorContrasena()
+                ) {
+
+                    <div
+                        class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+
+                        {{
+                            errorContrasena()
+                        }}
+
+                    </div>
+
+                }
+
+
+                <!-- CONTRASEÑA ACTUAL -->
+
+                <div>
+
+                    <label
+                        class="mb-2 block text-sm font-medium text-gray-700">
+
+                        {{
+                            t(
+                                'Contraseña actual',
+                                'Current password'
+                            )
+                        }}
+
+                    </label>
+
+
+                    <div
+                        class="relative">
+
+                        <input
+                            [type]="
+                                mostrarContrasenaActual()
+                                    ? 'text'
+                                    : 'password'
+                            "
+                            [(ngModel)]="
+                                formContrasena.contrasena_actual
+                            "
+                            name="contrasena_actual"
+                            autocomplete="current-password"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200">
+
+
+                        <button
+                            type="button"
+                            (click)="
+                                mostrarContrasenaActual.set(
+                                    ! mostrarContrasenaActual()
+                                )
+                            "
+                            class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-gray-400 hover:text-gray-700">
+
+                            <lucide-icon
+                                [img]="
+                                    mostrarContrasenaActual()
+                                        ? EyeOff
+                                        : Eye
+                                "
+                                class="h-4 w-4">
+                            </lucide-icon>
+
+                        </button>
+
+                    </div>
+
+
+                    @if (
+                        errorCampoContrasena(
+                            'contrasena_actual'
+                        );
+                        as error
+                    ) {
+
+                        <p
+                            class="mt-1.5 text-xs text-red-600">
+
+                            {{ error }}
+
+                        </p>
+
+                    }
+
+                </div>
+
+
+                <!-- NUEVA CONTRASEÑA -->
+
+                <div>
+
+                    <label
+                        class="mb-2 block text-sm font-medium text-gray-700">
+
+                        {{
+                            t(
+                                'Nueva contraseña',
+                                'New password'
+                            )
+                        }}
+
+                    </label>
+
+
+                    <div
+                        class="relative">
+
+                        <input
+                            [type]="
+                                mostrarNuevaContrasena()
+                                    ? 'text'
+                                    : 'password'
+                            "
+                            [(ngModel)]="
+                                formContrasena.nueva_contrasena
+                            "
+                            name="nueva_contrasena"
+                            autocomplete="new-password"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200">
+
+
+                        <button
+                            type="button"
+                            (click)="
+                                mostrarNuevaContrasena.set(
+                                    ! mostrarNuevaContrasena()
+                                )
+                            "
+                            class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-gray-400 hover:text-gray-700">
+
+                            <lucide-icon
+                                [img]="
+                                    mostrarNuevaContrasena()
+                                        ? EyeOff
+                                        : Eye
+                                "
+                                class="h-4 w-4">
+                            </lucide-icon>
+
+                        </button>
+
+                    </div>
+
+
+                    <p
+                        class="mt-1.5 text-xs text-gray-500">
+
+                        {{
+                            t(
+                                'Mínimo 8 caracteres.',
+                                'Minimum 8 characters.'
+                            )
+                        }}
+
+                    </p>
+
+
+                    @if (
+                        errorCampoContrasena(
+                            'nueva_contrasena'
+                        );
+                        as error
+                    ) {
+
+                        <p
+                            class="mt-1.5 text-xs text-red-600">
+
+                            {{ error }}
+
+                        </p>
+
+                    }
+
+                </div>
+
+
+                <!-- CONFIRMACIÓN -->
+
+                <div>
+
+                    <label
+                        class="mb-2 block text-sm font-medium text-gray-700">
+
+                        {{
+                            t(
+                                'Confirmar nueva contraseña',
+                                'Confirm new password'
+                            )
+                        }}
+
+                    </label>
+
+
+                    <div
+                        class="relative">
+
+                        <input
+                            [type]="
+                                mostrarConfirmacion()
+                                    ? 'text'
+                                    : 'password'
+                            "
+                            [(ngModel)]="
+                                formContrasena.nueva_contrasena_confirmation
+                            "
+                            name="nueva_contrasena_confirmation"
+                            autocomplete="new-password"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200">
+
+
+                        <button
+                            type="button"
+                            (click)="
+                                mostrarConfirmacion.set(
+                                    ! mostrarConfirmacion()
+                                )
+                            "
+                            class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-gray-400 hover:text-gray-700">
+
+                            <lucide-icon
+                                [img]="
+                                    mostrarConfirmacion()
+                                        ? EyeOff
+                                        : Eye
+                                "
+                                class="h-4 w-4">
+                            </lucide-icon>
+
+                        </button>
+
+                    </div>
+
+
+                    @if (
+                        errorCampoContrasena(
+                            'nueva_contrasena_confirmation'
+                        );
+                        as error
+                    ) {
+
+                        <p
+                            class="mt-1.5 text-xs text-red-600">
+
+                            {{ error }}
+
+                        </p>
+
+                    }
+
+                </div>
+
+
+                <!-- BOTONES -->
+
+                <div
+                    class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end">
+
+                    <button
+                        type="button"
+                        [disabled]="guardandoContrasena()"
+                        (click)="cerrarCambioContrasena()"
+                        class="rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
+
+                        {{
+                            t(
+                                'Cancelar',
+                                'Cancel'
+                            )
+                        }}
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        [disabled]="guardandoContrasena()"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50">
+
+                        <lucide-icon
+                            [img]="LockKeyhole"
+                            class="h-4 w-4">
+                        </lucide-icon>
+
+                        @if (
+                            guardandoContrasena()
+                        ) {
+
+                            {{
+                                t(
+                                    'Actualizando...',
+                                    'Updating...'
+                                )
+                            }}
+
+                        }
+                        @else {
+
+                            {{
+                                t(
+                                    'Actualizar contraseña',
+                                    'Update password'
+                                )
+                            }}
+
+                        }
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+}

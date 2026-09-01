@@ -53,7 +53,7 @@ export interface CambiarContrasenaRequest{
     
     nueva_contrasena: string;
 
-    nueva_contrasena_confirmacion: string;
+    nueva_contrasena_confirmation: string;
 
 }
 

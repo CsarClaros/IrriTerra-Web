@@ -112,7 +112,9 @@ export class ProductoImagenService {
                 >
             >(
                 'producto-imagen',
-                data
+                this.construirFormData(
+                    data
+                )
             );
 
     }
@@ -134,18 +136,35 @@ export class ProductoImagenService {
         >
     > {
 
+        const formData =
+            this.construirFormData(
+                data
+            );
+
+
+        /*
+         * PHP/Laravel procesa correctamente
+         * el archivo multipart como POST y
+         * Laravel lo interpreta como PUT.
+         */
+
+        formData.append(
+            '_method',
+            'PUT'
+        );
+
+
         return this.api
-            .put<
+            .post<
                 ApiResourceResponse<
                     ProductoImagen
                 >
             >(
                 `producto-imagen/${id}`,
-                data
+                formData
             );
 
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -162,6 +181,94 @@ export class ProductoImagenService {
                 `producto-imagen/${id}`
             );
 
+    }
+
+
+    /*
+|--------------------------------------------------------------------------
+| FormData
+|--------------------------------------------------------------------------
+*/
+
+    private construirFormData(
+        data:
+            ProductoImagenRequest
+    ): FormData {
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            'id_producto',
+            String(
+                data.id_producto
+            )
+        );
+
+
+        formData.append(
+            'orden',
+            String(
+                data.orden
+            )
+        );
+
+
+        formData.append(
+            'es_principal',
+            data.es_principal
+                ? '1'
+                : '0'
+        );
+
+
+        if (
+            data.imagen
+        ) {
+
+            formData.append(
+                'imagen',
+                data.imagen,
+                data.imagen.name
+            );
+
+        }
+
+
+        if (
+            data.texto_alternativo
+            !== undefined
+            &&
+            data.texto_alternativo
+            !== null
+        ) {
+
+            formData.append(
+                'texto_alternativo',
+                data.texto_alternativo
+            );
+
+        }
+
+
+        if (
+            data.observaciones
+            !== undefined
+            &&
+            data.observaciones
+            !== null
+        ) {
+
+            formData.append(
+                'observaciones',
+                data.observaciones
+            );
+
+        }
+
+
+        return formData;
     }
 
 }

@@ -251,6 +251,11 @@ export const routes:
 
                 },
 
+                // {
+                //     path: 'productos/:id',
+                //     component: ProductDetail
+                // },
+
                 {
 
                     path: 'empresa',

@@ -2,6 +2,7 @@ export const environment = {
 
     production: true,
 
-    apiUrl: 'https://api.dominio/com/api'
-    
+    apiUrl:
+        'https://api.tudominio.com/api'
+
 };

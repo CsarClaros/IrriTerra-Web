@@ -40,6 +40,16 @@ import {
 } from '../../core/services/session.service';
 
 
+import {
+  AuthService
+} from '../../core/services/auth.service';
+
+
+import {
+  finalize
+} from 'rxjs/operators';
+
+
 interface MenuItem {
 
   path:
@@ -111,6 +121,10 @@ export class DashboardLayout {
       SessionService
     );
 
+  private readonly authService =
+    inject(
+      AuthService
+    );
 
   /*
   |--------------------------------------------------------------------------
@@ -409,6 +423,112 @@ export class DashboardLayout {
           )
     );
 
+  /*
+|--------------------------------------------------------------------------
+| Usuario autenticado
+|--------------------------------------------------------------------------
+*/
+
+  readonly usuario =
+    this.sessionService.usuario;
+
+
+  readonly nombreCompleto =
+    computed(
+      () => {
+
+        const usuario =
+          this.usuario();
+
+        if (!usuario) {
+
+          return '';
+
+        }
+
+
+        return [
+          usuario.nombre,
+          usuario.apellido_paterno,
+          usuario.apellido_materno
+        ]
+          .filter(
+            Boolean
+          )
+          .join(
+            ' '
+          );
+
+      }
+    );
+
+
+  readonly rolActual =
+    computed(
+      () =>
+        this.usuario()
+          ?.rol
+          ?.nombre
+        ?? ''
+    );
+
+
+  readonly correoActual =
+    computed(
+      () =>
+        this.usuario()
+          ?.correo
+        ?? ''
+    );
+
+
+  readonly fotoActual =
+    computed(
+      () =>
+        this.usuario()
+          ?.foto
+        ?? null
+    );
+
+
+  readonly iniciales =
+    computed(
+      () => {
+
+        const usuario =
+          this.usuario();
+
+        if (!usuario) {
+
+          return 'U';
+
+        }
+
+
+        const nombre =
+          usuario.nombre
+            ?.trim()
+            .charAt(0)
+            .toUpperCase()
+          ?? '';
+
+
+        const apellido =
+          usuario.apellido_paterno
+            ?.trim()
+            .charAt(0)
+            .toUpperCase()
+          ?? '';
+
+
+        return (
+          `${nombre}${apellido}`
+          || 'U'
+        );
+
+      }
+    );
+
 
   /*
   |--------------------------------------------------------------------------
@@ -440,11 +560,36 @@ export class DashboardLayout {
 
   logout(): void {
 
-    this.router.navigate(
-      [
-        '/login'
-      ]
-    );
+    this.authService
+      .logout()
+      .pipe(
+
+        finalize(
+          () => {
+
+            this.router.navigate(
+              [
+                '/login'
+              ]
+            );
+
+          }
+        )
+
+      )
+      .subscribe({
+
+        error:
+          () => {
+
+            /*
+             * AuthService limpia la sesión
+             * incluso si Laravel no responde.
+             */
+
+          }
+
+      });
 
   }
 

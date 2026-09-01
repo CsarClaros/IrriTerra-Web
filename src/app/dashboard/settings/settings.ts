@@ -28,7 +28,11 @@ import {
   Camera,
   Pencil,
   Save,
-  X
+  X,
+  Eye,
+  EyeOff,
+  KeyRound,
+  LockKeyhole
 } from 'lucide-angular';
 
 import {
@@ -46,6 +50,15 @@ import {
 import {
   FormsModule
 } from '@angular/forms';
+
+
+import {
+  Router
+} from '@angular/router';
+
+import {
+  CambiarContrasenaRequest
+} from '../../shared/models/auth.model';
 
 
 @Component({
@@ -89,6 +102,11 @@ export class Settings {
   private readonly languageService =
     inject(
       LanguageService
+    );
+
+  private readonly router =
+    inject(
+      Router
     );
 
 
@@ -156,6 +174,66 @@ export class Settings {
       ''
 
   };
+
+  readonly mostrarCambioContrasena =
+    signal(
+      false
+    );
+
+
+  readonly guardandoContrasena =
+    signal(
+      false
+    );
+
+
+  readonly mostrarContrasenaActual =
+    signal(
+      false
+    );
+
+
+  readonly mostrarNuevaContrasena =
+    signal(
+      false
+    );
+
+
+  readonly mostrarConfirmacion =
+    signal(
+      false
+    );
+
+
+  readonly errorContrasena =
+    signal(
+      ''
+    );
+
+
+  readonly erroresContrasena =
+    signal<
+      Record<
+        string,
+        string[]
+      >
+    >(
+      {}
+    );
+
+  formContrasena:
+    CambiarContrasenaRequest = {
+
+      contrasena_actual:
+        '',
+
+      nueva_contrasena:
+        '',
+
+      nueva_contrasena_confirmation:
+        ''
+
+    };
 
 
   /*
@@ -343,6 +421,18 @@ export class Settings {
 
   readonly X =
     X;
+
+  readonly KeyRound =
+    KeyRound;
+
+  readonly LockKeyhole =
+    LockKeyhole;
+
+  readonly Eye =
+    Eye;
+
+  readonly EyeOff =
+    EyeOff;
 
 
   /*
@@ -987,6 +1077,426 @@ export class Settings {
         ? limpio
         : null
     );
+
+  }
+
+  errorCampoContrasena(
+    campo:
+      string
+  ): string | null {
+
+    return (
+      this.erroresContrasena()[
+      campo
+      ]?.[0]
+      ?? null
+    );
+
+  }
+
+
+  // Formulario
+
+  abrirCambioContrasena():
+    void {
+
+    this.limpiarFormularioContrasena();
+
+    this.mostrarCambioContrasena
+      .set(
+        true
+      );
+
+  }
+
+  cerrarCambioContrasena():
+    void {
+
+    if (
+      this.guardandoContrasena()
+    ) {
+
+      return;
+
+    }
+
+
+    this.mostrarCambioContrasena
+      .set(
+        false
+      );
+
+
+    this.limpiarFormularioContrasena();
+
+  }
+
+  private limpiarFormularioContrasena():
+    void {
+
+    this.formContrasena = {
+
+      contrasena_actual:
+        '',
+
+      nueva_contrasena:
+        '',
+
+      nueva_contrasena_confirmation:
+        ''
+
+    };
+
+
+    this.errorContrasena
+      .set(
+        ''
+      );
+
+
+    this.erroresContrasena
+      .set(
+        {}
+      );
+
+
+    this.mostrarContrasenaActual
+      .set(
+        false
+      );
+
+
+    this.mostrarNuevaContrasena
+      .set(
+        false
+      );
+
+
+    this.mostrarConfirmacion
+      .set(
+        false
+      );
+
+  }
+
+  private validarFormularioContrasena():
+    boolean {
+
+    const errores:
+      Record<
+        string,
+        string[]
+      > = {};
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Contraseña actual
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      !this.formContrasena
+        .contrasena_actual
+        .trim()
+    ) {
+
+      errores[
+        'contrasena_actual'
+      ] = [
+          this.t(
+            'Ingrese su contraseña actual.',
+            'Enter your current password.'
+          )
+        ];
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nueva contraseña
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      !this.formContrasena
+        .nueva_contrasena
+    ) {
+
+      errores[
+        'nueva_contrasena'
+      ] = [
+          this.t(
+            'Ingrese una nueva contraseña.',
+            'Enter a new password.'
+          )
+        ];
+
+    }
+    else if (
+      this.formContrasena
+        .nueva_contrasena
+        .length
+      < 8
+    ) {
+
+      errores[
+        'nueva_contrasena'
+      ] = [
+          this.t(
+            'La nueva contraseña debe contener al menos 8 caracteres.',
+            'The new password must contain at least 8 characters.'
+          )
+        ];
+
+    }
+    else if (
+      this.formContrasena
+        .nueva_contrasena
+      ===
+      this.formContrasena
+        .contrasena_actual
+    ) {
+
+      errores[
+        'nueva_contrasena'
+      ] = [
+          this.t(
+            'La nueva contraseña debe ser diferente de la contraseña actual.',
+            'The new password must be different from the current password.'
+          )
+        ];
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Confirmación
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      !this.formContrasena
+        .nueva_contrasena_confirmation
+    ) {
+
+      errores[
+        'nueva_contrasena_confirmation'
+      ] = [
+          this.t(
+            'Confirme la nueva contraseña.',
+            'Confirm the new password.'
+          )
+        ];
+
+    }
+    else if (
+      this.formContrasena
+        .nueva_contrasena
+      !==
+      this.formContrasena
+        .nueva_contrasena_confirmation
+    ) {
+
+      errores[
+        'nueva_contrasena_confirmation'
+      ] = [
+          this.t(
+            'Las contraseñas no coinciden.',
+            'Passwords do not match.'
+          )
+        ];
+
+    }
+
+
+    this.erroresContrasena
+      .set(
+        errores
+      );
+
+
+    return (
+      Object.keys(
+        errores
+      ).length
+      === 0
+    );
+
+  }
+
+  cambiarContrasena():
+    void {
+
+    if (
+      this.guardandoContrasena()
+    ) {
+
+      return;
+
+    }
+
+
+    this.errorContrasena
+      .set(
+        ''
+      );
+
+
+    this.erroresContrasena
+      .set(
+        {}
+      );
+
+
+    if (
+      !this.validarFormularioContrasena()
+    ) {
+
+      return;
+
+    }
+
+
+    this.guardandoContrasena
+      .set(
+        true
+      );
+
+
+    const data:
+      CambiarContrasenaRequest = {
+
+      contrasena_actual:
+        this.formContrasena
+          .contrasena_actual,
+
+      nueva_contrasena:
+        this.formContrasena
+          .nueva_contrasena,
+
+      nueva_contrasena_confirmation:
+        this.formContrasena
+          .nueva_contrasena_confirmation
+
+    };
+
+
+    this.authService
+      .cambiarContrasena(
+        data
+      ).pipe(
+
+        finalize(
+          () => {
+
+            this.guardandoContrasena
+              .set(
+                false
+              );
+
+          }
+        )
+
+      )
+      .subscribe({
+
+        next:
+          response => {
+
+            /*
+             * AuthService ya eliminó
+             * SessionStorage porque Laravel
+             * revocó todos los tokens.
+             */
+
+            window.alert(
+              response.message
+            );
+
+
+            this.router.navigate(
+              [
+                '/login'
+              ]
+            );
+
+          },
+
+
+        error:
+          (
+            error:
+              HttpErrorResponse
+          ) => {
+
+            this.procesarErrorContrasena(
+              error
+            );
+
+          }
+
+      });
+
+  }
+
+  private procesarErrorContrasena(
+    error:
+      HttpErrorResponse
+  ): void {
+
+    const errores =
+      error.error
+        ?.errors;
+
+
+    if (
+      error.status === 422
+      &&
+      errores
+      &&
+      typeof errores
+      === 'object'
+    ) {
+
+      this.erroresContrasena
+        .set(
+          errores
+        );
+
+    }
+
+
+    const mensaje =
+      error.error
+        ?.message;
+
+
+    if (
+      typeof mensaje === 'string'
+      &&
+      mensaje.trim()
+    ) {
+
+      this.errorContrasena
+        .set(
+          mensaje
+        );
+
+      return;
+
+    }
+
+
+    this.errorContrasena
+      .set(
+        this.t(
+          'No fue posible cambiar la contraseña.',
+          'Password could not be changed.'
+        )
+      );
 
   }
 

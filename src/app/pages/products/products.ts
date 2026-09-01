@@ -1,707 +1,774 @@
 import {
-  Component,
-  OnInit,
-  computed,
-  inject,
-  signal
+    Component,
+    OnInit,
+    computed,
+    inject,
+    signal
 } from '@angular/core';
 
 import {
-  CommonModule
+    CommonModule
 } from '@angular/common';
 
 import {
-  RouterLink
+    RouterLink
 } from '@angular/router';
 
 import {
-  HttpErrorResponse
+    HttpErrorResponse
 } from '@angular/common/http';
 
 import {
-  finalize
+    finalize
 } from 'rxjs';
 
 import {
-  CircleAlert,
-  FileText,
-  ImageOff,
-  Package,
-  RefreshCw,
-  Search,
-  X,
-  LucideAngularModule
+    CircleAlert,
+    FileText,
+    ImageOff,
+    Package,
+    RefreshCw,
+    Search,
+    X,
+    LucideAngularModule
 } from 'lucide-angular';
 
 import {
-  CatalogoPublicoService
+    CatalogoPublicoService
 } from '../../core/services/publico/catalogo-publico.service';
 
 import {
-  LanguageService
+    LanguageService
 } from '../../core/services/language.service';
 
 import {
-  CategoriaPublica,
-  ImagenProductoPublica,
-  ProductoPublico
+    CategoriaPublica,
+    ImagenProductoPublica,
+    ProductoPublico
 } from '../../shared/models/catalogo-publico.model';
 
 import {
-  environment
+    environment
 } from '../../../environments/environment';
 
 
 @Component({
-  selector: 'app-products',
+    selector: 'app-products',
 
-  imports: [
-      CommonModule,
-      RouterLink,
-      LucideAngularModule
-  ],
+    imports: [
+        CommonModule,
+        RouterLink,
+        LucideAngularModule
+    ],
 
-  templateUrl:
-      './products.html',
+    templateUrl:
+        './products.html',
 
-  styleUrl:
-      './products.css'
+    styleUrl:
+        './products.css'
 })
 export class Products
-  implements OnInit {
+    implements OnInit {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Dependencias
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Dependencias
+    |--------------------------------------------------------------------------
+    */
 
-  private readonly catalogoService =
-      inject(
-          CatalogoPublicoService
-      );
+    private readonly catalogoService =
+        inject(
+            CatalogoPublicoService
+        );
 
 
-  private readonly languageService =
-      inject(
-          LanguageService
-      );
+    private readonly languageService =
+        inject(
+            LanguageService
+        );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Backend
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Backend
+    |--------------------------------------------------------------------------
+    */
 
-  private readonly backendUrl =
-      environment.apiUrl
-          .replace(
-              /\/api\/?$/,
-              ''
-          );
+    private readonly backendUrl =
+        environment.apiUrl
+            .replace(
+                /\/api\/?$/,
+                ''
+            );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Datos
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Datos
+    |--------------------------------------------------------------------------
+    */
 
-  readonly productos =
-      signal<
-          ProductoPublico[]
-      >([]);
+    readonly productos =
+        signal<
+            ProductoPublico[]
+        >([]);
 
 
-  readonly categorias =
-      signal<
-          CategoriaPublica[]
-      >([]);
+    readonly categorias =
+        signal<
+            CategoriaPublica[]
+        >([]);
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filtros
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Filtros
+    |--------------------------------------------------------------------------
+    */
 
-  readonly busqueda =
-      signal('');
+    readonly busqueda =
+        signal('');
 
 
-  readonly idCategoria =
-      signal<number | null>(
-          null
-      );
+    readonly idCategoria =
+        signal<number | null>(
+            null
+        );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Estado
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Estado
+    |--------------------------------------------------------------------------
+    */
 
-  readonly cargando =
-      signal(false);
+    readonly cargando =
+        signal(false);
 
 
-  readonly errorMensaje =
-      signal('');
+    readonly errorMensaje =
+        signal('');
 
 
-  readonly productoSeleccionado =
-      signal<
-          ProductoPublico | null
-      >(
-          null
-      );
+    readonly productoSeleccionado =
+        signal<
+            ProductoPublico | null
+        >(
+            null
+        );
 
 
-  readonly erroresImagen =
-      signal<
-          Record<number, boolean>
-      >({});
+    readonly erroresImagen =
+        signal<
+            Record<number, boolean>
+        >({});
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filtrado
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Filtrado
+    |--------------------------------------------------------------------------
+    */
 
-  readonly productosFiltrados =
-      computed(
-          () => {
+    readonly productosFiltrados =
+        computed(
+            () => {
 
-              const texto =
-                  this.busqueda()
-                      .trim()
-                      .toLowerCase();
+                const texto =
+                    this.busqueda()
+                        .trim()
+                        .toLowerCase();
 
 
-              const categoria =
-                  this.idCategoria();
+                const categoria =
+                    this.idCategoria();
 
 
-              return this.productos()
-                  .filter(
-                      producto => {
+                return this.productos()
+                    .filter(
+                        producto => {
 
-                          if (
-                              categoria !== null
-                              &&
-                              producto.id_categoria
-                              !== categoria
-                          ) {
+                            if (
+                                categoria !== null
+                                &&
+                                producto.id_categoria
+                                !== categoria
+                            ) {
 
-                              return false;
+                                return false;
 
-                          }
+                            }
 
 
-                          if (
-                              ! texto
-                          ) {
+                            if (
+                                !texto
+                            ) {
 
-                              return true;
+                                return true;
 
-                          }
+                            }
 
 
-                          return [
+                            return [
 
-                              producto.nombre,
+                                producto.nombre,
 
-                              producto.marca,
+                                producto.marca,
 
-                              producto.modelo,
+                                producto.modelo,
 
-                              producto
-                                  .categoria
-                                  ?.nombre
+                                producto
+                                    .categoria
+                                    ?.nombre
 
-                          ]
-                              .some(
-                                  value =>
-                                      value
-                                          ?.toLowerCase()
-                                          .includes(
-                                              texto
-                                          )
-                              );
+                            ]
+                                .some(
+                                    value =>
+                                        value
+                                            ?.toLowerCase()
+                                            .includes(
+                                                texto
+                                            )
+                                );
 
-                      }
-                  );
+                        }
+                    );
 
-          }
-      );
+            }
+        );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Iconos
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos
+    |--------------------------------------------------------------------------
+    */
 
-  readonly CircleAlert =
-      CircleAlert;
+    readonly CircleAlert =
+        CircleAlert;
 
-  readonly FileText =
-      FileText;
+    readonly FileText =
+        FileText;
 
-  readonly ImageOff =
-      ImageOff;
+    readonly ImageOff =
+        ImageOff;
 
-  readonly Package =
-      Package;
+    readonly Package =
+        Package;
 
-  readonly RefreshCw =
-      RefreshCw;
+    readonly RefreshCw =
+        RefreshCw;
 
-  readonly Search =
-      Search;
+    readonly Search =
+        Search;
 
-  readonly X =
-      X;
+    readonly X =
+        X;
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Inicio
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Inicio
+    |--------------------------------------------------------------------------
+    */
 
-  ngOnInit(): void {
+    ngOnInit(): void {
 
-      this.cargarCatalogo();
+        this.cargarCatalogo();
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Traducción
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Traducción
+    |--------------------------------------------------------------------------
+    */
 
-  t(
-      es: string,
-      en: string
-  ): string {
+    t(
+        es: string,
+        en: string
+    ): string {
 
-      return this.languageService
-          .t(
-              es,
-              en
-          );
+        return this.languageService
+            .t(
+                es,
+                en
+            );
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | API
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | API
+    |--------------------------------------------------------------------------
+    */
 
-  cargarCatalogo(): void {
+    cargarCatalogo(): void {
 
-      if (
-          this.cargando()
-      ) {
+        if (
+            this.cargando()
+        ) {
 
-          return;
+            return;
 
-      }
+        }
 
 
-      this.cargando.set(
-          true
-      );
+        this.cargando.set(
+            true
+        );
 
 
-      this.errorMensaje.set(
-          ''
-      );
+        this.errorMensaje.set(
+            ''
+        );
 
 
-      this.catalogoService
-          .listar()
-          .pipe(
+        this.catalogoService
+            .listar()
+            .pipe(
 
-              finalize(
-                  () => {
+                finalize(
+                    () => {
 
-                      this.cargando.set(
-                          false
-                      );
+                        this.cargando.set(
+                            false
+                        );
 
-                  }
-              )
+                    }
+                )
 
-          )
-          .subscribe({
+            )
+            .subscribe({
 
-              next: response => {
+                next: response => {
 
-                  this.productos.set(
-                      response
-                          .data
-                          .productos
-                      ?? []
-                  );
+                    this.productos.set(
+                        response
+                            .data
+                            .productos
+                        ?? []
+                    );
 
 
-                  this.categorias.set(
-                      response
-                          .data
-                          .categorias
-                      ?? []
-                  );
+                    this.categorias.set(
+                        response
+                            .data
+                            .categorias
+                        ?? []
+                    );
 
-              },
+                },
 
 
-              error: (
-                  error:
-                      HttpErrorResponse
-              ) => {
+                error: (
+                    error:
+                        HttpErrorResponse
+                ) => {
 
-                  this.errorMensaje.set(
+                    this.errorMensaje.set(
 
-                      error.status === 0
+                        error.status === 0
 
-                          ? this.t(
-                              'No se pudo conectar con el servidor.',
-                              'Could not connect to the server.'
-                          )
+                            ? this.t(
+                                'No se pudo conectar con el servidor.',
+                                'Could not connect to the server.'
+                            )
 
-                          : this.t(
-                              'No fue posible cargar el catálogo.',
-                              'The catalog could not be loaded.'
-                          )
+                            : this.t(
+                                'No fue posible cargar el catálogo.',
+                                'The catalog could not be loaded.'
+                            )
 
-                  );
+                    );
 
-              }
+                }
 
-          });
+            });
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Filtros
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Filtros
+    |--------------------------------------------------------------------------
+    */
 
-  actualizarBusqueda(
-      event: Event
-  ): void {
+    actualizarBusqueda(
+        event: Event
+    ): void {
 
-      const input =
-          event.target as HTMLInputElement;
+        const input =
+            event.target as HTMLInputElement;
 
 
-      this.busqueda.set(
-          input.value
-      );
+        this.busqueda.set(
+            input.value
+        );
 
-  }
+    }
 
 
-  seleccionarCategoria(
-      id:
-          number | null
-  ): void {
+    seleccionarCategoria(
+        id:
+            number | null
+    ): void {
 
-      this.idCategoria.set(
-          id
-      );
+        this.idCategoria.set(
+            id
+        );
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Detalle
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Detalle
+    |--------------------------------------------------------------------------
+    */
 
-  abrirDetalle(
-      producto:
-          ProductoPublico
-  ): void {
+    abrirDetalle(
+        producto:
+            ProductoPublico
+    ): void {
 
-      this.productoSeleccionado
-          .set(
-              producto
-          );
+        this.productoSeleccionado
+            .set(
+                producto
+            );
 
-  }
+    }
 
 
-  cerrarDetalle(): void {
+    cerrarDetalle(): void {
 
-      this.productoSeleccionado
-          .set(
-              null
-          );
+        this.productoSeleccionado
+            .set(
+                null
+            );
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Precio desde
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Precio desde
+    |--------------------------------------------------------------------------
+    */
 
-  precioDesde(
-      producto:
-          ProductoPublico
-  ): number | null {
+    precioDesde(
+        producto:
+            ProductoPublico
+    ): number | null {
 
-      const precios =
-          producto
-              .variantes
-              .map(
-                  variante =>
-                      variante
-                          .precio_venta
-              )
-              .filter(
-                  (
-                      precio
-                  ): precio is number =>
-                      precio !== null
-                      &&
-                      Number.isFinite(
-                          precio
-                      )
-              );
+        const precios =
+            producto
+                .variantes
+                .map(
+                    variante =>
+                        variante
+                            .precio_venta
+                )
+                .filter(
+                    (
+                        precio
+                    ): precio is number =>
+                        precio !== null
+                        &&
+                        Number.isFinite(
+                            precio
+                        )
+                );
 
 
-      if (
-          precios.length === 0
-      ) {
+        if (
+            precios.length === 0
+        ) {
 
-          return null;
+            return null;
 
-      }
+        }
 
 
-      return Math.min(
-          ...precios
-      );
+        return Math.min(
+            ...precios
+        );
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Imagen principal
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Imagen principal
+    |--------------------------------------------------------------------------
+    */
 
-  imagenPrincipal(
-      producto:
-          ProductoPublico
-  ):
-      ImagenProductoPublica | null {
+    imagenPrincipal(
+        producto:
+            ProductoPublico
+    ):
+        ImagenProductoPublica | null {
 
-      return (
-          producto
-              .imagenes
-              .find(
-                  imagen =>
-                      imagen
-                          .es_principal
-              )
-          ??
-          producto
-              .imagenes[0]
-          ??
-          null
-      );
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Resolver imagen
-  |--------------------------------------------------------------------------
-  */
-
-  rutaImagen(
-      imagen:
-          ImagenProductoPublica | null
-  ): string | null {
-
-      const ruta =
-          imagen
-              ?.ruta_imagen
-              ?.trim();
-
-
-      if (
-          ! ruta
-      ) {
-
-          return null;
-
-      }
-
-
-      if (
-          /^https?:\/\//i
-              .test(
-                  ruta
-              )
-      ) {
-
-          return ruta;
-
-      }
-
-
-      if (
-          ruta.startsWith(
-              '/assets/'
-          )
-      ) {
-
-          return ruta;
-
-      }
-
-
-      if (
-          ruta.startsWith(
-              'assets/'
-          )
-      ) {
-
-          return `/${ruta}`;
-
-      }
-
-
-      return (
-          `${this.backendUrl}/${
-              ruta.replace(
-                  /^\/+/,
-                  ''
-              )
-          }`
-      );
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | PDF / archivos
-  |--------------------------------------------------------------------------
-  */
-
-  rutaArchivo(
-      ruta:
-          string | null
-  ): string | null {
-
-      const value =
-          ruta
-              ?.trim();
-
-
-      if (
-          ! value
-      ) {
-
-          return null;
-
-      }
-
-
-      if (
-          /^https?:\/\//i
-              .test(
-                  value
-              )
-      ) {
-
-          return value;
-
-      }
-
-
-      if (
-          value.startsWith(
-              '/assets/'
-          )
-      ) {
-
-          return value;
-
-      }
-
-
-      return (
-          `${this.backendUrl}/${
-              value.replace(
-                  /^\/+/,
-                  ''
-              )
-          }`
-      );
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Error imagen
-  |--------------------------------------------------------------------------
-  */
-
-  registrarErrorImagen(
-      imagen:
-          ImagenProductoPublica
-  ): void {
-
-      this.erroresImagen.update(
-          errores => ({
-
-              ...errores,
-
-              [
-                  imagen
-                      .id_producto_imagen
-              ]:
-                  true
-
-          })
-      );
-
-  }
-
-
-  imagenConError(
-      imagen:
-          ImagenProductoPublica
-  ): boolean {
-
-      return Boolean(
-          this.erroresImagen()[
-              imagen
-                  .id_producto_imagen
-          ]
-      );
-
-  }
+        return (
+            producto
+                .imagenes
+                .find(
+                    imagen =>
+                        imagen
+                            .es_principal
+                )
+            ??
+            producto
+                .imagenes[0]
+            ??
+            null
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resolver imagen
+    |--------------------------------------------------------------------------
+    */
+
+    rutaImagen(
+        imagen:
+            ImagenProductoPublica | null
+    ): string | null {
+    
+        const ruta =
+            imagen
+                ?.ruta_imagen
+                ?.trim();
+    
+    
+        if (
+            !ruta
+        ) {
+    
+            return null;
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | URL absoluta
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            /^https?:\/\//i.test(
+                ruta
+            )
+        ) {
+    
+            return ruta;
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Assets antiguos
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            ruta.startsWith(
+                '/assets/'
+            )
+        ) {
+    
+            return ruta;
+    
+        }
+    
+    
+        if (
+            ruta.startsWith(
+                'assets/'
+            )
+        ) {
+    
+            return `/${ruta}`;
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Storage Laravel
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            ruta.startsWith(
+                '/storage/'
+            )
+        ) {
+    
+            return (
+                `${this.backendUrl}${ruta}`
+            );
+    
+        }
+    
+    
+        if (
+            ruta.startsWith(
+                'storage/'
+            )
+        ) {
+    
+            return (
+                `${this.backendUrl}/${ruta}`
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Nuevas imágenes
+        |--------------------------------------------------------------------------
+        */
+    
+        if (
+            ruta.startsWith(
+                'productos/'
+            )
+        ) {
+    
+            return (
+                `${this.backendUrl}/storage/${ruta}`
+            );
+    
+        }
+    
+    
+        /*
+        |--------------------------------------------------------------------------
+        | Compatibilidad
+        |--------------------------------------------------------------------------
+        */
+    
+        return (
+            `${this.backendUrl}/${
+                ruta.replace(
+                    /^\/+/,
+                    ''
+                )
+            }`
+        );
+    
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PDF / archivos
+    |--------------------------------------------------------------------------
+    */
+
+    rutaArchivo(
+        ruta:
+            string | null
+    ): string | null {
+
+        const value =
+            ruta
+                ?.trim();
+
+
+        if (
+            !value
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            /^https?:\/\//i
+                .test(
+                    value
+                )
+        ) {
+
+            return value;
+
+        }
+
+
+        if (
+            value.startsWith(
+                '/assets/'
+            )
+        ) {
+
+            return value;
+
+        }
+
+
+        return (
+            `${this.backendUrl}/${value.replace(
+                /^\/+/,
+                ''
+            )
+            }`
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Error imagen
+    |--------------------------------------------------------------------------
+    */
+
+    registrarErrorImagen(
+        imagen:
+            ImagenProductoPublica
+    ): void {
+
+        this.erroresImagen.update(
+            errores => ({
+
+                ...errores,
+
+                [
+                    imagen
+                        .id_producto_imagen
+                ]:
+                    true
+
+            })
+        );
+
+    }
+
+
+    imagenConError(
+        imagen:
+            ImagenProductoPublica
+    ): boolean {
+
+        return Boolean(
+            this.erroresImagen()[
+            imagen
+                .id_producto_imagen
+            ]
+        );
+
+    }
 
 }
