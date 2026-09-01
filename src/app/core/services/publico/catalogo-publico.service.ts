@@ -12,7 +12,8 @@ import {
 } from '../api.service';
 
 import {
-    CatalogoPublicoResponse
+    CatalogoPublicoResponse,
+    ProductoPublicoResponse
 } from '../../../shared/models/catalogo-publico.model';
 
 
@@ -49,6 +50,28 @@ export class CatalogoPublicoService {
                 CatalogoPublicoResponse
             >(
                 'public/catalogo'
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Producto
+    |--------------------------------------------------------------------------
+    */
+
+    obtenerProducto(
+        id: number
+    ): Observable<
+        ProductoPublicoResponse
+    > {
+
+        return this.api
+            .get<
+                ProductoPublicoResponse
+            >(
+                `public/productos/${id}`
             );
 
     }

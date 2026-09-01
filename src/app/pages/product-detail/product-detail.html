@@ -1,0 +1,711 @@
+<div class="min-h-screen bg-gray-50">
+
+
+    <!-- ========================================================= -->
+    <!-- CARGANDO -->
+    <!-- ========================================================= -->
+
+    @if (
+    cargando()
+    ) {
+
+    <div class="mx-auto flex min-h-[60vh] max-w-7xl items-center justify-center px-4">
+
+        <div class="text-center">
+
+            <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+            </div>
+
+
+            <p class="mt-4 text-sm text-gray-500">
+
+                {{
+                t(
+                'Cargando producto...',
+                'Loading product...'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- ERROR -->
+    <!-- ========================================================= -->
+
+    @else if (
+    errorMensaje()
+    ) {
+
+    <div class="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+
+        <div class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
+
+            <lucide-angular [img]="CircleAlert" class="mx-auto h-10 w-10 text-red-500">
+            </lucide-angular>
+
+
+            <h1 class="mt-4 text-xl font-semibold text-gray-900">
+
+                {{
+                t(
+                'No se pudo mostrar el producto',
+                'Product unavailable'
+                )
+                }}
+
+            </h1>
+
+
+            <p class="mt-2 text-sm text-red-700">
+
+                {{ errorMensaje() }}
+
+            </p>
+
+
+            <a routerLink="/productos"
+                class="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-medium text-white transition hover:bg-primary/90">
+
+                <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+                </lucide-angular>
+
+                {{
+                t(
+                'Volver a productos',
+                'Back to products'
+                )
+                }}
+
+            </a>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- PRODUCTO -->
+    <!-- ========================================================= -->
+
+    @else if (
+    producto();
+    as producto
+    ) {
+
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+
+
+        <!-- ================================================= -->
+        <!-- VOLVER -->
+        <!-- ================================================= -->
+
+        <a routerLink="/productos"
+            class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-primary">
+
+            <lucide-angular [img]="ArrowLeft" class="h-4 w-4">
+            </lucide-angular>
+
+            {{
+            t(
+            'Volver a productos',
+            'Back to products'
+            )
+            }}
+
+        </a>
+
+
+        <!-- ================================================= -->
+        <!-- CONTENIDO -->
+        <!-- ================================================= -->
+
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
+
+
+            <!-- ================================================= -->
+            <!-- GALERÍA -->
+            <!-- ================================================= -->
+
+            <section>
+
+                @let imagenActiva =
+                imagenSeleccionada();
+
+
+                @let rutaActiva =
+                rutaImagen(
+                imagenActiva
+                );
+
+
+                <div
+                    class="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+                    @if (
+                    imagenActiva
+                    &&
+                    rutaActiva
+                    &&
+                    !imagenConError(
+                    imagenActiva
+                    )
+                    ) {
+
+                    <img [src]="rutaActiva" [alt]="producto.nombre" (error)="
+                                    registrarErrorImagen(
+                                        imagenActiva
+                                    )
+                                " class="h-full w-full object-contain" />
+
+                    } @else {
+
+                    <div class="text-center text-gray-300">
+
+                        <lucide-angular [img]="ImageOff" class="mx-auto h-20 w-20">
+                        </lucide-angular>
+
+
+                        <p class="mt-3 text-sm text-gray-400">
+
+                            {{
+                            t(
+                            'Imagen no disponible',
+                            'Image unavailable'
+                            )
+                            }}
+
+                        </p>
+
+                    </div>
+
+                    }
+
+                </div>
+
+
+                <!-- Miniaturas -->
+
+                @if (
+                imagenesVisibles().length > 1
+                ) {
+
+                <div class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-5">
+
+                    @for (
+                    imagen
+                    of imagenesVisibles();
+                    track imagen.id_producto_imagen
+                    ) {
+
+                    @let miniatura =
+                    rutaImagen(
+                    imagen
+                    );
+
+
+                    <button type="button" (click)="
+                                        seleccionarImagen(
+                                            imagen
+                                        )
+                                    "
+                        class="flex aspect-square items-center justify-center overflow-hidden rounded-xl border bg-white p-2 transition"
+                        [class.border-primary]="
+                                        imagenSeleccionada()
+                                            ?.id_producto_imagen
+                                        ===
+                                        imagen.id_producto_imagen
+                                    " [class.ring-2]="
+                                        imagenSeleccionada()
+                                            ?.id_producto_imagen
+                                        ===
+                                        imagen.id_producto_imagen
+                                    " [class.ring-primary/20]="
+                                        imagenSeleccionada()
+                                            ?.id_producto_imagen
+                                        ===
+                                        imagen.id_producto_imagen
+                                    " [class.border-gray-200]="
+                                        imagenSeleccionada()
+                                            ?.id_producto_imagen
+                                        !==
+                                        imagen.id_producto_imagen
+                                    ">
+
+                        @if (
+                        miniatura
+                        &&
+                        !imagenConError(
+                        imagen
+                        )
+                        ) {
+
+                        <img [src]="miniatura" [alt]="producto.nombre" (error)="
+                                                registrarErrorImagen(
+                                                    imagen
+                                                )
+                                            " class="h-full w-full object-contain" />
+
+                        } @else {
+
+                        <lucide-angular [img]="ImageOff" class="h-6 w-6 text-gray-300">
+                        </lucide-angular>
+
+                        }
+
+                    </button>
+
+                    }
+
+                </div>
+
+                }
+
+            </section>
+
+
+            <!-- ================================================= -->
+            <!-- INFORMACIÓN -->
+            <!-- ================================================= -->
+
+            <section class="lg:py-4">
+
+
+                <!-- Categoría -->
+
+                @if (
+                producto.categoria
+                ) {
+
+                <p class="text-sm font-semibold uppercase tracking-wider text-primary">
+
+                    {{
+                    producto
+                    .categoria
+                    ?.nombre
+                    }}
+
+                </p>
+
+                }
+
+
+                <!-- Nombre -->
+
+                <h1 class="mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
+
+                    {{ producto.nombre }}
+
+                </h1>
+
+
+                <!-- Marca / modelo -->
+
+                @if (
+                producto.marca
+                ||
+                producto.modelo
+                ) {
+
+                <p class="mt-3 text-base text-gray-500">
+
+                    {{ producto.marca }}
+
+                    @if (
+                    producto.marca
+                    &&
+                    producto.modelo
+                    ) {
+
+                    <span class="mx-2 text-gray-300">
+                        •
+                    </span>
+
+                    }
+
+                    {{ producto.modelo }}
+
+                </p>
+
+                }
+
+
+                <!-- Descripción -->
+
+                @if (
+                producto.descripcion
+                ) {
+
+                <p class="mt-6 text-base leading-7 text-gray-600">
+
+                    {{ producto.descripcion }}
+
+                </p>
+
+                }
+
+
+                <!-- ================================================= -->
+                <!-- VARIANTES -->
+                <!-- ================================================= -->
+
+                @if (
+                producto.variantes.length > 0
+                ) {
+
+                <div class="mt-8">
+
+                    <div class="flex items-center justify-between gap-4">
+
+                        <h2 class="text-sm font-semibold text-gray-900">
+
+                            {{
+                            t(
+                            'Variantes disponibles',
+                            'Available variants'
+                            )
+                            }}
+
+                        </h2>
+
+
+                        <span class="text-xs text-gray-400">
+
+                            {{
+                            producto
+                            .variantes
+                            .length
+                            }}
+
+                            {{
+                            producto
+                            .variantes
+                            .length === 1
+                            ? t(
+                            'opción',
+                            'option'
+                            )
+                            : t(
+                            'opciones',
+                            'options'
+                            )
+                            }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+                        @for (
+                        variante
+                        of producto.variantes;
+                        track variante.id_producto_variante
+                        ) {
+
+                        <button type="button" (click)="
+                                            seleccionarVariante(
+                                                variante
+                                            )
+                                        " class="rounded-xl border p-4 text-left transition" [class.border-primary]="
+                                            varianteSeleccionada()
+                                                ?.id_producto_variante
+                                            ===
+                                            variante.id_producto_variante
+                                        " [class.bg-primary/5]="
+                                            varianteSeleccionada()
+                                                ?.id_producto_variante
+                                            ===
+                                            variante.id_producto_variante
+                                        " [class.ring-2]="
+                                            varianteSeleccionada()
+                                                ?.id_producto_variante
+                                            ===
+                                            variante.id_producto_variante
+                                        " [class.ring-primary/10]="
+                                            varianteSeleccionada()
+                                                ?.id_producto_variante
+                                            ===
+                                            variante.id_producto_variante
+                                        " [class.border-gray-200]="
+                                            varianteSeleccionada()
+                                                ?.id_producto_variante
+                                            !==
+                                            variante.id_producto_variante
+                                        " [class.bg-white]="
+                                            varianteSeleccionada()
+                                                ?.id_producto_variante
+                                            !==
+                                            variante.id_producto_variante
+                                        ">
+
+                            <p class="font-medium text-gray-900">
+
+                                {{ variante.nombre }}
+
+                            </p>
+
+
+                            @if (
+                            variante.codigo_comercial
+                            ) {
+
+                            <p class="mt-1 text-xs text-gray-500">
+
+                                {{
+                                variante
+                                .codigo_comercial
+                                }}
+
+                            </p>
+
+                            }
+
+
+                            @if (
+                            variante.precio_venta
+                            !== null
+                            ) {
+
+                            <p class="mt-3 font-semibold text-primary">
+
+                                Bs
+                                {{
+                                variante
+                                .precio_venta
+                                | number:'1.2-2'
+                                }}
+
+                            </p>
+
+                            }
+
+                        </button>
+
+                        }
+
+                    </div>
+
+                </div>
+
+                }
+
+
+                <!-- ================================================= -->
+                <!-- VARIANTE SELECCIONADA -->
+                <!-- ================================================= -->
+
+                @if (
+                varianteSeleccionada();
+                as variante
+                ) {
+
+                <div class="mt-6 rounded-2xl border border-gray-200 bg-white p-5">
+
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+                        <div>
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+
+                                {{
+                                t(
+                                'Variante seleccionada',
+                                'Selected variant'
+                                )
+                                }}
+
+                            </p>
+
+
+                            <h2 class="mt-1 text-lg font-semibold text-gray-900">
+
+                                {{ variante.nombre }}
+
+                            </h2>
+
+
+                            @if (
+                            variante.codigo_comercial
+                            ) {
+
+                            <p class="mt-1 text-sm text-gray-500">
+
+                                Código:
+                                {{
+                                variante
+                                .codigo_comercial
+                                }}
+
+                            </p>
+
+                            }
+
+
+                            <p class="mt-1 text-sm text-gray-500">
+
+                                Unidad:
+                                {{
+                                variante
+                                .unidad_medida
+                                }}
+
+                            </p>
+
+                        </div>
+
+
+                        @if (
+                        precioVisible()
+                        !== null
+                        ) {
+
+                        <div class="sm:text-right">
+
+                            <p class="text-xs text-gray-500">
+
+                                {{
+                                t(
+                                'Precio',
+                                'Price'
+                                )
+                                }}
+
+                            </p>
+
+                            <p class="mt-1 text-2xl font-semibold text-primary">
+
+                                Bs
+                                {{
+                                precioVisible()
+                                | number:'1.2-2'
+                                }}
+
+                            </p>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+
+                    @if (
+                    variante.descripcion
+                    ) {
+
+                    <p class="mt-4 border-t border-gray-100 pt-4 text-sm leading-6 text-gray-600">
+
+                        {{
+                        variante
+                        .descripcion
+                        }}
+
+                    </p>
+
+                    }
+
+                </div>
+
+                }
+
+
+                <!-- Producto sin variantes -->
+
+                @else if (
+                precioVisible()
+                !== null
+                ) {
+
+                <div class="mt-8">
+
+                    <p class="text-sm text-gray-500">
+
+                        {{
+                        t(
+                        'Precio',
+                        'Price'
+                        )
+                        }}
+
+                    </p>
+
+
+                    <p class="mt-1 text-3xl font-semibold text-primary">
+
+                        Bs
+                        {{
+                        precioVisible()
+                        | number:'1.2-2'
+                        }}
+
+                    </p>
+
+                </div>
+
+                }
+
+
+                <!-- ================================================= -->
+                <!-- ACCIONES -->
+                <!-- ================================================= -->
+
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+
+                    <a routerLink="/contactos"
+                        class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary/90">
+
+                        {{
+                        t(
+                        'Solicitar información',
+                        'Request information'
+                        )
+                        }}
+
+                    </a>
+
+
+                    @if (
+                    rutaArchivo(
+                    producto.catalogo_pdf
+                    );
+                    as catalogo
+                    ) {
+
+                    <a [href]="catalogo" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
+
+                        <lucide-angular [img]="FileText" class="h-4 w-4">
+                        </lucide-angular>
+
+                        {{
+                        t(
+                        'Ver catálogo PDF',
+                        'View PDF catalog'
+                        )
+                        }}
+
+                    </a>
+
+                    }
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    }
+
+</div>

@@ -1,10 +1,10 @@
 export interface CategoriaPublica {
 
     id_categoria:
-        number;
+    number;
 
     nombre:
-        string;
+    string;
 
 }
 
@@ -12,16 +12,16 @@ export interface CategoriaPublica {
 export interface ImagenProductoPublica {
 
     id_producto_imagen:
-        number;
+    number;
 
     ruta_imagen:
-        string | null;
+    string | null;
 
     orden:
-        number;
+    number;
 
     es_principal:
-        boolean;
+    boolean;
 
 }
 
@@ -29,22 +29,25 @@ export interface ImagenProductoPublica {
 export interface VarianteProductoPublica {
 
     id_producto_variante:
-        number;
+    number;
 
     nombre:
-        string;
+    string;
 
     codigo_comercial:
-        string | null;
+    string | null;
 
     unidad_medida:
-        string;
+    string;
 
     descripcion:
-        string | null;
+    string | null;
 
     precio_venta:
-        number | null;
+    number | null;
+
+    imagenes:
+    ImagenProductoPublica[];
 
 }
 
@@ -52,34 +55,46 @@ export interface VarianteProductoPublica {
 export interface ProductoPublico {
 
     id_producto:
-        number;
+    number;
 
     id_categoria:
-        number;
+    number;
 
     nombre:
-        string;
+    string;
 
     marca:
-        string | null;
+    string | null;
 
     modelo:
-        string | null;
+    string | null;
 
     descripcion:
-        string | null;
+    string | null;
 
     catalogo_pdf:
-        string | null;
+    string | null;
 
     categoria:
-        CategoriaPublica | null;
+    CategoriaPublica | null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Imágenes generales
+    |--------------------------------------------------------------------------
+    */
 
     imagenes:
-        ImagenProductoPublica[];
+    ImagenProductoPublica[];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Variantes
+    |--------------------------------------------------------------------------
+    */
 
     variantes:
-        VarianteProductoPublica[];
+    VarianteProductoPublica[];
 
 }
 
@@ -87,10 +102,10 @@ export interface ProductoPublico {
 export interface CatalogoPublico {
 
     categorias:
-        CategoriaPublica[];
+    CategoriaPublica[];
 
     productos:
-        ProductoPublico[];
+    ProductoPublico[];
 
 }
 
@@ -98,6 +113,14 @@ export interface CatalogoPublico {
 export interface CatalogoPublicoResponse {
 
     data:
-        CatalogoPublico;
+    CatalogoPublico;
+
+}
+
+
+export interface ProductoPublicoResponse {
+
+    data:
+    ProductoPublico;
 
 }

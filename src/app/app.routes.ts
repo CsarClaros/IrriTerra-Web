@@ -205,6 +205,7 @@ import {
 import {
     PurchaseCreate
 } from './dashboard/purchases/purchase-create/purchase-create';
+import { ProductDetail } from './pages/product-detail/product-detail';
 
 
 
@@ -251,10 +252,10 @@ export const routes:
 
                 },
 
-                // {
-                //     path: 'productos/:id',
-                //     component: ProductDetail
-                // },
+                {
+                    path: 'productos/:id',
+                    component: ProductDetail
+                },
 
                 {
 
