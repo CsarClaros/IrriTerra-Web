@@ -1,108 +1,566 @@
-<!-- empresa-page.component.html -->
-
 <div class="min-h-screen bg-white">
 
-    <!-- Hero Section -->
-    <section class="bg-primary text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl mb-4">
-                {{ t('Sobre Nosotros', 'About Us') }}
+
+    <!-- ========================================================= -->
+    <!-- HERO -->
+    <!-- ========================================================= -->
+
+    <section class="bg-primary py-20 text-white">
+
+        <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+
+            <h1 class="text-4xl md:text-5xl">
+
+                {{
+                t(
+                'Sobre Nosotros',
+                'About Us'
+                )
+                }}
+
             </h1>
-            <p class="text-xl max-w-3xl mx-auto">
-                {{ t('Líderes en tecnología de riego agrícola en Bolivia', 'Leaders in agricultural irrigation
-                technology in Bolivia') }}
+
+
+            <p class="mx-auto mt-4 max-w-3xl text-xl">
+
+                {{
+                t(
+                'Líderes en tecnología de riego agrícola en Bolivia',
+                'Leaders in agricultural irrigation technology in Bolivia'
+                )
+                }}
+
             </p>
+
         </div>
+
     </section>
 
-    <!-- Historia -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
 
-                <div>
-                    <h2 class="text-3xl mb-6">
-                        {{ t('Acerca de Nosotros', 'About Us') }}
+    <!-- ========================================================= -->
+    <!-- CARGANDO -->
+    <!-- ========================================================= -->
+
+    @if (
+    cargando()
+    ) {
+
+    <section class="bg-white py-12">
+
+        <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+
+            <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
+            </div>
+
+
+            <p class="mt-4 text-sm text-gray-500">
+
+                {{
+                t(
+                'Cargando información...',
+                'Loading information...'
+                )
+                }}
+
+            </p>
+
+        </div>
+
+    </section>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- ERROR -->
+    <!-- ========================================================= -->
+
+    @if (
+    errorMensaje()
+    ) {
+
+    <section class="bg-white py-8">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            <div class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+                {{ errorMensaje() }}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- INFORMACIÓN DE EMPRESA -->
+    <!-- ========================================================= -->
+
+    <!-- @if (
+    empresa();
+    as empresa
+    ) {
+
+    <section class="border-b border-gray-100 bg-white py-12">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            <div class="grid gap-8 rounded-2xl border border-gray-200 bg-gray-50 p-6 md:grid-cols-[220px_1fr] md:p-8">
+
+
+                Logo
+
+                <div class="flex min-h-44 items-center justify-center rounded-xl bg-white p-6 shadow-sm">
+
+                    @if (
+                    empresa.logo
+                    ) {
+
+                    <img [src]="empresa.logo" [alt]="
+                                    empresa.nombre
+                                " class="max-h-32 max-w-full object-contain" />
+
+                    } @else {
+
+                    <div class="text-center text-gray-400">
+
+                        <lucide-angular [img]="Building2" class="mx-auto h-12 w-12">
+                        </lucide-angular>
+
+
+                        <p class="mt-2 text-sm">
+
+                            {{ empresa.nombre }}
+
+                        </p>
+
+                    </div>
+
+                    }
+
+                </div>
+
+
+                Datos
+
+                <div class="flex flex-col justify-center">
+
+                    <h2 class="text-3xl font-semibold text-gray-900">
+
+                        {{ empresa.nombre }}
+
                     </h2>
 
-                    <p class="text-gray-600 mb-4">
-                        {{ t(
+
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+
+
+                        @if (
+                        empresa.direccion
+                        ) {
+
+                        <div class="flex items-start gap-3">
+
+                            <lucide-angular [img]="MapPin" class="mt-0.5 h-5 w-5 shrink-0 text-primary">
+                            </lucide-angular>
+
+
+                            <div>
+
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+
+                                    {{
+                                    t(
+                                    'Dirección',
+                                    'Address'
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <p class="mt-1 text-sm text-gray-700">
+
+                                    {{ empresa.direccion }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        }
+
+
+                        @if (
+                        empresa.telefono
+                        ) {
+
+                        <div class="flex items-start gap-3">
+
+                            <lucide-angular [img]="Phone" class="mt-0.5 h-5 w-5 shrink-0 text-primary">
+                            </lucide-angular>
+
+
+                            <div>
+
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+
+                                    {{
+                                    t(
+                                    'Teléfono',
+                                    'Phone'
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <a [href]="
+                                                'tel:'
+                                                +
+                                                empresa.telefono
+                                            " class="mt-1 block text-sm text-gray-700 hover:text-primary">
+
+                                    {{ empresa.telefono }}
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                        }
+
+
+                        @if (
+                        empresa.correo
+                        ) {
+
+                        <div class="flex items-start gap-3">
+
+                            <lucide-angular [img]="Mail" class="mt-0.5 h-5 w-5 shrink-0 text-primary">
+                            </lucide-angular>
+
+
+                            <div>
+
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+
+                                    {{
+                                    t(
+                                    'Correo',
+                                    'Email'
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <a [href]="
+                                                'mailto:'
+                                                +
+                                                empresa.correo
+                                            " class="mt-1 block break-all text-sm text-gray-700 hover:text-primary">
+
+                                    {{ empresa.correo }}
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                        }
+
+
+                        @if (
+                        empresa.sitio_web
+                        ) {
+
+                        <div class="flex items-start gap-3">
+
+                            <lucide-angular [img]="Globe2" class="mt-0.5 h-5 w-5 shrink-0 text-primary">
+                            </lucide-angular>
+
+
+                            <div>
+
+                                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+
+                                    {{
+                                    t(
+                                    'Sitio web',
+                                    'Website'
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <a [href]="
+                                                empresa.sitio_web
+                                            " target="_blank" rel="noopener noreferrer"
+                                    class="mt-1 inline-flex items-center gap-1 text-sm text-gray-700 hover:text-primary">
+
+                                    {{ empresa.sitio_web }}
+
+                                    <lucide-angular [img]="ExternalLink" class="h-3.5 w-3.5">
+                                    </lucide-angular>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    } -->
+
+
+    <!-- ========================================================= -->
+    <!-- HISTORIA -->
+    <!-- ========================================================= -->
+
+    <section class="bg-white py-16">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            <div class="grid items-center gap-12 md:grid-cols-2">
+
+
+                <!-- Texto -->
+
+                <div>
+
+                    <h2 class="mb-6 text-3xl">
+
+                        {{
+                        t(
+                        'Acerca de Nosotros',
+                        'About Us'
+                        )
+                        }}
+
+                    </h2>
+
+
+                    <p class="mb-4 text-gray-600">
+
+                        {{
+                        t(
                         'Fundada en la gestión 2023, IRRITERRA SRL se fundó con el propósito de tecnificar y optimizar
                         el uso de recursos hídricos y productivos en Bolivia. A pesar de nuestra trayectoria reciente,
                         nos hemos consolidado rápidamente como un aliado estratégico fundamental.',
                         'Founded in 2023, IRRITERRA SRL was established with the purpose of modernizing and optimizing
                         the use of water and productive resources in Bolivia. Despite our recent trajectory, we have
                         quickly consolidated ourselves as a fundamental strategic ally.'
-                        ) }}
+                        )
+                        }}
+
                     </p>
 
+
                     <p class="text-gray-600">
-                        {{ t(
+
+                        {{
+                        t(
                         'Nuestra capacidad operativa nos ha permitido ser adjudicatarios de proyectos de gran
                         envergadura junto a Ministerios del Gobierno Nacional, abarcando la provisión, instalación y
                         mantenimiento de sistemas integrales a lo largo de todo el territorio boliviano.',
                         'Our operational capacity has allowed us to be awarded large-scale projects together with
                         National Government Ministries, covering the provision, installation and maintenance of
                         comprehensive systems throughout the Bolivian territory.'
-                        ) }}
+                        )
+                        }}
+
                     </p>
+
                 </div>
 
+
+                <!-- Estadísticas -->
+
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-primary text-white p-6 rounded-xl text-center">
-                        <div class="text-4xl mb-2">100+</div>
-                        <div>{{ t('Proyectos completados', 'Completed projects') }}</div>
+
+                    <div class="rounded-xl bg-primary p-6 text-center text-white">
+
+                        <div class="mb-2 text-4xl">
+
+                            100+
+
+                        </div>
+
+                        <div>
+
+                            {{
+                            t(
+                            'Proyectos completados',
+                            'Completed projects'
+                            )
+                            }}
+
+                        </div>
+
                     </div>
 
-                    <div class="bg-secondary text-white p-6 rounded-xl text-center">
-                        <div class="text-4xl mb-2">3</div>
-                        <div>{{ t('Años de trayectoria', 'Years of experience') }}</div>
+
+                    <div class="rounded-xl bg-secondary p-6 text-center text-white">
+
+                        <div class="mb-2 text-4xl">
+
+                            3
+
+                        </div>
+
+                        <div>
+
+                            {{
+                            t(
+                            'Años de trayectoria',
+                            'Years of experience'
+                            )
+                            }}
+
+                        </div>
+
                     </div>
 
-                    <div class="bg-accent text-white p-6 rounded-xl text-center">
-                        <div class="text-4xl mb-2">3</div>
-                        <div>{{ t('Áreas especializadas', 'Specialized areas') }}</div>
+
+                    <div class="rounded-xl bg-accent p-6 text-center text-white">
+
+                        <div class="mb-2 text-4xl">
+
+                            3
+
+                        </div>
+
+                        <div>
+
+                            {{
+                            t(
+                            'Áreas especializadas',
+                            'Specialized areas'
+                            )
+                            }}
+
+                        </div>
+
                     </div>
 
-                    <div class="bg-[#1F2937] text-white p-6 rounded-xl text-center">
-                        <div class="text-4xl mb-2">100%</div>
-                        <div>{{ t('Compromiso', 'Commitment') }}</div>
+
+                    <div class="rounded-xl bg-[#1F2937] p-6 text-center text-white">
+
+                        <div class="mb-2 text-4xl">
+
+                            100%
+
+                        </div>
+
+                        <div>
+
+                            {{
+                            t(
+                            'Compromiso',
+                            'Commitment'
+                            )
+                            }}
+
+                        </div>
+
                     </div>
+
                 </div>
 
             </div>
+
         </div>
+
     </section>
 
-    <!-- Misión, Visión, Valores -->
-    <section class="py-16 bg-muted">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-3 gap-8">
 
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl mb-4 text-primary">
-                        {{ t('Misión', 'Mission') }}
+    <!-- ========================================================= -->
+    <!-- MISIÓN / VISIÓN / VALORES -->
+    <!-- ========================================================= -->
+
+    <section class="bg-muted py-16">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            <div class="grid gap-8 md:grid-cols-3">
+
+
+                <!-- Misión -->
+
+                <div class="rounded-xl bg-white p-8 shadow-lg">
+
+                    <h3 class="mb-4 text-2xl text-primary">
+
+                        {{
+                        t(
+                        'Misión',
+                        'Mission'
+                        )
+                        }}
+
                     </h3>
+
+
                     <p class="text-gray-600">
-                        {{ t(
+
+                        {{
+                        t(
                         'Proveer soluciones tecnológicas integrales en sistemas de riego, geomembranas y maquinaria
                         agrícola, garantizando la optimización y eficiencia en el uso de los recursos de nuestros
                         clientes. Nos comprometemos a entregar productos de alta calidad y un servicio técnico
                         especializado que asegure la operatividad y sostenibilidad de cada proyecto que ejecutamos.',
                         'Provide comprehensive technological solutions in irrigation systems, geomembranes and
-                        agricultural machinery, guaranteeing the optimization and efficiency in the use of our clients\'
+                        agricultural machinery, guaranteeing the optimization and efficiency in the use of our clients
                         resources. We are committed to delivering high-quality products and specialized technical
                         service that ensures the operability and sustainability of each project we execute.'
-                        ) }}
+                        )
+                        }}
+
                     </p>
+
                 </div>
 
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl mb-4 text-primary">
-                        {{ t('Visión', 'Vision') }}
+
+                <!-- Visión -->
+
+                <div class="rounded-xl bg-white p-8 shadow-lg">
+
+                    <h3 class="mb-4 text-2xl text-primary">
+
+                        {{
+                        t(
+                        'Visión',
+                        'Vision'
+                        )
+                        }}
+
                     </h3>
+
+
                     <p class="text-gray-600">
-                        {{ t(
+
+                        {{
+                        t(
                         'Convertirnos en el referente líder a nivel nacional en el suministro e instalación de
                         soluciones para el sector agroindustrial y de infraestructura hídrica, siendo reconocidos por
                         nuestra solidez técnica, capacidad de respuesta ante proyectos de gran escala y nuestra
@@ -111,82 +569,512 @@
                         for the agro-industrial sector and water infrastructure, being recognized for our technical
                         solidity, response capacity for large-scale projects and our contribution to the productive
                         development of the different sectors that make up our country.'
-                        ) }}
+                        )
+                        }}
+
                     </p>
+
                 </div>
 
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl mb-4 text-primary">
-                        {{ t('Valores Empresariales', 'Corporate Values') }}
+
+                <!-- Valores -->
+
+                <div class="rounded-xl bg-white p-8 shadow-lg">
+
+                    <h3 class="mb-4 text-2xl text-primary">
+
+                        {{
+                        t(
+                        'Valores Empresariales',
+                        'Corporate Values'
+                        )
+                        }}
+
                     </h3>
 
-                    <ul class="text-gray-600 space-y-2">
-                        <li>• {{ t('Excelencia Operativa', 'Operational Excellence') }}</li>
-                        <li>• {{ t('Compromiso Institucional', 'Institutional Commitment') }}</li>
-                        <li>• {{ t('Innovación en Riego', 'Innovation in Irrigation') }}</li>
-                        <li>• {{ t('Integridad', 'Integrity') }}</li>
-                        <li>• {{ t('Responsabilidad', 'Responsibility') }}</li>
-                        <li>• {{ t('Colaboración', 'Collaboration') }}</li>
-                        <li>• {{ t('Practicidad', 'Practicality') }}</li>
+
+                    <ul class="space-y-2 text-gray-600">
+
+                        <li>
+                            • {{
+                            t(
+                            'Excelencia Operativa',
+                            'Operational Excellence'
+                            )
+                            }}
+                        </li>
+
+                        <li>
+                            • {{
+                            t(
+                            'Compromiso Institucional',
+                            'Institutional Commitment'
+                            )
+                            }}
+                        </li>
+
+                        <li>
+                            • {{
+                            t(
+                            'Innovación en Riego',
+                            'Innovation in Irrigation'
+                            )
+                            }}
+                        </li>
+
+                        <li>
+                            • {{
+                            t(
+                            'Integridad',
+                            'Integrity'
+                            )
+                            }}
+                        </li>
+
+                        <li>
+                            • {{
+                            t(
+                            'Responsabilidad',
+                            'Responsibility'
+                            )
+                            }}
+                        </li>
+
+                        <li>
+                            • {{
+                            t(
+                            'Colaboración',
+                            'Collaboration'
+                            )
+                            }}
+                        </li>
+
+                        <li>
+                            • {{
+                            t(
+                            'Practicidad',
+                            'Practicality'
+                            )
+                            }}
+                        </li>
+
                     </ul>
+
                 </div>
 
             </div>
+
         </div>
+
     </section>
 
-    <!-- Sucursales -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl mb-4">
-                    {{ t('Nuestras Sucursales', 'Our Branches') }}
+    <!-- ========================================================= -->
+    <!-- SUCURSALES -->
+    <!-- ========================================================= -->
+
+    <section class="bg-white py-16">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+
+            <!-- Encabezado -->
+
+            <div class="mb-12 text-center">
+
+                <h2 class="mb-4 text-3xl md:text-4xl">
+
+                    {{
+                    t(
+                    'Nuestras Sucursales',
+                    'Our Branches'
+                    )
+                    }}
+
                 </h2>
+
+
                 <p class="text-lg text-gray-600">
-                    {{ t('Estamos presentes en las principales ciudades del país', 'We are present in the main cities of
-                    the country') }}
+
+                    {{
+                    t(
+                    'Estamos presentes en las principales ciudades del país',
+                    'We are present in the main cities of the country'
+                    )
+                    }}
+
                 </p>
+
             </div>
 
-            <div class="grid lg:grid-cols-3 gap-8">
 
-                <!-- Selector -->
+            @if (
+            sucursales().length
+            > 0
+            ) {
+
+            <div class="grid gap-8 lg:grid-cols-3">
+
+
+                <!-- ================================================= -->
+                <!-- SELECTOR -->
+                <!-- ================================================= -->
+
                 <div class="space-y-4">
-                    <button *ngFor="let branch of branches" (click)="setBranch(branch.id)"
-                        class="w-full text-left p-6 rounded-xl transition-all" [ngClass]="{
-                'bg-primary text-white shadow-lg': selectedBranch === branch.id,
-                'bg-gray-100 hover:bg-gray-200': selectedBranch !== branch.id
-              }">
-                        <div class="flex items-start space-x-3">
-                            <lucide-angular [img]="MapPin" class="w-6 h-6 mt-1"></lucide-angular>
+
+                    @for (
+                    sucursal
+                    of sucursales();
+                    track sucursal.id_sucursal
+                    ) {
+
+                    <button type="button" (click)="
+                                    seleccionarSucursal(
+                                        sucursal
+                                    )
+                                " [ngClass]="{
+
+                                    'bg-primary text-white shadow-lg':
+                                        esSucursalSeleccionada(
+                                            sucursal
+                                        ),
+
+                                    'bg-gray-100 text-gray-900 hover:bg-gray-200':
+                                        !esSucursalSeleccionada(
+                                            sucursal
+                                        )
+
+                                }" class="w-full rounded-xl p-6 text-left transition-all">
+
+                        <div class="flex items-start gap-3">
+
+                            <lucide-angular [img]="MapPin" class="mt-1 h-6 w-6 shrink-0">
+                            </lucide-angular>
+
+
+                            <div class="min-w-0">
+
+                                <h3 class="text-xl font-medium">
+
+                                    {{ sucursal.nombre }}
+
+                                </h3>
+
+
+                                <p class="mt-1 text-sm" [ngClass]="{
+
+                                                'text-white/80':
+                                                    esSucursalSeleccionada(
+                                                        sucursal
+                                                    ),
+
+                                                'text-gray-600':
+                                                    !esSucursalSeleccionada(
+                                                        sucursal
+                                                    )
+
+                                            }">
+
+                                    {{ sucursal.ciudad }},
+                                    {{ sucursal.departamento }}
+
+                                </p>
+
+
+                                @if (
+                                sucursal.direccion
+                                ) {
+
+                                <p class="mt-2 text-sm" [ngClass]="{
+
+                                                    'text-white/80':
+                                                        esSucursalSeleccionada(
+                                                            sucursal
+                                                        ),
+
+                                                    'text-gray-500':
+                                                        !esSucursalSeleccionada(
+                                                            sucursal
+                                                        )
+
+                                                }">
+
+                                    {{ sucursal.direccion }}
+
+                                </p>
+
+                                }
+
+
+                                @if (
+                                sucursal.telefono
+                                ) {
+
+                                <p class="mt-1 text-sm" [ngClass]="{
+
+                                                    'text-white/80':
+                                                        esSucursalSeleccionada(
+                                                            sucursal
+                                                        ),
+
+                                                    'text-gray-500':
+                                                        !esSucursalSeleccionada(
+                                                            sucursal
+                                                        )
+
+                                                }">
+
+                                    {{ sucursal.telefono }}
+
+                                </p>
+
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </button>
+
+                    }
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- INFORMACIÓN + MAPA -->
+                <!-- ================================================= -->
+
+                <div class="overflow-hidden rounded-xl border border-gray-200 shadow-lg lg:col-span-2">
+
+                    @if (
+                    sucursalSeleccionada();
+                    as sucursal
+                    ) {
+
+                    <!-- Datos -->
+
+                    <div class="border-b border-gray-200 bg-white p-6">
+
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
                             <div>
-                                <h3 class="text-xl mb-2">{{ branch.name }}</h3>
 
-                                <p [ngClass]="selectedBranch === branch.id ? 'text-gray-200' : 'text-gray-600'">
-                                    {{ branch.address }}
+                                <p class="text-xs font-semibold uppercase tracking-wider text-primary">
+
+                                    {{ sucursal.codigo }}
+
                                 </p>
 
-                                <p [ngClass]="selectedBranch === branch.id ? 'text-gray-200' : 'text-gray-600'">
-                                    {{ branch.phone }}
+
+                                <h3 class="mt-1 text-2xl font-semibold text-gray-900">
+
+                                    {{ sucursal.nombre }}
+
+                                </h3>
+
+
+                                <p class="mt-1 text-sm text-gray-500">
+
+                                    {{ sucursal.ciudad }},
+                                    {{ sucursal.departamento }}
+
                                 </p>
+
                             </div>
-                        </div>
-                    </button>
-                </div>
 
-                <!-- Map -->
-                <div class="lg:col-span-2">
-                    <div class="rounded-xl overflow-hidden shadow-lg h-[500px]">
-                        <iframe class="w-full h-full" [src]="currentBranch.mapEmbed" style="border: 0;" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+
+                            @if (
+                            sucursal.url_maps
+                            ) {
+
+                            <a [href]="
+                                                sucursal.url_maps
+                                            " target="_blank" rel="noopener noreferrer"
+                                class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
+
+                                {{
+                                t(
+                                'Abrir en Maps',
+                                'Open in Maps'
+                                )
+                                }}
+
+                                <lucide-angular [img]="ExternalLink" class="h-4 w-4">
+                                </lucide-angular>
+
+                            </a>
+
+                            }
+
+                        </div>
+
+
+                        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+
+
+                            @if (
+                            sucursal.direccion
+                            ) {
+
+                            <div class="flex gap-3">
+
+                                <lucide-angular [img]="MapPin" class="mt-0.5 h-4 w-4 shrink-0 text-primary">
+                                </lucide-angular>
+
+
+                                <span class="text-sm text-gray-600">
+
+                                    {{ sucursal.direccion }}
+
+                                </span>
+
+                            </div>
+
+                            }
+
+
+                            @if (
+                            sucursal.telefono
+                            ) {
+
+                            <div class="flex gap-3">
+
+                                <lucide-angular [img]="Phone" class="mt-0.5 h-4 w-4 shrink-0 text-primary">
+                                </lucide-angular>
+
+
+                                <a [href]="
+                                                    'tel:'
+                                                    +
+                                                    sucursal.telefono
+                                                " class="text-sm text-gray-600 hover:text-primary">
+
+                                    {{ sucursal.telefono }}
+
+                                </a>
+
+                            </div>
+
+                            }
+
+
+                            @if (
+                            sucursal.correo
+                            ) {
+
+                            <div class="flex gap-3 sm:col-span-2">
+
+                                <lucide-angular [img]="Mail" class="mt-0.5 h-4 w-4 shrink-0 text-primary">
+                                </lucide-angular>
+
+
+                                <a [href]="
+                                                    'mailto:'
+                                                    +
+                                                    sucursal.correo
+                                                " class="break-all text-sm text-gray-600 hover:text-primary">
+
+                                    {{ sucursal.correo }}
+
+                                </a>
+
+                            </div>
+
+                            }
+
+                        </div>
+
                     </div>
+
+
+                    <!-- Mapa -->
+
+                    <div class="h-[500px] bg-gray-100">
+
+                        @if (
+                        mapaSeguro();
+                        as mapa
+                        ) {
+
+                        <iframe [src]="mapa" class="h-full w-full border-0" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
+                        </iframe>
+
+                        } @else {
+
+                        <div class="flex h-full items-center justify-center p-8 text-center">
+
+                            <div>
+
+                                <lucide-angular [img]="MapPin" class="mx-auto h-12 w-12 text-gray-300">
+                                </lucide-angular>
+
+
+                                <p class="mt-4 font-medium text-gray-600">
+
+                                    {{
+                                    t(
+                                    'Mapa no disponible',
+                                    'Map unavailable'
+                                    )
+                                    }}
+
+                                </p>
+
+
+                                <p class="mt-2 text-sm text-gray-400">
+
+                                    {{
+                                    t(
+                                    'Esta sucursal todavía no tiene configurado un mapa.',
+                                    'This branch does not have a map configured yet.'
+                                    )
+                                    }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                    }
+
                 </div>
 
             </div>
 
+            } @else if (
+            !cargando()
+            ) {
+
+            <div class="rounded-xl border border-gray-200 bg-gray-50 px-6 py-16 text-center">
+
+                <lucide-angular [img]="MapPin" class="mx-auto h-10 w-10 text-gray-300">
+                </lucide-angular>
+
+
+                <p class="mt-4 text-gray-500">
+
+                    {{
+                    t(
+                    'No hay sucursales disponibles actualmente.',
+                    'There are currently no branches available.'
+                    )
+                    }}
+
+                </p>
+
+            </div>
+
+            }
+
         </div>
+
     </section>
 
 </div>

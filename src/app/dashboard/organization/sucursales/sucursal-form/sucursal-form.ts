@@ -162,6 +162,10 @@ export class SucursalForm
       ''
     );
 
+  readonly mensajeMapa =
+    signal(
+      ''
+    );
 
   /*
   |--------------------------------------------------------------------------
@@ -231,15 +235,12 @@ export class SucursalForm
         ]
       ],
 
-      latitud: [
-        null as number | null
-      ],
-
-      longitud: [
-        null as number | null
-      ],
 
       url_maps: [
+        ''
+      ],
+
+      url_maps_embed: [
         ''
       ],
 
@@ -458,22 +459,12 @@ export class SucursalForm
                 sucursal.correo
                 ?? '',
 
-              latitud:
-                sucursal.latitud !== null
-                  ? Number(
-                    sucursal.latitud
-                  )
-                  : null,
-
-              longitud:
-                sucursal.longitud !== null
-                  ? Number(
-                    sucursal.longitud
-                  )
-                  : null,
-
               url_maps:
                 sucursal.url_maps
+                ?? '',
+
+              url_maps_embed:
+                sucursal.url_maps_embed
                 ?? '',
 
               observaciones:
@@ -514,6 +505,14 @@ export class SucursalForm
   */
 
   guardar(): void {
+
+    /*
+     * Si el usuario pegó directamente
+     * el iframe y presionó Guardar,
+     * extraemos primero su URL.
+     */
+
+    this.normalizarEmbedMaps();
 
     if (
       this.form.invalid
@@ -575,27 +574,15 @@ export class SucursalForm
           valores.correo
         ),
 
-      latitud:
-        valores.latitud !== null
-          &&
-          valores.latitud !== undefined
-          ? Number(
-            valores.latitud
-          )
-          : null,
-
-      longitud:
-        valores.longitud !== null
-          &&
-          valores.longitud !== undefined
-          ? Number(
-            valores.longitud
-          )
-          : null,
 
       url_maps:
         this.valorNullable(
           valores.url_maps
+        ),
+
+      url_maps_embed:
+        this.valorNullable(
+          valores.url_maps_embed
         ),
 
       observaciones:
@@ -794,6 +781,142 @@ export class SucursalForm
       'No fue posible guardar la sucursal.',
       'The branch could not be saved.'
     );
+
+  }
+
+  /*
+|--------------------------------------------------------------------------
+| Normalizar código de Google Maps
+|--------------------------------------------------------------------------
+*/
+
+  normalizarEmbedMaps(): void {
+
+    const control =
+      this.form.controls
+        .url_maps_embed;
+
+
+    const valor =
+      control.value
+        ?.trim()
+      ?? '';
+
+
+    if (
+      !valor
+    ) {
+
+      this.mensajeMapa.set(
+        ''
+      );
+
+      return;
+
+    }
+
+
+    const resultado =
+      this.extraerUrlEmbed(
+        valor
+      );
+
+
+    /*
+     * Si se pegó un iframe completo,
+     * reemplazamos el contenido por
+     * solamente su src.
+     */
+
+    if (
+      resultado
+      !== valor
+    ) {
+
+      control.setValue(
+        resultado
+      );
+
+
+      this.mensajeMapa.set(
+
+        this.t(
+          'Código de Google Maps detectado. La URL del mapa fue extraída automáticamente.',
+          'Google Maps code detected. The map URL was extracted automatically.'
+        )
+
+      );
+
+    }
+
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Extraer SRC de iframe
+  |--------------------------------------------------------------------------
+  */
+
+  private extraerUrlEmbed(
+    valor: string
+  ): string {
+
+    const limpio =
+      valor.trim();
+
+
+    /*
+     * Si ya es una URL,
+     * simplemente la dejamos.
+     */
+
+    if (
+      !limpio
+        .toLowerCase()
+        .includes(
+          '<iframe'
+        )
+    ) {
+
+      return limpio;
+
+    }
+
+
+    try {
+
+      const documento =
+        new DOMParser()
+          .parseFromString(
+            limpio,
+            'text/html'
+          );
+
+
+      const iframe =
+        documento
+          .querySelector(
+            'iframe'
+          );
+
+
+      const src =
+        iframe
+          ?.getAttribute(
+            'src'
+          )
+          ?.trim();
+
+
+      return src
+        || limpio;
+
+    } catch {
+
+      return limpio;
+
+    }
 
   }
 

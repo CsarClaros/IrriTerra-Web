@@ -18,17 +18,10 @@ export interface Sucursal {
 
     correo: string | null;
 
-    latitud:
-    number
-    | string
-    | null;
-
-    longitud:
-    number
-    | string
-    | null;
 
     url_maps: string | null;
+
+    url_maps_embed: string | null;
 
     observaciones: string | null;
 
@@ -58,11 +51,9 @@ export interface SucursalRequest {
 
     correo?: string | null;
 
-    latitud?: number | null;
-
-    longitud?: number | null;
-
     url_maps?: string | null;
+
+    url_maps_embed?: string | null;
 
     observaciones?: string | null;
 

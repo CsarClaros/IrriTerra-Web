@@ -1,137 +1,394 @@
 <footer class="bg-[#1F2937] text-white">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 
-            <!-- Company -->
+
+            <!-- ================================================= -->
+            <!-- EMPRESA -->
+            <!-- ================================================= -->
+
             <div>
-                <h3 class="text-2xl mb-4">IRRITERRA</h3>
 
-                <p class="text-gray-300 mb-4">
-                    {{ t(
+                @if (
+                empresa()?.logo;
+                as logo
+                ) {
+
+                <img [src]="logo" [alt]="
+                            nombreEmpresa()
+                        " class="mb-4 max-h-16 max-w-[180px] object-contain" />
+
+                }
+
+
+                <h3 class="mb-4 text-2xl">
+
+                    {{ nombreEmpresa() }}
+
+                </h3>
+
+
+                <p class="mb-4 text-gray-300">
+
+                    {{
+                    t(
                     'Soluciones modernas de riego agrícola, combinando tecnología, eficiencia y sostenibilidad.',
                     'Modern agricultural irrigation solutions, combining technology, efficiency and sustainability.'
-                    ) }}
+                    )
+                    }}
+
                 </p>
+
+
+                @if (
+                empresa()?.sitio_web
+                ) {
+
+                <a [href]="
+                            empresa()?.sitio_web
+                        " target="_blank" rel="noopener noreferrer"
+                    class="text-sm text-accent transition-colors hover:text-white">
+
+                    {{
+                    t(
+                    'Visitar sitio web',
+                    'Visit website'
+                    )
+                    }}
+
+                </a>
+
+                }
+
             </div>
 
-            <!-- Links -->
+
+            <!-- ================================================= -->
+            <!-- ENLACES -->
+            <!-- ================================================= -->
+
             <div>
 
-                <h4 class="mb-4">{{ t('Enlaces Rápidos','Quick Links') }}</h4>
+                <h4 class="mb-4">
+
+                    {{
+                    t(
+                    'Enlaces Rápidos',
+                    'Quick Links'
+                    )
+                    }}
+
+                </h4>
+
 
                 <ul class="space-y-2">
 
                     <li>
-                        <a routerLink="/" class="text-gray-300 hover:text-accent transition-colors">
-                            {{ t('Inicio','Home') }}
+
+                        <a routerLink="/" class="text-gray-300 transition-colors hover:text-accent">
+
+                            {{
+                            t(
+                            'Inicio',
+                            'Home'
+                            )
+                            }}
+
                         </a>
+
                     </li>
 
-                    <li>
-                        <a routerLink="/productos" class="text-gray-300 hover:text-accent transition-colors">
-                            {{ t('Productos','Products') }}
-                        </a>
-                    </li>
 
                     <li>
-                        <a routerLink="/empresa" class="text-gray-300 hover:text-accent transition-colors">
-                            {{ t('Empresa','Company') }}
+
+                        <a routerLink="/productos" class="text-gray-300 transition-colors hover:text-accent">
+
+                            {{
+                            t(
+                            'Productos',
+                            'Products'
+                            )
+                            }}
+
                         </a>
+
                     </li>
 
-                    <li>
-                        <a routerLink="/eventos" class="text-gray-300 hover:text-accent transition-colors">
-                            {{ t('Eventos','Events') }}
-                        </a>
-                    </li>
 
                     <li>
-                        <a routerLink="/contactos" class="text-gray-300 hover:text-accent transition-colors">
-                            {{ t('Contactos','Contact') }}
+
+                        <a routerLink="/empresa" class="text-gray-300 transition-colors hover:text-accent">
+
+                            {{
+                            t(
+                            'Empresa',
+                            'Company'
+                            )
+                            }}
+
                         </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a routerLink="/eventos" class="text-gray-300 transition-colors hover:text-accent">
+
+                            {{
+                            t(
+                            'Eventos',
+                            'Events'
+                            )
+                            }}
+
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a routerLink="/contactos" class="text-gray-300 transition-colors hover:text-accent">
+
+                            {{
+                            t(
+                            'Contactos',
+                            'Contact'
+                            )
+                            }}
+
+                        </a>
+
                     </li>
 
                 </ul>
 
             </div>
 
-            <!-- Contact -->
+
+            <!-- ================================================= -->
+            <!-- CONTACTO -->
+            <!-- ================================================= -->
+
             <div>
 
-                <h4 class="mb-4">{{ t('Contacto','Contact') }}</h4>
+                <h4 class="mb-4">
 
-                <ul class="space-y-3">
+                    {{
+                    t(
+                    'Contacto',
+                    'Contact'
+                    )
+                    }}
 
-                    <li class="flex items-start space-x-2">
-                        <span class="text-accent">📞</span>
-                        <span class="text-gray-300">+591 2 234 5678</span>
+                </h4>
+
+
+                <ul class="space-y-4">
+
+
+                    @if (
+                    telefono();
+                    as telefono
+                    ) {
+
+                    <li class="flex items-start gap-3">
+
+                        <lucide-angular [img]="Phone" class="mt-0.5 h-5 w-5 shrink-0 text-accent">
+                        </lucide-angular>
+
+
+                        <a [href]="
+                                    'tel:'
+                                    +
+                                    telefono
+                                " class="text-gray-300 transition-colors hover:text-accent">
+
+                            {{ telefono }}
+
+                        </a>
+
                     </li>
 
-                    <li class="flex items-start space-x-2">
-                        <span class="text-accent">✉️</span>
-                        <span class="text-gray-300">info@irriterra.com</span>
+                    }
+
+
+                    @if (
+                    correo();
+                    as correo
+                    ) {
+
+                    <li class="flex items-start gap-3">
+
+                        <lucide-angular [img]="Mail" class="mt-0.5 h-5 w-5 shrink-0 text-accent">
+                        </lucide-angular>
+
+
+                        <a [href]="
+                                    'mailto:'
+                                    +
+                                    correo
+                                " class="break-all text-gray-300 transition-colors hover:text-accent">
+
+                            {{ correo }}
+
+                        </a>
+
                     </li>
 
-                    <li class="flex items-start space-x-2">
-                        <span class="text-accent">📍</span>
+                    }
+
+
+                    @if (
+                    direccion();
+                    as direccion
+                    ) {
+
+                    <li class="flex items-start gap-3">
+
+                        <lucide-angular [img]="MapPin" class="mt-0.5 h-5 w-5 shrink-0 text-accent">
+                        </lucide-angular>
+
+
                         <span class="text-gray-300">
-                            {{ t('Av. Principal 123, La Paz, Bolivia','Main Ave 123, La Paz, Bolivia') }}
+
+                            {{ direccion }}
+
                         </span>
+
                     </li>
+
+                    }
 
                 </ul>
 
             </div>
 
-            <!-- Social + Map -->
+
+            <!-- ================================================= -->
+            <!-- REDES + MAPA -->
+            <!-- ================================================= -->
+
             <div>
 
-                <h4 class="mb-4">{{ t('Síguenos','Follow Us') }}</h4>
+                <h4 class="mb-4">
 
-                <div class="flex space-x-4 mb-4">
+                    {{
+                    t(
+                    'Síguenos',
+                    'Follow Us'
+                    )
+                    }}
 
-                    <a href="https://facebook.com" target="_blank"
-                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+                </h4>
+
+
+                <!-- Redes -->
+
+                <div class="mb-4 flex space-x-4">
+
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
+
                         F
+
                     </a>
 
-                    <a href="https://twitter.com" target="_blank"
-                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
+
                         T
+
                     </a>
 
-                    <a href="https://instagram.com" target="_blank"
-                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
+
                         I
+
                     </a>
 
-                    <a href="https://linkedin.com" target="_blank"
-                        class="p-2 bg-gray-700 rounded-full hover:bg-accent transition-colors">
+
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
+
                         L
+
                     </a>
 
                 </div>
 
-                <div class="rounded-lg overflow-hidden h-32">
 
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30602.36728!2d-68.119!3d-16.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDMwJzAwLjAiUyA2OMKwMDcnMTIuNCJX!5e0!3m2!1sen!2sbo!4v1234567890"
-                        width="100%" height="100%" style="border:0" loading="lazy">
+                <!-- Mapa -->
+
+                @if (
+                mapaSeguro();
+                as mapa
+                ) {
+
+                <div class="h-36 overflow-hidden rounded-lg">
+
+                    <iframe [src]="mapa" class="h-full w-full border-0" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
                     </iframe>
 
                 </div>
+
+                } @else {
+
+                <div class="flex h-36 items-center justify-center rounded-lg bg-gray-800 px-4 text-center">
+
+                    <div>
+
+                        <lucide-angular [img]="MapPin" class="mx-auto h-6 w-6 text-gray-500">
+                        </lucide-angular>
+
+
+                        <p class="mt-2 text-xs text-gray-400">
+
+                            {{
+                            t(
+                            'Mapa no disponible',
+                            'Map unavailable'
+                            )
+                            }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                }
 
             </div>
 
         </div>
 
-        <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+
+        <!-- ===================================================== -->
+        <!-- COPYRIGHT -->
+        <!-- ===================================================== -->
+
+        <div class="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
 
             <p>
-                © Irriterra 2026 —
-                {{ t('Todos los derechos reservados','All rights reserved') }}
+
+                © {{ nombreEmpresa() }}
+                {{ anioActual }} —
+
+                {{
+                t(
+                'Todos los derechos reservados',
+                'All rights reserved'
+                )
+                }}
+
             </p>
 
         </div>

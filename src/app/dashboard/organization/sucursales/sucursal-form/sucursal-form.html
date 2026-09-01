@@ -294,45 +294,115 @@
             <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
 
 
-                <div>
+                <div class="md:col-span-2">
 
                     <label class="mb-1.5 block text-sm font-medium text-gray-700">
 
                         {{
                         t(
-                        'Latitud',
-                        'Latitude'
+                        'Enlace de Google Maps',
+                        'Google Maps link'
                         )
                         }}
 
                     </label>
 
-                    <input type="number" step="any" formControlName="latitud" placeholder="-16.500000"
+
+                    <input type="url" formControlName="url_maps" placeholder="https://maps.app.goo.gl/..."
                         class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
 
-                </div>
 
-
-                <div>
-
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+                    <p class="mt-1.5 text-xs text-gray-500">
 
                         {{
                         t(
-                        'Longitud',
-                        'Longitude'
+                        'Se utilizará para el botón Abrir en Google Maps.',
+                        'Used for the Open in Google Maps button.'
                         )
                         }}
 
-                    </label>
+                    </p>
 
-                    <input type="number" step="any" formControlName="longitud" placeholder="-68.119000"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                    @if (
+                    form.controls.url_maps.value
+                    ) {
+
+                    <a [href]="
+                form.controls.url_maps.value
+            " target="_blank" rel="noopener noreferrer"
+                        class="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+
+                        <lucide-angular [img]="ExternalLink" class="h-3.5 w-3.5">
+                        </lucide-angular>
+
+                        {{
+                        t(
+                        'Probar enlace',
+                        'Test link'
+                        )
+                        }}
+
+                    </a>
+
+                    }
 
                 </div>
 
 
                 <div class="md:col-span-2">
+
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700">
+
+                        {{
+                        t(
+                        'Mapa incrustado de Google Maps',
+                        'Google Maps embedded map'
+                        )
+                        }}
+
+                    </label>
+
+
+                    <textarea rows="5" formControlName="url_maps_embed" (blur)="normalizarEmbedMaps()" [placeholder]="
+            t(
+                'Pegue aquí el código iframe que proporciona Google Maps o directamente su URL.',
+                'Paste the iframe code provided by Google Maps or its URL here.'
+            )
+        " class="w-full resize-y rounded-lg border border-gray-300 px-3 py-2.5 font-mono text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+    </textarea>
+
+
+                    <p class="mt-2 text-xs text-gray-500">
+
+                        {{
+                        t(
+                        'Puede copiar y pegar directamente el código completo que entrega Google Maps. El sistema
+                        extraerá automáticamente la URL necesaria.',
+                        'You can paste the complete code provided by Google Maps. The system will automatically extract
+                        the required URL.'
+                        )
+                        }}
+
+                    </p>
+
+
+                    @if (
+                    mensajeMapa()
+                    ) {
+
+                    <div
+                        class="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs text-emerald-700">
+
+                        {{ mensajeMapa() }}
+
+                    </div>
+
+                    }
+
+                </div>
+
+                <!-- <div class="md:col-span-2">
 
                     <label class="mb-1.5 block text-sm font-medium text-gray-700">
 
@@ -372,7 +442,7 @@
 
                     }
 
-                </div>
+                </div> -->
 
             </div>
 
