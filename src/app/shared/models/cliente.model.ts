@@ -1,54 +1,52 @@
-export type ClienteTipo =
+export type TipoCliente =
     'PERSONA'
-    |
-    'EMPRESA'
-    |
-    'CONSUMIDOR_FINAL';
+    | 'EMPRESA'
+    | 'CONSUMIDOR_FINAL';
 
 
 export interface Cliente {
 
     id_cliente:
-        number;
+    number;
 
     tipo_cliente:
-        ClienteTipo;
+    TipoCliente;
 
     nombre_razon_social:
-        string;
+    string;
 
-    tipo_documento?:
-        string | null;
+    tipo_documento:
+    string | null;
 
-    numero_documento?:
-        string | null;
+    numero_documento:
+    string | null;
 
-    telefono?:
-        string | null;
+    telefono:
+    string | null;
 
-    correo?:
-        string | null;
+    correo:
+    string | null;
 
-    direccion?:
-        string | null;
+    direccion:
+    string | null;
 
-    observaciones?:
-        string | null;
+    observaciones:
+    string | null;
 
     estado_registro:
-        string;
+    string;
 
-    usuario_creacion?:
-        number | null;
+    usuario_creacion:
+    number | null;
 
-    usuario_modificacion?:
-        number | null;
+    usuario_modificacion:
+    number | null;
 
     created_at?:
-        string | null;
+    string | null;
 
     updated_at?:
-        string | null;
+    string | null;
 
 }
 
@@ -56,30 +54,27 @@ export interface Cliente {
 export interface ClienteRequest {
 
     tipo_cliente:
-        ClienteTipo;
+    TipoCliente;
 
     nombre_razon_social:
-        string;
+    string;
 
     tipo_documento?:
-        string | null;
+    string | null;
 
     numero_documento?:
-        string | null;
+    string | null;
 
     telefono?:
-        string | null;
+    string | null;
 
     correo?:
-        string | null;
+    string | null;
 
     direccion?:
-        string | null;
+    string | null;
 
     observaciones?:
-        string | null;
-
-    estado_registro?:
-        string;
+    string | null;
 
 }

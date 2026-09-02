@@ -23,7 +23,8 @@ import {
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn:
+        'root'
 })
 export class ClienteService {
 
@@ -45,12 +46,22 @@ export class ClienteService {
     |--------------------------------------------------------------------------
     */
 
-    listar():
-        Observable<
-            ApiCollectionResponse<
-                Cliente
-            >
-        > {
+    listar(
+        incluirInactivos:
+            boolean = false
+    ): Observable<
+        ApiCollectionResponse<
+            Cliente
+        >
+    > {
+
+        const endpoint =
+            incluirInactivos
+
+                ? 'cliente?incluir_inactivos=1'
+
+                : 'cliente';
+
 
         return this.api
             .get<
@@ -58,7 +69,7 @@ export class ClienteService {
                     Cliente
                 >
             >(
-                'cliente'
+                endpoint
             );
 
     }
@@ -71,7 +82,8 @@ export class ClienteService {
     */
 
     obtener(
-        id: number
+        id:
+            number
     ): Observable<
         ApiResourceResponse<
             Cliente
@@ -142,6 +154,53 @@ export class ClienteService {
             >(
                 `cliente/${id}`,
                 data
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Desactivar
+    |--------------------------------------------------------------------------
+    */
+
+    eliminar(
+        id:
+            number
+    ): Observable<{
+        message: string;
+    }> {
+
+        return this.api
+            .delete<{
+                message: string;
+            }>(
+                `cliente/${id}`
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reactivar
+    |--------------------------------------------------------------------------
+    */
+
+    reactivar(
+        id:
+            number
+    ): Observable<{
+        message: string;
+    }> {
+
+        return this.api
+            .patch<{
+                message: string;
+            }>(
+                `cliente/${id}/reactivar`,
+                {}
             );
 
     }

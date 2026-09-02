@@ -261,6 +261,21 @@ import {
 } from './dashboard/purchases/providers/provider-form/provider-form';
 
 
+/*
+|--------------------------------------------------------------------------
+| Clientes
+|--------------------------------------------------------------------------
+*/
+
+import {
+    ClientList
+} from './dashboard/sales/clients/client-list/client-list';
+
+import {
+    ClientForm
+} from './dashboard/sales/clients/client-form/client-form';
+
+
 
 
 /*
@@ -1003,6 +1018,56 @@ export const routes:
                     canActivate: [
                         permissionGuard(
                             'proveedor.editar'
+                        )
+                    ]
+                },
+
+                /*
+|--------------------------------------------------------------------------
+| Clientes
+|--------------------------------------------------------------------------
+*/
+
+                {
+                    path:
+                        'clientes',
+
+                    component:
+                        ClientList,
+
+                    canActivate: [
+                        permissionGuard(
+                            'cliente.ver'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'clientes/crear',
+
+                    component:
+                        ClientForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'cliente.crear'
+                        )
+                    ]
+                },
+
+
+                {
+                    path:
+                        'clientes/:id/editar',
+
+                    component:
+                        ClientForm,
+
+                    canActivate: [
+                        permissionGuard(
+                            'cliente.editar'
                         )
                     ]
                 },

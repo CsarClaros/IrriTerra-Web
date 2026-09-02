@@ -32,7 +32,8 @@ import {
   Building2,
   MapPinned,
   Tags,
-  Truck
+  Truck,
+  ContactRound
 } from 'lucide-angular';
 
 import {
@@ -194,6 +195,9 @@ export class DashboardLayout {
   readonly Truck =
     Truck;
 
+  readonly ContactRound =
+    ContactRound;
+
 
   /*
   |--------------------------------------------------------------------------
@@ -246,6 +250,28 @@ export class DashboardLayout {
           'venta.ver'
         ]
 
+      },
+
+      {
+        path:
+          '/dashboard/clientes',
+
+        icon:
+          ContactRound,
+
+        label: {
+
+          es:
+            'Clientes',
+
+          en:
+            'Clients'
+
+        },
+
+        permisos: [
+          'cliente.ver'
+        ]
       },
 
       {
