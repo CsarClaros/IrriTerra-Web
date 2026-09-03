@@ -1,6 +1,16 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+
+import {
+  SeoService
+} from '../../core/services/seo.service';
+
+
 
 import {
   LucideAngularModule,
@@ -25,18 +35,65 @@ import { ImageWithFallback } from '../../shared/components/image-with-fallback/i
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
+export class Home
+  implements OnInit {
 
-  readonly ArrowRightIcon = ArrowRight;
-  readonly DropletsIcon = Droplets;
-  readonly SettingsIcon = Settings;
-  readonly AwardIcon = Award;
+  readonly ArrowRightIcon =
+    ArrowRight;
 
-  languageService = inject(LanguageService);
+  readonly DropletsIcon =
+    Droplets;
 
-  t(es: string, en: string): string {
-    return this.languageService.t(es, en);
+  readonly SettingsIcon =
+    Settings;
+
+  readonly AwardIcon =
+    Award;
+
+
+  languageService =
+    inject(
+      LanguageService
+    );
+
+
+  private readonly seoService =
+    inject(
+      SeoService
+    );
+
+
+  ngOnInit(): void {
+
+    this.seoService.configurar({
+
+      title:
+        'Irriterra S.R.L. | Soluciones para riego y agricultura',
+
+      description:
+        'Irriterra S.R.L. ofrece soluciones, equipos, maquinaria y productos para riego y agricultura en Bolivia.',
+
+      path:
+        '/'
+
+    });
+
   }
+
+
+  t(
+    es: string,
+    en: string
+  ): string {
+
+    return this.languageService
+      .t(
+        es,
+        en
+      );
+
+  }
+
 
   products = [
     {
@@ -127,4 +184,8 @@ export class Home {
       image: 'https://images.unsplash.com/photo-1708794666324-85ad91989d20?w=600'
     }
   ];
+
+
+
+
 }

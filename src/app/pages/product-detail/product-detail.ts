@@ -50,6 +50,10 @@ import {
   environment
 } from '../../../environments/environment';
 
+import {
+  SeoService
+} from '../../core/services/seo.service';
+
 
 @Component({
   selector:
@@ -91,6 +95,11 @@ export class ProductDetail
   private readonly languageService =
     inject(
       LanguageService
+    );
+
+  private readonly seoService =
+    inject(
+      SeoService
     );
 
 
@@ -368,6 +377,8 @@ export class ProductDetail
       id < 1
     ) {
 
+      this.configurarSeoNoDisponible();
+
       this.errorMensaje.set(
         this.t(
           'El producto solicitado no es válido.',
@@ -380,12 +391,41 @@ export class ProductDetail
     }
 
 
+    this.configurarSeoCarga(
+      id
+    );
+
     this.cargarProducto(
       id
     );
 
   }
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | SEO inicial
+  |--------------------------------------------------------------------------
+  */
+
+  private configurarSeoCarga(
+    id: number
+  ): void {
+
+    this.seoService.configurar({
+
+      title:
+        'Producto | Irriterra S.R.L.',
+
+      description:
+        'Consulta productos, características, variantes y soluciones para riego y agricultura disponibles en Irriterra S.R.L.',
+
+      path:
+        `/productos/${id}`
+
+    });
+
+  }
 
   /*
   |--------------------------------------------------------------------------
@@ -469,10 +509,10 @@ export class ProductDetail
 
 
             /*
-             * Si tiene variantes,
-             * seleccionamos inicialmente
-             * la primera.
-             */
+            |--------------------------------------------------------------------------
+            | Primera variante
+            |--------------------------------------------------------------------------
+            */
 
             const primeraVariante =
               producto
@@ -487,8 +527,25 @@ export class ProductDetail
               );
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | Primera imagen
+            |--------------------------------------------------------------------------
+            */
+
             this
               .seleccionarPrimeraImagen();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SEO
+            |--------------------------------------------------------------------------
+            */
+
+            this.configurarSeoProducto(
+              producto
+            );
 
           },
 
@@ -502,6 +559,8 @@ export class ProductDetail
             if (
               error.status === 404
             ) {
+
+              this.configurarSeoNoDisponible();
 
               this
                 .errorMensaje
@@ -938,6 +997,225 @@ export class ProductDetail
         .id_producto_imagen
       ]
     );
+
+  }
+
+  /*
+|--------------------------------------------------------------------------
+| SEO producto
+|--------------------------------------------------------------------------
+*/
+
+  private configurarSeoProducto(
+    producto:
+      ProductoPublico
+  ): void {
+
+    const descripcion =
+      this.construirDescripcionSeo(
+        producto
+      );
+
+
+    const imagen =
+      this.rutaImagen(
+        this.imagenSeleccionada()
+      );
+
+
+    this.seoService.configurar({
+
+      title:
+        `${producto.nombre} | Irriterra S.R.L.`,
+
+      description:
+        descripcion,
+
+      path:
+        `/productos/${producto.id_producto}`,
+
+      type:
+        'product',
+
+      ...(
+        imagen
+          ? {
+            image:
+              imagen
+          }
+          : {}
+      )
+
+    });
+
+
+  }
+
+  /*
+|--------------------------------------------------------------------------
+| Descripción SEO
+|--------------------------------------------------------------------------
+*/
+
+  private construirDescripcionSeo(
+    producto:
+      ProductoPublico
+  ): string {
+
+    const descripcion =
+      producto
+        .descripcion
+        ?.replace(
+          /<[^>]*>/g,
+          ' '
+        )
+        .replace(
+          /\s+/g,
+          ' '
+        )
+        .trim();
+
+
+    if (
+      descripcion
+    ) {
+
+      return this.limitarTextoSeo(
+        descripcion
+      );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fallback
+    |--------------------------------------------------------------------------
+    */
+
+    const detalles:
+      string[] = [];
+
+
+    if (
+      producto.marca
+    ) {
+
+      detalles.push(
+        `marca ${producto.marca}`
+      );
+
+    }
+
+
+    if (
+      producto.modelo
+    ) {
+
+      detalles.push(
+        `modelo ${producto.modelo}`
+      );
+
+    }
+
+
+    if (
+      producto.categoria
+        ?.nombre
+    ) {
+
+      detalles.push(
+        `categoría ${producto.categoria.nombre}`
+      );
+
+    }
+
+
+    const complemento =
+      detalles.length > 0
+
+        ? `: ${detalles.join(', ')}`
+
+        : '';
+
+
+    return this.limitarTextoSeo(
+
+      `Conoce ${producto.nombre}${complemento}. Consulta características y variantes en Irriterra S.R.L., Bolivia.`
+
+    );
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Limitar descripción SEO
+  |--------------------------------------------------------------------------
+  */
+
+  private limitarTextoSeo(
+    texto: string,
+    maximo:
+      number = 160
+  ): string {
+
+    const limpio =
+      texto
+        .replace(
+          /\s+/g,
+          ' '
+        )
+        .trim();
+
+
+    if (
+      limpio.length <= maximo
+    ) {
+
+      return limpio;
+
+    }
+
+
+    const recortado =
+      limpio
+        .slice(
+          0,
+          maximo - 1
+        )
+        .replace(
+          /\s+\S*$/,
+          ''
+        );
+
+
+    return `${recortado}…`;
+
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | SEO producto inexistente
+  |--------------------------------------------------------------------------
+  */
+
+  private configurarSeoNoDisponible(): void {
+
+    this.seoService.configurar({
+
+      title:
+        'Producto no disponible | Irriterra S.R.L.',
+
+      description:
+        'El producto solicitado no se encuentra disponible. Consulta el catálogo de productos de Irriterra S.R.L.',
+
+      path:
+        '/productos',
+
+      robots:
+        'noindex, nofollow'
+
+    });
 
   }
 

@@ -50,6 +50,10 @@ import {
     environment
 } from '../../../environments/environment';
 
+import {
+    SeoService
+} from '../../core/services/seo.service';
+
 
 @Component({
     selector:
@@ -85,6 +89,11 @@ export class Products
     private readonly languageService =
         inject(
             LanguageService
+        );
+
+    private readonly seoService =
+        inject(
+            SeoService
         );
 
 
@@ -359,10 +368,34 @@ export class Products
 
     ngOnInit(): void {
 
+        this.configurarSeo();
+
         this.cargarCatalogo();
 
     }
 
+    /*
+|--------------------------------------------------------------------------
+| SEO
+|--------------------------------------------------------------------------
+*/
+
+    private configurarSeo(): void {
+
+        this.seoService.configurar({
+
+            title:
+                'Productos para riego y agricultura | Irriterra S.R.L.',
+
+            description:
+                'Conoce el catálogo de Irriterra S.R.L.: motobombas, motocultivadores, motores, generadores, repuestos y soluciones para riego y agricultura en Bolivia.',
+
+            path:
+                '/productos'
+
+        });
+
+    }
 
     /*
     |--------------------------------------------------------------------------

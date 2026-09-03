@@ -54,6 +54,10 @@ import {
   SucursalPublica
 } from '../../shared/models/sucursal-publica.model';
 
+import {
+  SeoService
+} from '../../core/services/seo.service';
+
 
 @Component({
   selector:
@@ -103,6 +107,11 @@ export class Company
   private readonly sanitizer =
     inject(
       DomSanitizer
+    );
+
+    private readonly seoService =
+    inject(
+        SeoService
     );
 
 
@@ -236,9 +245,34 @@ export class Company
 
   ngOnInit(): void {
 
+    this.configurarSeo();
+
     this.cargarDatos();
 
-  }
+}
+
+/*
+|--------------------------------------------------------------------------
+| SEO
+|--------------------------------------------------------------------------
+*/
+
+private configurarSeo(): void {
+
+  this.seoService.configurar({
+
+      title:
+          'Empresa y sucursales | Irriterra S.R.L.',
+
+      description:
+          'Conoce Irriterra S.R.L., nuestras sucursales, información de contacto y soluciones para riego, agricultura y maquinaria en Bolivia.',
+
+      path:
+          '/empresa'
+
+  });
+
+}
 
 
   /*
@@ -354,10 +388,10 @@ export class Company
               HttpErrorResponse
           ) => {
 
-            console.error(
-              'Error al cargar Empresa:',
-              error
-            );
+            // console.error(
+            //   'Error al cargar Empresa:',
+            //   error
+            // );
 
 
             this.errorMensaje.set(
