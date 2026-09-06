@@ -58,6 +58,15 @@ import {
   SeoService
 } from '../../core/services/seo.service';
 
+import {
+  StructuredDataService,
+  JsonLdNode
+} from '../../core/services/structured-data.service';
+
+import {
+  environment
+} from '../../../environments/environment';
+
 
 @Component({
   selector:
@@ -109,11 +118,31 @@ export class Company
       DomSanitizer
     );
 
-    private readonly seoService =
+  private readonly seoService =
     inject(
-        SeoService
+      SeoService
     );
 
+  private readonly structuredDataService =
+    inject(
+      StructuredDataService
+    );
+
+
+
+  /**
+   * 
+   * 
+   * 
+   */
+
+  private readonly siteUrl =
+    environment
+      .siteUrl
+      .replace(
+        /\/+$/,
+        ''
+      );
 
   /*
   |--------------------------------------------------------------------------
@@ -249,30 +278,30 @@ export class Company
 
     this.cargarDatos();
 
-}
+  }
 
-/*
-|--------------------------------------------------------------------------
-| SEO
-|--------------------------------------------------------------------------
-*/
+  /*
+  |--------------------------------------------------------------------------
+  | SEO
+  |--------------------------------------------------------------------------
+  */
 
-private configurarSeo(): void {
+  private configurarSeo(): void {
 
-  this.seoService.configurar({
+    this.seoService.configurar({
 
       title:
-          'Empresa y sucursales | Irriterra S.R.L.',
+        'Empresa y sucursales | Irriterra S.R.L.',
 
       description:
-          'Conoce Irriterra S.R.L., nuestras sucursales, información de contacto y soluciones para riego, agricultura y maquinaria en Bolivia.',
+        'Conoce Irriterra S.R.L., nuestras sucursales, información de contacto y soluciones para riego, agricultura y maquinaria en Bolivia.',
 
       path:
-          '/empresa'
+        '/empresa'
 
-  });
+    });
 
-}
+  }
 
 
   /*
@@ -361,6 +390,10 @@ private configurarSeo(): void {
               sucursales
             );
 
+            this.configurarDatosEstructurados(
+              sucursales
+            );
+
 
             /*
             |--------------------------------------------------------------------------
@@ -388,10 +421,6 @@ private configurarSeo(): void {
               HttpErrorResponse
           ) => {
 
-            // console.error(
-            //   'Error al cargar Empresa:',
-            //   error
-            // );
 
 
             this.errorMensaje.set(
@@ -406,6 +435,137 @@ private configurarSeo(): void {
           }
 
       });
+
+  }
+
+
+  private configurarDatosEstructurados(
+    sucursales:
+      SucursalPublica[]
+  ): void {
+
+    const negocios:
+      JsonLdNode[] =
+      sucursales
+        .filter(
+          sucursal => {
+
+            const direccion =
+              sucursal
+                .direccion
+                ?.trim();
+
+            return (
+              !!direccion
+              &&
+              !direccion
+                .toLowerCase()
+                .includes(
+                  'pendiente'
+                )
+            );
+
+          }
+        )
+        .map(
+          sucursal => {
+
+            const negocio:
+              JsonLdNode = {
+
+              '@type':
+                'Store',
+
+              '@id':
+                `${this.siteUrl}/empresa#sucursal-${sucursal.id_sucursal}`,
+
+              name:
+                `Irriterra S.R.L. - ${sucursal.nombre}`,
+
+              url:
+                `${this.siteUrl}/empresa`,
+
+              parentOrganization: {
+                '@id':
+                  `${this.siteUrl}/#organization`
+              },
+
+              address: {
+
+                '@type':
+                  'PostalAddress',
+
+                streetAddress:
+                  sucursal.direccion,
+
+                addressLocality:
+                  sucursal.ciudad,
+
+                addressRegion:
+                  sucursal.departamento,
+
+                addressCountry:
+                  'BO'
+
+              }
+
+            };
+
+
+            if (
+              sucursal.telefono
+            ) {
+
+              negocio['telephone'] =
+                sucursal.telefono;
+
+            }
+
+
+            if (
+              sucursal.correo
+            ) {
+
+              negocio['email'] =
+                sucursal.correo;
+
+            }
+
+
+            if (
+              sucursal.url_maps
+            ) {
+
+              negocio['hasMap'] =
+                sucursal.url_maps;
+
+            }
+
+
+            return negocio;
+
+          }
+        );
+
+
+    /*
+     * No generamos LocalBusiness
+     * con datos incompletos.
+     */
+
+    if (
+      negocios.length === 0
+    ) {
+
+      return;
+
+    }
+
+
+    this.structuredDataService
+      .configurarGraph(
+        negocios
+      );
 
   }
 

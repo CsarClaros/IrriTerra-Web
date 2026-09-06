@@ -109,8 +109,7 @@ export class SeoService {
     |--------------------------------------------------------------------------
     */
 
-        this.structuredDataService
-            .limpiar();
+        this.structuredDataService.eliminar();
 
 
         const url =

@@ -1,24 +1,23 @@
 import {
-
     DOCUMENT
-
 } from '@angular/common';
 
 import {
-
-    inject,
-    Injectable
-
+    Injectable,
+    inject
 } from '@angular/core';
 
 import {
+    NavigationStart,
+    Router
+} from '@angular/router';
 
-    environment
+import {
+    filter
+} from 'rxjs';
 
-} from '../../../environments/environment';
 
-
-export type StructuredData =
+export type JsonLdNode =
     Record<
         string,
         unknown
@@ -26,10 +25,8 @@ export type StructuredData =
 
 
 @Injectable({
-
     providedIn:
         'root'
-
 })
 export class StructuredDataService {
 
@@ -44,6 +41,11 @@ export class StructuredDataService {
             DOCUMENT
         );
 
+    private readonly router =
+        inject(
+            Router
+        );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -52,30 +54,60 @@ export class StructuredDataService {
     */
 
     private readonly scriptId =
-        'seo-structured-data';
-
-
-    private readonly siteUrl =
-        environment
-            .siteUrl
-            .replace(
-                /\/+$/,
-                ''
-            );
+        'irriterra-structured-data';
 
 
     /*
     |--------------------------------------------------------------------------
-    | Configurar JSON-LD
+    | Constructor
+    |--------------------------------------------------------------------------
+    */
+
+    constructor() {
+
+        /*
+         * Muy importante para SPA:
+         *
+         * al cambiar de ruta eliminamos
+         * los datos estructurados de la
+         * página anterior.
+         */
+
+        this.router
+            .events
+            .pipe(
+                filter(
+                    event =>
+                        event
+                        instanceof
+                        NavigationStart
+                )
+            )
+            .subscribe(
+                () => {
+
+                    this.eliminar();
+
+                }
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Configurar
     |--------------------------------------------------------------------------
     */
 
     configurar(
         data:
-            StructuredData
+            JsonLdNode
+            |
+            JsonLdNode[]
     ): void {
 
-        this.limpiar();
+        this.eliminar();
 
 
         const script =
@@ -91,15 +123,10 @@ export class StructuredDataService {
         script.type =
             'application/ld+json';
 
-
         script.textContent =
-            JSON.stringify(
+            this.serializar(
                 data
-            )
-                .replace(
-                    /</g,
-                    '\\u003c'
-                );
+            );
 
 
         this.document
@@ -113,11 +140,33 @@ export class StructuredDataService {
 
     /*
     |--------------------------------------------------------------------------
-    | Limpiar
+    | Graph
     |--------------------------------------------------------------------------
     */
 
-    limpiar(): void {
+    configurarGraph(
+        nodes:
+            JsonLdNode[]
+    ): void {
+
+        this.configurar({
+            '@context':
+                'https://schema.org',
+
+            '@graph':
+                nodes
+        });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Eliminar
+    |--------------------------------------------------------------------------
+    */
+
+    eliminar(): void {
 
         this.document
             .getElementById(
@@ -130,37 +179,31 @@ export class StructuredDataService {
 
     /*
     |--------------------------------------------------------------------------
-    | URL absoluta
+    | Serializar seguro
     |--------------------------------------------------------------------------
     */
 
-    url(
-        path:
-            string = '/'
+    private serializar(
+        data:
+            unknown
     ): string {
 
-        if (
-            /^https?:\/\//i.test(
-                path
+        return JSON
+            .stringify(
+                data
             )
-        ) {
-
-            return path;
-
-        }
-
-
-        const normalizedPath =
-            path.startsWith(
-                '/'
+            .replace(
+                /</g,
+                '\\u003c'
             )
-                ? path
-                : `/${path}`;
-
-
-        return (
-            `${this.siteUrl}${normalizedPath}`
-        );
+            .replace(
+                /\u2028/g,
+                '\\u2028'
+            )
+            .replace(
+                /\u2029/g,
+                '\\u2029'
+            );
 
     }
 

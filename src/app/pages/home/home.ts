@@ -65,6 +65,14 @@ import {
 
 } from '../../shared/directives/reveal-on-scroll.directive';
 
+import {
+  StructuredDataService
+} from '../../core/services/structured-data.service';
+
+import {
+  environment
+} from '../../../environments/environment';
+
 
 @Component({
 
@@ -115,6 +123,10 @@ export class Home
       PLATFORM_ID
     );
 
+  private readonly structuredDataService =
+    inject(
+      StructuredDataService
+    );
 
   /*
   |--------------------------------------------------------------------------
@@ -158,6 +170,20 @@ export class Home
   readonly ZapIcon =
     Zap;
 
+  /**
+   * 
+   * 
+   * 
+   */
+
+
+  private readonly siteUrl =
+    environment
+      .siteUrl
+      .replace(
+        /\/+$/,
+        ''
+      );
 
   /*
   |--------------------------------------------------------------------------
@@ -507,6 +533,89 @@ export class Home
 
 
     this.iniciarHero();
+
+    this.configurarDatosEstructurados();
+
+  }
+
+  private configurarDatosEstructurados(): void {
+
+    const homeUrl =
+      `${this.siteUrl}/`;
+
+    const logoUrl =
+      `${this.siteUrl}/images/brand/irriterra-logo.png`;
+
+
+    this.structuredDataService
+      .configurarGraph(
+        [
+
+          /*
+          |--------------------------------------------------------------------------
+          | Sitio web
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            '@type':
+              'WebSite',
+
+            '@id':
+              `${this.siteUrl}/#website`,
+
+            url:
+              homeUrl,
+
+            name:
+              'Irriterra',
+
+            alternateName: [
+              'Irriterra S.R.L.',
+              'irriterrasrl.com'
+            ],
+
+            publisher: {
+              '@id':
+                `${this.siteUrl}/#organization`
+            }
+          },
+
+
+          /*
+          |--------------------------------------------------------------------------
+          | Organización
+          |--------------------------------------------------------------------------
+          */
+
+          {
+            '@type':
+              'Organization',
+
+            '@id':
+              `${this.siteUrl}/#organization`,
+
+            name:
+              'Irriterra S.R.L.',
+
+            alternateName:
+              'Irriterra',
+
+            url:
+              homeUrl,
+
+            logo:
+              logoUrl,
+
+            email:
+              'info@irriterrasrl.com',
+
+            description:
+              'Empresa boliviana dedicada a soluciones para riego, bombeo, maquinaria y trabajo agrícola.'
+          }
+
+        ]
+      );
 
   }
 

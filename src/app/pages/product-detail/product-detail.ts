@@ -55,6 +55,12 @@ import {
 } from '../../core/services/seo.service';
 
 
+import {
+  StructuredDataService,
+  JsonLdNode
+} from '../../core/services/structured-data.service';
+
+
 @Component({
   selector:
     'app-product-detail',
@@ -102,6 +108,11 @@ export class ProductDetail
       SeoService
     );
 
+    private readonly structuredDataService =
+    inject(
+        StructuredDataService
+    );
+
 
   /*
   |--------------------------------------------------------------------------
@@ -115,6 +126,14 @@ export class ProductDetail
         /\/api\/?$/,
         ''
       );
+
+      private readonly siteUrl =
+      environment
+          .siteUrl
+          .replace(
+              /\/+$/,
+              ''
+          );
 
 
   /*
@@ -547,6 +566,10 @@ export class ProductDetail
               producto
             );
 
+            this.configurarDatosEstructuradosProducto(
+              producto
+          );
+
           },
 
 
@@ -597,6 +620,324 @@ export class ProductDetail
       });
 
   }
+
+
+  private configurarDatosEstructuradosProducto(
+    producto:
+        ProductoPublico
+): void {
+
+    const url =
+        `${this.siteUrl}/productos/${producto.id_producto}`;
+
+
+    const descripcion =
+        this.construirDescripcionSeo(
+            producto
+        );
+
+
+    const imagenes =
+        (
+            producto.imagenes
+            ?? []
+        )
+            .map(
+                imagen =>
+                    this.rutaImagen(
+                        imagen
+                    )
+            )
+            .filter(
+                (
+                    ruta
+                ): ruta is string =>
+                    !!ruta
+            );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Producto sin variantes
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        producto.variantes.length === 0
+    ) {
+
+        const product:
+            JsonLdNode = {
+
+            '@context':
+                'https://schema.org',
+
+            '@type':
+                'Product',
+
+            '@id':
+                `${url}#product`,
+
+            name:
+                producto.nombre,
+
+            url:
+                url,
+
+            description:
+                descripcion
+
+        };
+
+
+        if (
+            imagenes.length > 0
+        ) {
+
+            product['image'] =
+                imagenes;
+
+        }
+
+
+        if (
+            producto.marca
+        ) {
+
+            product['brand'] = {
+
+                '@type':
+                    'Brand',
+
+                name:
+                    producto.marca
+
+            };
+
+        }
+
+
+        if (
+            producto.categoria
+                ?.nombre
+        ) {
+
+            product['category'] =
+                producto
+                    .categoria
+                    .nombre;
+
+        }
+
+
+        const precio =
+            this.precioVisible();
+
+
+        if (
+            precio !== null
+        ) {
+
+            product['offers'] = {
+
+                '@type':
+                    'Offer',
+
+                url:
+                    url,
+
+                price:
+                    precio,
+
+                priceCurrency:
+                    'BOB',
+
+                itemCondition:
+                    'https://schema.org/NewCondition'
+
+            };
+
+        }
+
+
+        this.structuredDataService
+            .configurar(
+                product
+            );
+
+
+        return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Producto con variantes
+    |--------------------------------------------------------------------------
+    */
+
+    const variantes:
+        JsonLdNode[] =
+        producto
+            .variantes
+            .map(
+                variante => {
+
+                    const variant:
+                        JsonLdNode = {
+
+                        '@type':
+                            'Product',
+
+                        name:
+                            `${producto.nombre} - ${variante.nombre}`,
+
+                        url:
+                            url,
+
+                        description:
+                            variante.descripcion
+                            ??
+                            descripcion
+
+                    };
+
+
+                    if (
+                        imagenes.length > 0
+                    ) {
+
+                        variant['image'] =
+                            imagenes;
+
+                    }
+
+
+                    if (
+                        producto.marca
+                    ) {
+
+                        variant['brand'] = {
+
+                            '@type':
+                                'Brand',
+
+                            name:
+                                producto.marca
+
+                        };
+
+                    }
+
+
+                    if (
+                        variante.precio_venta
+                        !== null
+                    ) {
+
+                        variant['offers'] = {
+
+                            '@type':
+                                'Offer',
+
+                            url:
+                                url,
+
+                            price:
+                                variante
+                                    .precio_venta,
+
+                            priceCurrency:
+                                'BOB',
+
+                            itemCondition:
+                                'https://schema.org/NewCondition'
+
+                        };
+
+                    }
+
+
+                    return variant;
+
+                }
+            );
+
+
+    const productGroup:
+        JsonLdNode = {
+
+        '@context':
+            'https://schema.org',
+
+        '@type':
+            'ProductGroup',
+
+        '@id':
+            `${url}#product-group`,
+
+        name:
+            producto.nombre,
+
+        url:
+            url,
+
+        description:
+            descripcion,
+
+        hasVariant:
+            variantes
+
+    };
+
+
+    if (
+        imagenes.length > 0
+    ) {
+
+        productGroup['image'] =
+            imagenes;
+
+    }
+
+
+    if (
+        producto.marca
+    ) {
+
+        productGroup['brand'] = {
+
+            '@type':
+                'Brand',
+
+            name:
+                producto.marca
+
+        };
+
+    }
+
+
+    if (
+        producto.categoria
+            ?.nombre
+    ) {
+
+        productGroup['category'] =
+            producto
+                .categoria
+                .nombre;
+
+    }
+
+
+    this.structuredDataService
+        .configurar(
+            productGroup
+        );
+
+}
 
 
   /*
