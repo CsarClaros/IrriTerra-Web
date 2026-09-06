@@ -1,8 +1,52 @@
-<footer class="bg-[#1F2937] text-white">
+<footer class="
+        relative
+        overflow-hidden
+        bg-gray-950
+        text-white
+    ">
 
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+    <!-- Decoración -->
+
+    <div class="
+            pointer-events-none
+            absolute
+            -right-32
+            -top-32
+            h-96
+            w-96
+            rounded-full
+            bg-primary/10
+            blur-3xl
+        ">
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- CONTENIDO -->
+    <!-- ========================================================= -->
+
+    <div class="
+            relative
+            mx-auto
+            max-w-7xl
+            px-4
+            py-16
+
+            sm:px-6
+            lg:px-8
+            lg:py-20
+        ">
+
+        <div class="
+                grid
+                gap-12
+
+                md:grid-cols-2
+
+                lg:grid-cols-[1.5fr_0.8fr_1fr]
+                lg:gap-16
+            ">
 
 
             <!-- ================================================= -->
@@ -11,160 +55,148 @@
 
             <div>
 
-                @if (
-                empresa()?.logo;
-                as logo
-                ) {
+                <a routerLink="/" class="inline-flex">
 
-                <img [src]="logo" [alt]="
-                            nombreEmpresa()
-                        " class="mb-4 max-h-16 max-w-[180px] object-contain" />
+                    <app-image-with-fallback [src]="logo" alt="Irriterra S.R.L." loading="lazy" className="
+                            block
+                            h-14
+                            w-auto
+                            max-w-[260px]
+                            object-contain
+                        ">
+                    </app-image-with-fallback>
 
-                }
-
-
-                <h3 class="mb-4 text-2xl">
-
-                    {{ nombreEmpresa() }}
-
-                </h3>
+                </a>
 
 
-                <p class="mb-4 text-gray-300">
+                <p class="
+                        mt-6
+                        max-w-md
+                        text-sm
+                        leading-7
+                        text-gray-400
+
+                        sm:text-base
+                    ">
 
                     {{
                     t(
-                    'Soluciones modernas de riego agrícola, combinando tecnología, eficiencia y sostenibilidad.',
-                    'Modern agricultural irrigation solutions, combining technology, efficiency and sustainability.'
+                    'Soluciones para riego, bombeo, maquinaria y trabajo agrícola, orientadas a las necesidades reales
+                    del campo.',
+                    'Solutions for irrigation, pumping, machinery and agricultural work, focused on real field needs.'
                     )
                     }}
 
                 </p>
 
 
-                @if (
-                empresa()?.sitio_web
-                ) {
-
-                <a [href]="
-                            empresa()?.sitio_web
-                        " target="_blank" rel="noopener noreferrer"
-                    class="text-sm text-accent transition-colors hover:text-white">
+                <a routerLink="/contactos" class="
+                        mt-6
+                        inline-flex
+                        items-center
+                        gap-2
+                        text-sm
+                        font-semibold
+                        text-white
+                        transition
+                        hover:text-primary
+                    ">
 
                     {{
                     t(
-                    'Visitar sitio web',
-                    'Visit website'
+                    'Hablar con Irriterra',
+                    'Contact Irriterra'
                     )
                     }}
 
-                </a>
+                    <lucide-angular [img]="ArrowUpRightIcon" class="h-4 w-4">
+                    </lucide-angular>
 
-                }
+                </a>
 
             </div>
 
 
             <!-- ================================================= -->
-            <!-- ENLACES -->
+            <!-- NAVEGACIÓN -->
             <!-- ================================================= -->
 
             <div>
 
-                <h4 class="mb-4">
+                <h2 class="
+                        text-sm
+                        font-semibold
+                        uppercase
+                        tracking-[0.18em]
+                        text-white
+                    ">
 
                     {{
                     t(
-                    'Enlaces Rápidos',
-                    'Quick Links'
+                    'Navegación',
+                    'Navigation'
                     )
                     }}
 
-                </h4>
+                </h2>
 
 
-                <ul class="space-y-2">
+                <nav class="
+                        mt-6
+                        flex
+                        flex-col
+                        items-start
+                        gap-3
+                    " aria-label="Footer">
 
-                    <li>
+                    <a routerLink="/" class="footer-link">
 
-                        <a routerLink="/" class="text-gray-300 transition-colors hover:text-accent">
+                        {{
+                        t(
+                        'Inicio',
+                        'Home'
+                        )
+                        }}
 
-                            {{
-                            t(
-                            'Inicio',
-                            'Home'
-                            )
-                            }}
-
-                        </a>
-
-                    </li>
-
-
-                    <li>
-
-                        <a routerLink="/productos" class="text-gray-300 transition-colors hover:text-accent">
-
-                            {{
-                            t(
-                            'Productos',
-                            'Products'
-                            )
-                            }}
-
-                        </a>
-
-                    </li>
+                    </a>
 
 
-                    <li>
+                    <a routerLink="/productos" class="footer-link">
 
-                        <a routerLink="/empresa" class="text-gray-300 transition-colors hover:text-accent">
+                        {{
+                        t(
+                        'Productos',
+                        'Products'
+                        )
+                        }}
 
-                            {{
-                            t(
-                            'Empresa',
-                            'Company'
-                            )
-                            }}
-
-                        </a>
-
-                    </li>
+                    </a>
 
 
-                    <li>
+                    <a routerLink="/empresa" class="footer-link">
 
-                        <a routerLink="/eventos" class="text-gray-300 transition-colors hover:text-accent">
+                        {{
+                        t(
+                        'Empresa',
+                        'Company'
+                        )
+                        }}
 
-                            {{
-                            t(
-                            'Eventos',
-                            'Events'
-                            )
-                            }}
-
-                        </a>
-
-                    </li>
+                    </a>
 
 
-                    <li>
+                    <a routerLink="/contactos" class="footer-link">
 
-                        <a routerLink="/contactos" class="text-gray-300 transition-colors hover:text-accent">
+                        {{
+                        t(
+                        'Contacto',
+                        'Contact'
+                        )
+                        }}
 
-                            {{
-                            t(
-                            'Contactos',
-                            'Contact'
-                            )
-                            }}
+                    </a>
 
-                        </a>
-
-                    </li>
-
-                </ul>
+                </nav>
 
             </div>
 
@@ -175,7 +207,13 @@
 
             <div>
 
-                <h4 class="mb-4">
+                <h2 class="
+                        text-sm
+                        font-semibold
+                        uppercase
+                        tracking-[0.18em]
+                        text-white
+                    ">
 
                     {{
                     t(
@@ -184,187 +222,231 @@
                     )
                     }}
 
-                </h4>
+                </h2>
 
 
-                <ul class="space-y-4">
+                <div class="
+                        mt-6
+                        space-y-5
+                    ">
 
+
+                    <!-- Correo -->
+
+                    <a [href]="
+                            'mailto:'
+                            +
+                            correo()
+                        " class="
+                            group
+                            flex
+                            items-start
+                            gap-3
+                        ">
+
+                        <div class="
+                                mt-0.5
+                                flex
+                                h-9
+                                w-9
+                                shrink-0
+                                items-center
+                                justify-center
+                                rounded-lg
+                                bg-white/5
+                                text-primary
+                                transition
+                                group-hover:bg-primary
+                                group-hover:text-white
+                            ">
+
+                            <lucide-angular [img]="MailIcon" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="
+                                    text-xs
+                                    uppercase
+                                    tracking-wide
+                                    text-gray-500
+                                ">
+
+                                {{
+                                t(
+                                'Correo',
+                                'Email'
+                                )
+                                }}
+
+                            </p>
+
+                            <p class="
+                                    mt-1
+                                    break-all
+                                    text-sm
+                                    text-gray-300
+                                    transition
+                                    group-hover:text-white
+                                ">
+
+                                {{ correo() }}
+
+                            </p>
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- Teléfono -->
 
                     @if (
                     telefono();
                     as telefono
                     ) {
 
-                    <li class="flex items-start gap-3">
+                    <a [href]="
+                                'tel:'
+                                +
+                                telefono
+                            " class="
+                                group
+                                flex
+                                items-start
+                                gap-3
+                            ">
 
-                        <lucide-angular [img]="Phone" class="mt-0.5 h-5 w-5 shrink-0 text-accent">
-                        </lucide-angular>
+                        <div class="
+                                    mt-0.5
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/5
+                                    text-primary
+                                    transition
+                                    group-hover:bg-primary
+                                    group-hover:text-white
+                                ">
+
+                            <lucide-angular [img]="PhoneIcon" class="h-4 w-4">
+                            </lucide-angular>
+
+                        </div>
 
 
-                        <a [href]="
-                                    'tel:'
-                                    +
-                                    telefono
-                                " class="text-gray-300 transition-colors hover:text-accent">
+                        <div>
 
-                            {{ telefono }}
+                            <p class="
+                                        text-xs
+                                        uppercase
+                                        tracking-wide
+                                        text-gray-500
+                                    ">
 
-                        </a>
+                                {{
+                                t(
+                                'Teléfono',
+                                'Phone'
+                                )
+                                }}
 
-                    </li>
+                            </p>
+
+                            <p class="
+                                        mt-1
+                                        text-sm
+                                        text-gray-300
+                                        transition
+                                        group-hover:text-white
+                                    ">
+
+                                {{ telefono }}
+
+                            </p>
+
+                        </div>
+
+                    </a>
 
                     }
 
 
-                    @if (
-                    correo();
-                    as correo
-                    ) {
-
-                    <li class="flex items-start gap-3">
-
-                        <lucide-angular [img]="Mail" class="mt-0.5 h-5 w-5 shrink-0 text-accent">
-                        </lucide-angular>
-
-
-                        <a [href]="
-                                    'mailto:'
-                                    +
-                                    correo
-                                " class="break-all text-gray-300 transition-colors hover:text-accent">
-
-                            {{ correo }}
-
-                        </a>
-
-                    </li>
-
-                    }
-
+                    <!-- Dirección -->
 
                     @if (
                     direccion();
                     as direccion
                     ) {
 
-                    <li class="flex items-start gap-3">
+                    <div class="
+                                flex
+                                items-start
+                                gap-3
+                            ">
 
-                        <lucide-angular [img]="MapPin" class="mt-0.5 h-5 w-5 shrink-0 text-accent">
-                        </lucide-angular>
+                        <div class="
+                                    mt-0.5
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    bg-white/5
+                                    text-primary
+                                ">
 
+                            <lucide-angular [img]="MapPinIcon" class="h-4 w-4">
+                            </lucide-angular>
 
-                        <span class="text-gray-300">
-
-                            {{ direccion }}
-
-                        </span>
-
-                    </li>
-
-                    }
-
-                </ul>
-
-            </div>
-
-
-            <!-- ================================================= -->
-            <!-- REDES + MAPA -->
-            <!-- ================================================= -->
-
-            <div>
-
-                <h4 class="mb-4">
-
-                    {{
-                    t(
-                    'Síguenos',
-                    'Follow Us'
-                    )
-                    }}
-
-                </h4>
+                        </div>
 
 
-                <!-- Redes -->
+                        <div>
 
-                <div class="mb-4 flex space-x-4">
+                            <p class="
+                                        text-xs
+                                        uppercase
+                                        tracking-wide
+                                        text-gray-500
+                                    ">
 
-                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
+                                {{
+                                t(
+                                'Ubicación',
+                                'Location'
+                                )
+                                }}
 
-                        F
+                            </p>
 
-                    </a>
+                            <p class="
+                                        mt-1
+                                        text-sm
+                                        leading-6
+                                        text-gray-300
+                                    ">
 
+                                {{ direccion }}
 
-                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"
-                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
+                            </p>
 
-                        T
-
-                    </a>
-
-
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
-
-                        I
-
-                    </a>
-
-
-                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
-                        class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 transition-colors hover:bg-accent">
-
-                        L
-
-                    </a>
-
-                </div>
-
-
-                <!-- Mapa -->
-
-                @if (
-                mapaSeguro();
-                as mapa
-                ) {
-
-                <div class="h-36 overflow-hidden rounded-lg">
-
-                    <iframe [src]="mapa" class="h-full w-full border-0" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-                    </iframe>
-
-                </div>
-
-                } @else {
-
-                <div class="flex h-36 items-center justify-center rounded-lg bg-gray-800 px-4 text-center">
-
-                    <div>
-
-                        <lucide-angular [img]="MapPin" class="mx-auto h-6 w-6 text-gray-500">
-                        </lucide-angular>
-
-
-                        <p class="mt-2 text-xs text-gray-400">
-
-                            {{
-                            t(
-                            'Mapa no disponible',
-                            'Map unavailable'
-                            )
-                            }}
-
-                        </p>
+                        </div>
 
                     </div>
 
-                </div>
+                    }
 
-                }
+                </div>
 
             </div>
 
@@ -372,24 +454,56 @@
 
 
         <!-- ===================================================== -->
-        <!-- COPYRIGHT -->
+        <!-- BARRA INFERIOR -->
         <!-- ===================================================== -->
 
-        <div class="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
+        <div class="
+                mt-14
+                flex
+                flex-col
+                gap-4
+                border-t
+                border-white/10
+                pt-7
+                text-sm
+                text-gray-500
+
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+            ">
 
             <p>
 
-                © {{ nombreEmpresa() }}
-                {{ anioActual }} —
+                © {{ year }} Irriterra S.R.L.
+
+                <span class="hidden sm:inline">
+                    ·
+                </span>
 
                 {{
                 t(
-                'Todos los derechos reservados',
-                'All rights reserved'
+                'Todos los derechos reservados.',
+                'All rights reserved.'
                 )
                 }}
 
             </p>
+
+
+            <a routerLink="/login" class="
+                    transition
+                    hover:text-white
+                ">
+
+                {{
+                t(
+                'Acceso al sistema',
+                'System access'
+                )
+                }}
+
+            </a>
 
         </div>
 

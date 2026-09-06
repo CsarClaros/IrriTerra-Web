@@ -1,24 +1,39 @@
-@if (!hasError) {
+@if (
+!hasError
+) {
 
-    <img
-      [src]="src"
-      [alt]="alt"
-      [class]="className"
-      (error)="onError()"
-    />
-    
-    } @else {
-    
-    <div
-      class="inline-block bg-gray-100 text-center align-middle"
-      [class]="className"
-    >
-      <div class="flex items-center justify-center w-full h-full">
-        <img
-          [src]="ERROR_IMG_SRC"
-          alt="Error loading image"
-        />
-      </div>
-    </div>
-    
-    }
+<img [src]="src" [alt]="alt" [class]="className" [attr.loading]="loading" [attr.decoding]="decoding"
+  [attr.fetchpriority]="fetchPriority" [attr.width]="width" [attr.height]="height" (error)="
+            onError()
+        " />
+
+} @else {
+
+<div class="
+            inline-block
+            bg-gray-100
+            text-center
+            align-middle
+        " [class]="className" role="img" [attr.aria-label]="
+            alt
+        ">
+
+  <div class="
+                flex
+                h-full
+                w-full
+                items-center
+                justify-center
+            ">
+
+    <img [src]="ERROR_IMG_SRC" alt="" aria-hidden="true" class="
+                    h-16
+                    w-16
+                    opacity-50
+                " />
+
+  </div>
+
+</div>
+
+}

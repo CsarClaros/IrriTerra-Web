@@ -1,543 +1,576 @@
 import {
-  Component,
-  signal
+    Component,
+    signal,
+    inject,
+    OnInit
 } from '@angular/core';
 
 import {
-  CommonModule
+    CommonModule
 } from '@angular/common';
 
 import {
-  FormsModule
+    FormsModule
 } from '@angular/forms';
 
 import {
-  ActivatedRoute,
-  Router
+    ActivatedRoute,
+    Router
 } from '@angular/router';
 
 import {
-  HttpErrorResponse
+    HttpErrorResponse
 } from '@angular/common/http';
 
 import {
-  finalize
+    finalize
 } from 'rxjs';
 
 import {
-  CircleAlert,
-  Lock,
-  User,
-  LucideAngularModule
+    CircleAlert,
+    Lock,
+    User,
+    LucideAngularModule
 } from 'lucide-angular';
 
 import {
-  AuthService
+    AuthService
 } from '../../core/services/auth.service';
 
 import {
-  LanguageService
+    LanguageService
 } from '../../core/services/language.service';
+
+import {
+    SeoService
+} from '../../core/services/seo.service';
 
 
 type TipoMensaje =
-  'error' |
-  'warning' |
-  'info';
+    'error' |
+    'warning' |
+    'info';
 
 
 @Component({
-  selector: 'app-login',
+    selector: 'app-login',
 
-  imports: [
-      CommonModule,
-      FormsModule,
-      LucideAngularModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        LucideAngularModule
+    ],
 
-  templateUrl: './login.html',
+    templateUrl: './login.html',
 
-  styleUrl: './login.css'
+    styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Formulario
-  |--------------------------------------------------------------------------
-  */
 
-  formData = {
+    private readonly seoService =
+        inject(
+            SeoService
+        );
 
-      usuario: '',
+    /*
+    |--------------------------------------------------------------------------
+    | Formulario
+    |--------------------------------------------------------------------------
+    */
 
-      contrasena: ''
+    formData = {
 
-  };
+        usuario: '',
 
+        contrasena: ''
 
-  /*
-  |--------------------------------------------------------------------------
-  | Estado
-  |--------------------------------------------------------------------------
-  */
+    };
 
-  readonly cargando =
-      signal(false);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Estado
+    |--------------------------------------------------------------------------
+    */
 
-  readonly errorMensaje =
-      signal('');
+    readonly cargando =
+        signal(false);
 
 
-  readonly tipoMensaje =
-      signal<TipoMensaje>(
-          'error'
-      );
+    readonly errorMensaje =
+        signal('');
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Iconos
-  |--------------------------------------------------------------------------
-  */
+    readonly tipoMensaje =
+        signal<TipoMensaje>(
+            'error'
+        );
 
-  readonly User =
-      User;
 
-  readonly Lock =
-      Lock;
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos
+    |--------------------------------------------------------------------------
+    */
 
-  readonly CircleAlert =
-      CircleAlert;
+    readonly User =
+        User;
 
+    readonly Lock =
+        Lock;
 
-  /*
-  |--------------------------------------------------------------------------
-  | Constructor
-  |--------------------------------------------------------------------------
-  */
+    readonly CircleAlert =
+        CircleAlert;
 
-  constructor(
 
-      private readonly router:
-          Router,
+    /*
+    |--------------------------------------------------------------------------
+    | Constructor
+    |--------------------------------------------------------------------------
+    */
 
-      private readonly route:
-          ActivatedRoute,
+    constructor(
 
-      private readonly authService:
-          AuthService,
+        private readonly router:
+            Router,
 
-      private readonly languageService:
-          LanguageService
+        private readonly route:
+            ActivatedRoute,
 
-  ) {}
+        private readonly authService:
+            AuthService,
 
+        private readonly languageService:
+            LanguageService
 
-  /*
-  |--------------------------------------------------------------------------
-  | Traducción
-  |--------------------------------------------------------------------------
-  */
+    ) { }
 
-  t(
-      es: string,
-      en: string
-  ): string {
+    ngOnInit(): void {
 
-      return this.languageService
-          .t(
-              es,
-              en
-          );
+        this.seoService
+            .configurar(
+                {
+                    title:
+                        'Acceso al sistema | Irriterra S.R.L.',
 
-  }
+                    description:
+                        'Acceso privado al sistema de gestión de Irriterra S.R.L.',
 
+                    path:
+                        '/login',
 
-  /*
-  |--------------------------------------------------------------------------
-  | Login
-  |--------------------------------------------------------------------------
-  */
+                    robots:
+                        'noindex, nofollow'
+                }
+            );
 
-  handleSubmit(): void {
+    }
 
-      if (
-          this.cargando()
-          ||
-          ! this.formData
-              .usuario
-              .trim()
-          ||
-          ! this.formData
-              .contrasena
-      ) {
 
-          return;
+    /*
+    |--------------------------------------------------------------------------
+    | Traducción
+    |--------------------------------------------------------------------------
+    */
 
-      }
+    t(
+        es: string,
+        en: string
+    ): string {
 
+        return this.languageService
+            .t(
+                es,
+                en
+            );
 
-      this.cargando.set(
-          true
-      );
+    }
 
 
-      this.limpiarMensaje();
+    /*
+    |--------------------------------------------------------------------------
+    | Login
+    |--------------------------------------------------------------------------
+    */
 
+    handleSubmit(): void {
 
-      this.authService
-          .login({
+        if (
+            this.cargando()
+            ||
+            !this.formData
+                .usuario
+                .trim()
+            ||
+            !this.formData
+                .contrasena
+        ) {
 
-              usuario:
-                  this.formData
-                      .usuario
-                      .trim()
-                      .toLowerCase(),
+            return;
 
-              contrasena:
-                  this.formData
-                      .contrasena
+        }
 
-          })
-          .pipe(
 
-              finalize(
-                  () => {
+        this.cargando.set(
+            true
+        );
 
-                      this.cargando.set(
-                          false
-                      );
 
-                  }
-              )
+        this.limpiarMensaje();
 
-          )
-          .subscribe({
 
-              next: () => {
+        this.authService
+            .login({
 
-                  const destination =
-                      this.obtenerRutaDestino();
+                usuario:
+                    this.formData
+                        .usuario
+                        .trim()
+                        .toLowerCase(),
 
+                contrasena:
+                    this.formData
+                        .contrasena
 
-                  void this.router
-                      .navigateByUrl(
-                          destination
-                      );
+            })
+            .pipe(
 
-              },
+                finalize(
+                    () => {
 
+                        this.cargando.set(
+                            false
+                        );
 
-              error: (
-                  error:
-                      HttpErrorResponse
-              ) => {
+                    }
+                )
 
-                  this.procesarError(
-                      error
-                  );
+            )
+            .subscribe({
 
-              }
+                next: () => {
 
-          });
+                    const destination =
+                        this.obtenerRutaDestino();
 
-  }
 
+                    void this.router
+                        .navigateByUrl(
+                            destination
+                        );
 
-  /*
-  |--------------------------------------------------------------------------
-  | Ruta después del login
-  |--------------------------------------------------------------------------
-  */
+                },
 
-  private obtenerRutaDestino():
-      string {
 
-      const returnUrl =
-          this.route
-              .snapshot
-              .queryParamMap
-              .get(
-                  'returnUrl'
-              );
+                error: (
+                    error:
+                        HttpErrorResponse
+                ) => {
 
+                    this.procesarError(
+                        error
+                    );
 
-      if (
-          returnUrl
-          &&
-          returnUrl.startsWith(
-              '/dashboard'
-          )
-      ) {
+                }
 
-          return returnUrl;
+            });
 
-      }
+    }
 
 
-      return '/dashboard';
+    /*
+    |--------------------------------------------------------------------------
+    | Ruta después del login
+    |--------------------------------------------------------------------------
+    */
 
-  }
+    private obtenerRutaDestino():
+        string {
 
+        const returnUrl =
+            this.route
+                .snapshot
+                .queryParamMap
+                .get(
+                    'returnUrl'
+                );
 
-  /*
-  |--------------------------------------------------------------------------
-  | Procesar error
-  |--------------------------------------------------------------------------
-  */
 
-  private procesarError(
-      error: HttpErrorResponse
-  ): void {
+        if (
+            returnUrl
+            &&
+            returnUrl.startsWith(
+                '/dashboard'
+            )
+        ) {
 
-      const serverMessage =
-          this.obtenerMensajeServidor(
-              error
-          );
+            return returnUrl;
 
+        }
 
-      switch (
-          error.status
-      ) {
 
-          /*
-           * Sin conexión.
-           */
+        return '/dashboard';
 
-          case 0:
+    }
 
-              this.tipoMensaje.set(
-                  'info'
-              );
 
-              this.errorMensaje.set(
+    /*
+    |--------------------------------------------------------------------------
+    | Procesar error
+    |--------------------------------------------------------------------------
+    */
 
-                  serverMessage
-                  ??
-                  this.t(
+    private procesarError(
+        error: HttpErrorResponse
+    ): void {
 
-                      'No se pudo conectar con el servidor.',
+        const serverMessage =
+            this.obtenerMensajeServidor(
+                error
+            );
 
-                      'Could not connect to the server.'
 
-                  )
+        switch (
+        error.status
+        ) {
 
-              );
+            /*
+             * Sin conexión.
+             */
 
-              break;
+            case 0:
 
+                this.tipoMensaje.set(
+                    'info'
+                );
 
-          /*
-           * Credenciales incorrectas.
-           */
+                this.errorMensaje.set(
 
-          case 401:
+                    serverMessage
+                    ??
+                    this.t(
 
-              this.tipoMensaje.set(
-                  'error'
-              );
+                        'No se pudo conectar con el servidor.',
 
-              this.errorMensaje.set(
+                        'Could not connect to the server.'
 
-                  serverMessage
-                  ??
-                  this.t(
+                    )
 
-                      'Usuario o contraseña incorrectos.',
+                );
 
-                      'Incorrect username or password.'
+                break;
 
-                  )
 
-              );
+            /*
+             * Credenciales incorrectas.
+             */
 
-              break;
+            case 401:
 
+                this.tipoMensaje.set(
+                    'error'
+                );
 
-          /*
-           * Cuenta inactiva.
-           */
+                this.errorMensaje.set(
 
-          case 403:
+                    serverMessage
+                    ??
+                    this.t(
 
-              this.tipoMensaje.set(
-                  'warning'
-              );
+                        'Usuario o contraseña incorrectos.',
 
-              this.errorMensaje.set(
+                        'Incorrect username or password.'
 
-                  serverMessage
-                  ??
-                  this.t(
+                    )
 
-                      'La cuenta no tiene acceso al sistema.',
+                );
 
-                      'The account does not have access to the system.'
+                break;
 
-                  )
 
-              );
+            /*
+             * Cuenta inactiva.
+             */
 
-              break;
+            case 403:
 
+                this.tipoMensaje.set(
+                    'warning'
+                );
 
-          /*
-           * Cuenta bloqueada.
-           */
+                this.errorMensaje.set(
 
-          case 423:
+                    serverMessage
+                    ??
+                    this.t(
 
-              this.tipoMensaje.set(
-                  'warning'
-              );
+                        'La cuenta no tiene acceso al sistema.',
 
-              this.errorMensaje.set(
+                        'The account does not have access to the system.'
 
-                  serverMessage
-                  ??
-                  this.t(
+                    )
 
-                      'La cuenta se encuentra bloqueada temporalmente.',
+                );
 
-                      'The account is temporarily locked.'
+                break;
 
-                  )
 
-              );
+            /*
+             * Cuenta bloqueada.
+             */
 
-              break;
+            case 423:
 
+                this.tipoMensaje.set(
+                    'warning'
+                );
 
-          /*
-           * Validación Laravel.
-           */
+                this.errorMensaje.set(
 
-          case 422:
+                    serverMessage
+                    ??
+                    this.t(
 
-              this.tipoMensaje.set(
-                  'error'
-              );
+                        'La cuenta se encuentra bloqueada temporalmente.',
 
-              this.errorMensaje.set(
+                        'The account is temporarily locked.'
 
-                  serverMessage
-                  ??
-                  this.t(
+                    )
 
-                      'Verifique los datos ingresados.',
+                );
 
-                      'Check the entered data.'
+                break;
 
-                  )
 
-              );
+            /*
+             * Validación Laravel.
+             */
 
-              break;
+            case 422:
 
+                this.tipoMensaje.set(
+                    'error'
+                );
 
-          /*
-           * Demasiados intentos.
-           */
+                this.errorMensaje.set(
 
-          case 429:
+                    serverMessage
+                    ??
+                    this.t(
 
-              this.tipoMensaje.set(
-                  'warning'
-              );
+                        'Verifique los datos ingresados.',
 
-              this.errorMensaje.set(
+                        'Check the entered data.'
 
-                  serverMessage
-                  ??
-                  this.t(
+                    )
 
-                      'Demasiados intentos. Intente nuevamente más tarde.',
+                );
 
-                      'Too many attempts. Try again later.'
+                break;
 
-                  )
 
-              );
+            /*
+             * Demasiados intentos.
+             */
 
-              break;
+            case 429:
 
+                this.tipoMensaje.set(
+                    'warning'
+                );
 
-          /*
-           * Otros errores.
-           */
+                this.errorMensaje.set(
 
-          default:
+                    serverMessage
+                    ??
+                    this.t(
 
-              this.tipoMensaje.set(
-                  'error'
-              );
+                        'Demasiados intentos. Intente nuevamente más tarde.',
 
-              this.errorMensaje.set(
+                        'Too many attempts. Try again later.'
 
-                  serverMessage
-                  ??
-                  this.t(
+                    )
 
-                      'Ocurrió un error al iniciar sesión.',
+                );
 
-                      'An error occurred while signing in.'
+                break;
 
-                  )
 
-              );
+            /*
+             * Otros errores.
+             */
 
-              break;
+            default:
 
-      }
+                this.tipoMensaje.set(
+                    'error'
+                );
 
-  }
+                this.errorMensaje.set(
 
+                    serverMessage
+                    ??
+                    this.t(
 
-  /*
-  |--------------------------------------------------------------------------
-  | Mensaje Laravel
-  |--------------------------------------------------------------------------
-  */
+                        'Ocurrió un error al iniciar sesión.',
 
-  private obtenerMensajeServidor(
-      error: HttpErrorResponse
-  ): string | null {
+                        'An error occurred while signing in.'
 
-      const message =
-          error.error
-              ?.message;
+                    )
 
+                );
 
-      if (
-          typeof message === 'string'
-          &&
-          message.trim()
-      ) {
+                break;
 
-          return message;
+        }
 
-      }
+    }
 
 
-      return null;
+    /*
+    |--------------------------------------------------------------------------
+    | Mensaje Laravel
+    |--------------------------------------------------------------------------
+    */
 
-  }
+    private obtenerMensajeServidor(
+        error: HttpErrorResponse
+    ): string | null {
 
+        const message =
+            error.error
+                ?.message;
 
-  /*
-  |--------------------------------------------------------------------------
-  | Limpiar mensaje
-  |--------------------------------------------------------------------------
-  */
 
-  private limpiarMensaje(): void {
+        if (
+            typeof message === 'string'
+            &&
+            message.trim()
+        ) {
 
-      this.errorMensaje.set(
-          ''
-      );
+            return message;
 
-  }
+        }
+
+
+        return null;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Limpiar mensaje
+    |--------------------------------------------------------------------------
+    */
+
+    private limpiarMensaje(): void {
+
+        this.errorMensaje.set(
+            ''
+        );
+
+    }
 
 }

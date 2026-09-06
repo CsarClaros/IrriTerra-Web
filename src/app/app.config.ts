@@ -4,7 +4,9 @@ import {
 } from '@angular/core';
 
 import {
-  provideRouter
+  provideRouter,
+  withViewTransitions,
+  withInMemoryScrolling
 } from '@angular/router';
 
 import {
@@ -46,9 +48,24 @@ export const appConfig:
           */
 
           provideRouter(
-              routes
-          ),
 
+            routes,
+        
+            withViewTransitions({
+        
+                skipInitialTransition:
+                    true
+        
+            }),
+        
+            withInMemoryScrolling({
+        
+                scrollPositionRestoration:
+                    'top'
+        
+            })
+        
+        ),
 
           /*
           |--------------------------------------------------------------------------

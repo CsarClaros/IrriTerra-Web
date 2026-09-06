@@ -1,23 +1,150 @@
-import { Component, Input } from '@angular/core';
+import {
+
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges
+
+} from '@angular/core';
+
 
 @Component({
-  selector: 'app-image-with-fallback',
-  standalone: true,
-  templateUrl: './image-with-fallback.html',
-  styleUrl: './image-with-fallback.css'
+
+  selector:
+    'app-image-with-fallback',
+
+  standalone:
+    true,
+
+  templateUrl:
+    './image-with-fallback.html',
+
+  styleUrl:
+    './image-with-fallback.css'
+
 })
-export class ImageWithFallback {
+export class ImageWithFallback
+  implements OnChanges {
+
+  /*
+  |--------------------------------------------------------------------------
+  | Fallback
+  |--------------------------------------------------------------------------
+  */
 
   readonly ERROR_IMG_SRC =
     'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg==';
 
-  @Input() src = '';
-  @Input() alt = '';
-  @Input() className = '';
 
-  hasError = false;
+  /*
+  |--------------------------------------------------------------------------
+  | Imagen
+  |--------------------------------------------------------------------------
+  */
 
-  onError() {
-    this.hasError = true;
+  @Input()
+  src =
+    '';
+
+  @Input()
+  alt =
+    '';
+
+  @Input()
+  className =
+    '';
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Rendimiento
+  |--------------------------------------------------------------------------
+  */
+
+  @Input()
+  loading:
+    'lazy'
+    | 'eager' =
+    'lazy';
+
+  @Input()
+  decoding:
+    'async'
+    | 'sync'
+    | 'auto' =
+    'async';
+
+  @Input()
+  fetchPriority:
+    'high'
+    | 'low'
+    | 'auto' =
+    'auto';
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Dimensiones opcionales
+  |--------------------------------------------------------------------------
+  */
+
+  @Input()
+  width:
+    number
+    | null =
+    null;
+
+  @Input()
+  height:
+    number
+    | null =
+    null;
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Estado
+  |--------------------------------------------------------------------------
+  */
+
+  hasError =
+    false;
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Cambio de imagen
+  |--------------------------------------------------------------------------
+  */
+
+  ngOnChanges(
+    changes:
+      SimpleChanges
+  ): void {
+
+    if (
+      changes['src']
+    ) {
+
+      this.hasError =
+        false;
+
+    }
+
   }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Error
+  |--------------------------------------------------------------------------
+  */
+
+  onError(): void {
+
+    this.hasError =
+      true;
+
+  }
+
 }

@@ -1,53 +1,79 @@
 import {
+
   Component,
   OnInit,
-  computed,
   inject,
   signal
+
 } from '@angular/core';
 
 import {
+
   CommonModule
+
 } from '@angular/common';
 
 import {
+
   RouterLink
+
 } from '@angular/router';
 
 import {
-  DomSanitizer,
-  SafeResourceUrl
-} from '@angular/platform-browser';
 
-import {
-  LucideAngularModule,
   Mail,
   MapPin,
-  Phone
+  Phone,
+  ArrowUpRight,
+  LucideAngularModule
+
 } from 'lucide-angular';
 
 import {
+
+  forkJoin
+
+} from 'rxjs';
+
+import {
+
   LanguageService
+
 } from '../../../core/services/language.service';
 
 import {
+
   EmpresaPublicaService
+
 } from '../../../core/services/publico/empresa-publica.service';
 
 import {
+
   SucursalPublicaService
+
 } from '../../../core/services/publico/sucursal-publica.service';
 
 import {
+
   EmpresaPublica
-} from '../../../shared/models/empresa-publica.model';
+
+} from '../../models/empresa-publica.model';
 
 import {
+
   SucursalPublica
-} from '../../../shared/models/sucursal-publica.model';
+
+} from '../../models/sucursal-publica.model';
+
+import {
+
+  ImageWithFallback
+
+} from '../image-with-fallback/image-with-fallback';
 
 
 @Component({
+
   selector:
     'app-footer',
 
@@ -55,9 +81,12 @@ import {
     true,
 
   imports: [
+
     CommonModule,
     RouterLink,
-    LucideAngularModule
+    LucideAngularModule,
+    ImageWithFallback
+
   ],
 
   templateUrl:
@@ -65,6 +94,7 @@ import {
 
   styleUrl:
     './footer.css'
+
 })
 export class Footer
   implements OnInit {
@@ -80,22 +110,14 @@ export class Footer
       LanguageService
     );
 
-
   private readonly empresaService =
     inject(
       EmpresaPublicaService
     );
 
-
   private readonly sucursalService =
     inject(
       SucursalPublicaService
-    );
-
-
-  private readonly sanitizer =
-    inject(
-      DomSanitizer
     );
 
 
@@ -112,7 +134,6 @@ export class Footer
       null
     );
 
-
   readonly sucursalPrincipal =
     signal<
       SucursalPublica | null
@@ -123,95 +144,14 @@ export class Footer
 
   /*
   |--------------------------------------------------------------------------
-  | Contacto
+  | Marca
   |--------------------------------------------------------------------------
   */
 
-  readonly telefono =
-    computed(
-      () =>
-        this.empresa()
-          ?.telefono
-        ??
-        this.sucursalPrincipal()
-          ?.telefono
-        ??
-        null
-    );
+  readonly logo =
+    '/images/brand/irriterra-logo.webp';
 
-
-  readonly correo =
-    computed(
-      () =>
-        this.empresa()
-          ?.correo
-        ??
-        this.sucursalPrincipal()
-          ?.correo
-        ??
-        null
-    );
-
-
-  readonly direccion =
-    computed(
-      () =>
-        this.empresa()
-          ?.direccion
-        ??
-        this.sucursalPrincipal()
-          ?.direccion
-        ??
-        null
-    );
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Mapa
-  |--------------------------------------------------------------------------
-  */
-
-  readonly mapaSeguro =
-    computed<
-      SafeResourceUrl | null
-    >(
-      () => {
-
-        const url =
-          this.sucursalPrincipal()
-            ?.url_maps_embed;
-
-
-        if (
-          !url
-          ||
-          !this.esUrlMapsEmbedValida(
-            url
-          )
-        ) {
-
-          return null;
-
-        }
-
-
-        return this.sanitizer
-          .bypassSecurityTrustResourceUrl(
-            url
-          );
-
-      }
-    );
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Otros
-  |--------------------------------------------------------------------------
-  */
-
-  readonly anioActual =
+  readonly year =
     new Date()
       .getFullYear();
 
@@ -222,14 +162,17 @@ export class Footer
   |--------------------------------------------------------------------------
   */
 
-  readonly Mail =
+  readonly MailIcon =
     Mail;
 
-  readonly MapPin =
+  readonly PhoneIcon =
+    Phone;
+
+  readonly MapPinIcon =
     MapPin;
 
-  readonly Phone =
-    Phone;
+  readonly ArrowUpRightIcon =
+    ArrowUpRight;
 
 
   /*
@@ -240,102 +183,74 @@ export class Footer
 
   ngOnInit(): void {
 
-    this.cargarEmpresa();
-
-    this.cargarSucursales();
+    this.cargarDatos();
 
   }
 
 
   /*
   |--------------------------------------------------------------------------
-  | Empresa
+  | Datos públicos
   |--------------------------------------------------------------------------
   */
 
-  private cargarEmpresa(): void {
+  private cargarDatos(): void {
 
-    this.empresaService
-      .obtener()
+    forkJoin({
+
+      empresa:
+        this.empresaService
+          .obtener(),
+
+      sucursales:
+        this.sucursalService
+          .listar()
+
+    })
       .subscribe({
 
         next:
           response => {
 
             this.empresa.set(
-              response.data
+              response
+                .empresa
+                .data
             );
 
-          },
-
-
-        error:
-          error => {
-
-            console.error(
-              'No fue posible cargar Empresa en Footer:',
-              error
-            );
-
-          }
-
-      });
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Sucursales
-  |--------------------------------------------------------------------------
-  */
-
-  private cargarSucursales(): void {
-
-    this.sucursalService
-      .listar()
-      .subscribe({
-
-        next:
-          response => {
 
             const sucursales =
-              response.data
+              response
+                .sucursales
+                .data
               ?? [];
-
-
-            /*
-             * Preferimos una sucursal que
-             * tenga mapa configurado.
-             */
-
-            const principal =
-              sucursales.find(
-                sucursal =>
-                  !!sucursal
-                    .url_maps_embed
-              )
-              ??
-              sucursales[0]
-              ??
-              null;
 
 
             this.sucursalPrincipal
               .set(
-                principal
+                sucursales[0]
+                ?? null
               );
 
           },
 
-
         error:
-          error => {
+          () => {
 
-            console.error(
-              'No fue posible cargar Sucursales en Footer:',
-              error
+            /*
+             * El footer continúa siendo
+             * funcional aunque la API
+             * pública no responda.
+             */
+
+            this.empresa.set(
+              null
             );
+
+            this.sucursalPrincipal
+              .set(
+                null
+              );
 
           }
 
@@ -346,95 +261,72 @@ export class Footer
 
   /*
   |--------------------------------------------------------------------------
-  | Nombre
+  | Información visible
   |--------------------------------------------------------------------------
   */
 
-  nombreEmpresa(): string {
+  correo(): string {
 
-    return this.empresa()
-      ?.nombre
+    return (
+      this.empresa()
+        ?.correo
       ??
-      'IRRITERRA';
+      this.sucursalPrincipal()
+        ?.correo
+      ??
+      'info@irriterrasrl.com'
+    );
 
   }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Google Maps
-  |--------------------------------------------------------------------------
-  */
+  telefono(): string | null {
 
-  private esUrlMapsEmbedValida(
-    valor: string
-  ): boolean {
+    return (
+      this.sucursalPrincipal()
+        ?.telefono
+      ??
+      this.empresa()
+        ?.telefono
+      ??
+      null
+    );
 
-    try {
+  }
 
-      const url =
-        new URL(
-          valor
+
+  direccion(): string | null {
+
+    const sucursal =
+      this.sucursalPrincipal();
+
+
+    if (
+      sucursal
+        ?.direccion
+    ) {
+
+      return [
+        sucursal.direccion,
+        sucursal.ciudad,
+        sucursal.departamento
+      ]
+        .filter(
+          Boolean
+        )
+        .join(
+          ', '
         );
 
-
-      if (
-        url.protocol
-        !== 'https:'
-      ) {
-
-        return false;
-
-      }
-
-
-      const host =
-        url.hostname
-          .toLowerCase();
-
-
-      if (
-        (
-          host
-          === 'www.google.com'
-          ||
-          host
-          === 'google.com'
-        )
-        &&
-        url.pathname
-          .startsWith(
-            '/maps/embed'
-          )
-      ) {
-
-        return true;
-
-      }
-
-
-      if (
-        host
-        === 'maps.google.com'
-        &&
-        url.pathname
-          .startsWith(
-            '/maps'
-          )
-      ) {
-
-        return true;
-
-      }
-
-
-      return false;
-
-    } catch {
-
-      return false;
-
     }
+
+
+    return (
+      this.empresa()
+        ?.direccion
+      ??
+      null
+    );
 
   }
 
@@ -446,8 +338,11 @@ export class Footer
   */
 
   t(
-    es: string,
-    en: string
+    es:
+      string,
+
+    en:
+      string
   ): string {
 
     return this.languageService

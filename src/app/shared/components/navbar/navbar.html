@@ -1,52 +1,94 @@
-<nav class="sticky top-0 z-50 bg-white shadow-md">
+<nav class="
+        relative
+        border-b
+        transition-all
+        duration-300
+    " [class.border-transparent]="
+        !scrolled()
+    " [class.border-gray-200]="
+        scrolled()
+    " [class.bg-white]="
+        !scrolled()
+    " [class.bg-white/85]="
+        scrolled()
+    " [class.backdrop-blur-2xl]="
+        scrolled()
+    " [class.shadow-xl]="
+        scrolled()
+    ">
 
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="
+            mx-auto
+            max-w-7xl
+            px-4
+            sm:px-6
+            lg:px-8
+        ">
 
-    <div class="flex h-16 items-center justify-between">
+    <!-- ========================================================= -->
+    <!-- PRINCIPAL -->
+    <!-- ========================================================= -->
+
+    <div class="
+        flex
+        items-center
+        justify-between
+        transition-all
+        duration-300
+    " [style.height.px]="
+        scrolled()
+            ? 68
+            : 88
+    ">
 
 
-      <!-- ================================================= -->
+      <!-- ===================================================== -->
       <!-- LOGO -->
-      <!-- ================================================= -->
+      <!-- ===================================================== -->
 
-      <a routerLink="/" class="flex min-w-0 items-center gap-3">
+      <a routerLink="/" (click)="
+        closeMenu()
+    " class="
+        flex
+        h-full
+        shrink-0
+        items-center
+    ">
+
+        <app-image-with-fallback [src]="logo" alt="Irriterra S.R.L." [className]="
+            scrolled()
+                ? 'block h-11 w-auto max-w-[230px] object-contain transition-all duration-300'
+                : 'block h-14 w-auto max-w-[270px] object-contain transition-all duration-300'
+        ">
+        </app-image-with-fallback>
 
 
-        @if (
-        empresa()?.logo;
-        as logo
-        ) {
+        <span class="sr-only">
 
-        <img [src]="logo" [alt]="
-                            nombreEmpresa()
-                        " class="h-10 w-auto max-w-[140px] object-contain" />
-
-        }
-
-
-        <span class="truncate text-xl font-bold text-primary sm:text-2xl">
-
-          {{ nombreEmpresa() }}
+          Irriterra S.R.L.
 
         </span>
 
       </a>
 
 
-      <!-- ================================================= -->
+      <!-- ===================================================== -->
       <!-- DESKTOP -->
-      <!-- ================================================= -->
+      <!-- ===================================================== -->
 
-      <div class="hidden items-center space-x-6 md:flex">
+      <div class="
+                    hidden
+                    items-center
+                    gap-7
+                    md:flex
+                ">
 
 
         <!-- Inicio -->
 
-        <a routerLink="/" [class.text-primary]="
-                        isActive('/')
-                    " [class.text-gray-700]="
-                        !isActive('/')
-                    " class="transition-colors hover:text-primary">
+        <a routerLink="/" routerLinkActive="text-primary" [routerLinkActiveOptions]="{
+                        exact: true
+                    }" class="navbar-link">
 
           {{
           t(
@@ -58,75 +100,159 @@
         </a>
 
 
-        <!-- Productos -->
+        <!-- ================================================= -->
+        <!-- PRODUCTOS -->
+        <!-- ================================================= -->
 
         <div class="relative" (mouseenter)="
-                        isProductsOpen = true
+                        openProducts()
                     " (mouseleave)="
-                        isProductsOpen = false
+                        closeProducts()
                     ">
 
-          <a routerLink="/productos"
-            class="flex items-center space-x-1 text-gray-700 transition-colors hover:text-primary">
 
-            <span>
+          <!-- Link principal -->
 
-              {{
-              t(
-              'Productos',
-              'Products'
-              )
-              }}
+          <a routerLink="/productos" routerLinkActive="text-primary" class="
+                            navbar-link
+                            flex
+                            items-center
+                            gap-1
+                        ">
 
-            </span>
+            {{
+            t(
+            'Productos',
+            'Products'
+            )
+            }}
 
-
-            <lucide-angular [img]="ChevronDownIcon" class="h-4 w-4">
+            <lucide-angular [img]="ChevronDownIcon" class="
+                                h-4
+                                w-4
+                                transition-transform
+                                duration-300
+                            " [class.rotate-180]="
+                                productsOpen()
+                            ">
             </lucide-angular>
 
           </a>
 
 
-          @if (
-          isProductsOpen
-          ) {
+          <!-- Dropdown -->
 
-          <div
-            class="absolute left-0 top-full w-56 overflow-hidden rounded-lg border border-gray-100 bg-white py-2 shadow-lg">
+          <div class="
+                            absolute
+                            left-1/2
+                            top-full
+                            z-50
+                            w-64
+                            -translate-x-1/2
+                            pt-4
+                            transition-all
+                            duration-200
+                        " [class.pointer-events-auto]="
+                            productsOpen()
+                        " [class.visible]="
+                            productsOpen()
+                        " [class.opacity-100]="
+                            productsOpen()
+                        " [class.translate-y-0]="
+                            productsOpen()
+                        " [class.pointer-events-none]="
+                            !productsOpen()
+                        " [class.invisible]="
+                            !productsOpen()
+                        " [class.opacity-0]="
+                            !productsOpen()
+                        " [class.-translate-y-2]="
+                            !productsOpen()
+                        ">
 
-            @for (
-            product
-            of products;
-            track $index
-            ) {
 
-            <a routerLink="/productos"
-              class="block px-4 py-2 text-gray-700 transition-colors hover:bg-muted hover:text-primary">
+            <div class="
+                                overflow-hidden
+                                rounded-xl
+                                border
+                                border-gray-200
+                                bg-white/95
+                                p-2
+                                shadow-2xl
+                                backdrop-blur-xl
+                            ">
 
-              {{
-              language === 'es'
-              ? product.es
-              : product.en
-              }}
 
-            </a>
+              <!-- Ver todos -->
 
-            }
+              <a routerLink="/productos" class="
+                                    flex
+                                    items-center
+                                    justify-between
+                                    rounded-lg
+                                    px-4
+                                    py-3
+                                    font-semibold
+                                    text-gray-900
+                                    transition
+                                    hover:bg-primary/10
+                                    hover:text-primary
+                                ">
+
+                {{
+                t(
+                'Ver todos los productos',
+                'View all products'
+                )
+                }}
+
+              </a>
+
+
+              <div class="
+                                    my-1
+                                    h-px
+                                    bg-gray-100
+                                ">
+              </div>
+
+
+              <!-- Categorías -->
+
+              @for (
+              categoria of categorias();
+              track categoria.id_categoria
+              ) {
+
+              <a routerLink="/productos" class="
+            block
+            rounded-lg
+            px-4
+            py-2.5
+            text-sm
+            text-gray-600
+            transition
+            hover:bg-gray-100
+            hover:pl-5
+            hover:text-primary
+        ">
+
+                {{ categoria.nombre }}
+
+              </a>
+
+              }
+
+            </div>
 
           </div>
-
-          }
 
         </div>
 
 
         <!-- Empresa -->
 
-        <a routerLink="/empresa" [class.text-primary]="
-                        isActive('/empresa')
-                    " [class.text-gray-700]="
-                        !isActive('/empresa')
-                    " class="transition-colors hover:text-primary">
+        <a routerLink="/empresa" routerLinkActive="text-primary" class="navbar-link">
 
           {{
           t(
@@ -138,35 +264,13 @@
         </a>
 
 
-        <!-- Eventos -->
+        <!-- Contacto -->
 
-        <a routerLink="/eventos" [class.text-primary]="
-                        isActive('/eventos')
-                    " [class.text-gray-700]="
-                        !isActive('/eventos')
-                    " class="transition-colors hover:text-primary">
+        <a routerLink="/contactos" routerLinkActive="text-primary" class="navbar-link">
 
           {{
           t(
-          'Eventos',
-          'Events'
-          )
-          }}
-
-        </a>
-
-
-        <!-- Contactos -->
-
-        <a routerLink="/contactos" [class.text-primary]="
-                        isActive('/contactos')
-                    " [class.text-gray-700]="
-                        !isActive('/contactos')
-                    " class="transition-colors hover:text-primary">
-
-          {{
-          t(
-          'Contactos',
+          'Contacto',
           'Contact'
           )
           }}
@@ -174,46 +278,112 @@
         </a>
 
 
-        <!-- Login -->
+        <!-- Separador -->
 
-        <a routerLink="/login" class="rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary/90">
-
-          Login
-
-        </a>
+        <div class="
+                        h-7
+                        w-px
+                        bg-gray-200
+                    ">
+        </div>
 
 
         <!-- Idioma -->
 
         <button type="button" (click)="
                         toggleLanguage()
-                    "
-          class="rounded-lg border border-primary px-3 py-1 text-primary transition-colors hover:bg-primary hover:text-white">
+                    " class="
+                        inline-flex
+                        h-11
+                        items-center
+                        gap-2
+                        rounded-lg
+                        px-3
+                        text-sm
+                        font-medium
+                        text-gray-600
+                        transition
+                        hover:bg-gray-100
+                        hover:text-primary
+                    ">
 
-          {{ language.toUpperCase() }}
+          <lucide-angular [img]="LanguagesIcon" class="h-4 w-4">
+          </lucide-angular>
+
+          {{
+          language
+          .toUpperCase()
+          }}
 
         </button>
+
+
+        <!-- Acceso -->
+
+        <a routerLink="/login" class="
+                        inline-flex
+                        h-11
+                        items-center
+                        gap-2
+                        rounded-lg
+                        bg-primary
+                        px-5
+                        text-sm
+                        font-semibold
+                        text-white
+                        shadow-sm
+                        transition
+                        duration-300
+                        hover:-translate-y-0.5
+                        hover:shadow-lg
+                    ">
+
+          <lucide-angular [img]="LockIcon" class="h-4 w-4">
+          </lucide-angular>
+
+          {{
+          t(
+          'Acceso',
+          'Login'
+          )
+          }}
+
+        </a>
 
       </div>
 
 
-      <!-- ================================================= -->
-      <!-- BOTÓN MOBILE -->
-      <!-- ================================================= -->
+      <!-- ===================================================== -->
+      <!-- MOBILE BUTTON -->
+      <!-- ===================================================== -->
 
-      <button type="button" class="rounded-lg p-2 hover:bg-gray-100 md:hidden" (click)="
-                    isMenuOpen =
-                        !isMenuOpen
+      <button type="button" (click)="
+                    toggleMenu()
+                " [attr.aria-expanded]="
+                    menuOpen()
+                " class="
+                    flex
+                    h-11
+                    w-11
+                    items-center
+                    justify-center
+                    rounded-lg
+                    text-gray-700
+                    transition
+                    hover:bg-gray-100
+                    md:hidden
                 ">
 
         @if (
-        isMenuOpen
+        menuOpen()
         ) {
 
         <lucide-angular [img]="XIcon" class="h-6 w-6">
         </lucide-angular>
 
-        } @else {
+        }
+
+        @else {
 
         <lucide-angular [img]="MenuIcon" class="h-6 w-6">
         </lucide-angular>
@@ -225,87 +395,119 @@
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- MENÚ MOBILE -->
-    <!-- ===================================================== -->
+    <!-- ========================================================= -->
+    <!-- MOBILE -->
+    <!-- ========================================================= -->
 
-    @if (
-    isMenuOpen
-    ) {
+    <div class="
+                grid
+                overflow-hidden
+                transition-all
+                duration-300
+                md:hidden
+            " [class.grid-rows-[1fr]]="
+                menuOpen()
+            " [class.grid-rows-[0fr]]="
+                !menuOpen()
+            ">
 
-    <div class="border-t border-gray-200 py-4 md:hidden">
+      <div class="min-h-0">
 
-      <div class="flex flex-col space-y-3">
-
-
-        <!-- Inicio -->
-
-        <a routerLink="/" (click)="
-                            closeMobileMenu()
-                        " class="rounded-lg px-4 py-2 text-gray-700 transition-colors hover:bg-muted">
-
-          {{
-          t(
-          'Inicio',
-          'Home'
-          )
-          }}
-
-        </a>
+        <div class="
+                        border-t
+                        border-gray-100
+                        py-4
+                    ">
 
 
-        <!-- Productos -->
+          <a routerLink="/" routerLinkActive="bg-primary/10 text-primary" [routerLinkActiveOptions]="{
+                            exact: true
+                        }" (click)="
+                            closeMenu()
+                        " class="mobile-link">
 
-        <div>
+            {{
+            t(
+            'Inicio',
+            'Home'
+            )
+            }}
+
+          </a>
+
+
+          <!-- Productos mobile -->
 
           <button type="button" (click)="
-                                isProductsOpen =
-                                    !isProductsOpen
-                            "
-            class="flex w-full items-center justify-between rounded-lg px-4 py-2 text-gray-700 transition-colors hover:bg-muted">
+                            toggleProducts()
+                        " class="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            rounded-lg
+                            px-4
+                            py-3
+                            font-medium
+                            text-gray-700
+                            transition
+                            hover:bg-gray-100
+                        ">
 
-            <span>
+            {{
+            t(
+            'Productos',
+            'Products'
+            )
+            }}
 
-              {{
-              t(
-              'Productos',
-              'Products'
-              )
-              }}
-
-            </span>
-
-
-            <lucide-angular [img]="ChevronDownIcon" [class.rotate-180]="
-                                    isProductsOpen
-                                " class="h-4 w-4 transition-transform">
+            <lucide-angular [img]="ChevronDownIcon" class="
+                                h-4
+                                w-4
+                                transition-transform
+                            " [class.rotate-180]="
+                                productsOpen()
+                            ">
             </lucide-angular>
 
           </button>
 
 
           @if (
-          isProductsOpen
+          productsOpen()
           ) {
 
-          <div class="ml-4 mt-2 space-y-2">
+          <div class="
+                                ml-4
+                                border-l
+                                border-gray-200
+                                pl-3
+                            ">
+
+            <a routerLink="/productos" (click)="
+                                    closeMenu()
+                                " class="mobile-sub-link">
+
+              {{
+              t(
+              'Todos los productos',
+              'All products'
+              )
+              }}
+
+            </a>
+
 
             @for (
-            product
-            of products;
-            track $index
+            categoria of categorias();
+            track categoria.id_categoria
             ) {
 
             <a routerLink="/productos" (click)="
-                                            closeMobileMenu()
-                                        "
-              class="block rounded-lg px-4 py-2 text-gray-600 transition-colors hover:bg-muted">
+            closeMenu()
+        " class="mobile-sub-link">
 
-              {{
-              language === 'es'
-              ? product.es
-              : product.en
-              }}
+              {{ categoria.nombre }}
 
             </a>
 
@@ -315,84 +517,108 @@
 
           }
 
+
+          <a routerLink="/empresa" routerLinkActive="bg-primary/10 text-primary" (click)="
+                            closeMenu()
+                        " class="mobile-link">
+
+            {{
+            t(
+            'Empresa',
+            'Company'
+            )
+            }}
+
+          </a>
+
+
+          <a routerLink="/contactos" routerLinkActive="bg-primary/10 text-primary" (click)="
+                            closeMenu()
+                        " class="mobile-link">
+
+            {{
+            t(
+            'Contacto',
+            'Contact'
+            )
+            }}
+
+          </a>
+
+
+          <!-- Acciones -->
+
+          <div class="
+                            mt-4
+                            grid
+                            grid-cols-2
+                            gap-3
+                            border-t
+                            border-gray-100
+                            pt-4
+                        ">
+
+            <button type="button" (click)="
+                                toggleLanguage()
+                            " class="
+                                inline-flex
+                                h-11
+                                items-center
+                                justify-center
+                                gap-2
+                                rounded-lg
+                                border
+                                border-gray-200
+                                text-sm
+                                font-medium
+                                text-gray-700
+                            ">
+
+              <lucide-angular [img]="LanguagesIcon" class="h-4 w-4">
+              </lucide-angular>
+
+              {{
+              language
+              .toUpperCase()
+              }}
+
+            </button>
+
+
+            <a routerLink="/login" (click)="
+                                closeMenu()
+                            " class="
+                                inline-flex
+                                h-11
+                                items-center
+                                justify-center
+                                gap-2
+                                rounded-lg
+                                bg-primary
+                                text-sm
+                                font-semibold
+                                text-white
+                            ">
+
+              <lucide-angular [img]="LockIcon" class="h-4 w-4">
+              </lucide-angular>
+
+              {{
+              t(
+              'Acceso',
+              'Login'
+              )
+              }}
+
+            </a>
+
+          </div>
+
         </div>
-
-
-        <!-- Empresa -->
-
-        <a routerLink="/empresa" (click)="
-                            closeMobileMenu()
-                        " class="rounded-lg px-4 py-2 text-gray-700 transition-colors hover:bg-muted">
-
-          {{
-          t(
-          'Empresa',
-          'Company'
-          )
-          }}
-
-        </a>
-
-
-        <!-- Eventos -->
-
-        <a routerLink="/eventos" (click)="
-                            closeMobileMenu()
-                        " class="rounded-lg px-4 py-2 text-gray-700 transition-colors hover:bg-muted">
-
-          {{
-          t(
-          'Eventos',
-          'Events'
-          )
-          }}
-
-        </a>
-
-
-        <!-- Contactos -->
-
-        <a routerLink="/contactos" (click)="
-                            closeMobileMenu()
-                        " class="rounded-lg px-4 py-2 text-gray-700 transition-colors hover:bg-muted">
-
-          {{
-          t(
-          'Contactos',
-          'Contact'
-          )
-          }}
-
-        </a>
-
-
-        <!-- Login -->
-
-        <a routerLink="/login" (click)="
-                            closeMobileMenu()
-                        " class="rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary/90">
-
-          Login
-
-        </a>
-
-
-        <!-- Idioma -->
-
-        <button type="button" (click)="
-                            toggleLanguage()
-                        "
-          class="mx-4 rounded-lg border border-primary px-3 py-1 text-primary transition-colors hover:bg-primary hover:text-white">
-
-          {{ language.toUpperCase() }}
-
-        </button>
 
       </div>
 
     </div>
-
-    }
 
   </div>
 

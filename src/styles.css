@@ -1,11 +1,98 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root{
+:root {
     --primary: #2E7D32;
     --secondary: #66BB6A;
     --accent: #4FC3F7;
     --muted: #F5F7FA;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Transición entre páginas
+|--------------------------------------------------------------------------
+*/
+
+::view-transition-old(root) {
+    animation:
+        pageLeave 220ms ease-in both;
+}
+
+
+::view-transition-new(root) {
+    animation:
+        pageEnter 320ms ease-out both;
+}
+
+
+@keyframes pageLeave {
+
+    from {
+        opacity:
+            1;
+
+        filter:
+            blur(0);
+
+        transform:
+            translateY(0);
+    }
+
+    to {
+        opacity:
+            0;
+
+        filter:
+            blur(2px);
+
+        transform:
+            translateY(-4px);
+    }
+
+}
+
+
+@keyframes pageEnter {
+
+    from {
+        opacity:
+            0;
+
+        filter:
+            blur(2px);
+
+        transform:
+            translateY(8px);
+    }
+
+    to {
+        opacity:
+            1;
+
+        filter:
+            blur(0);
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Reducción de movimiento
+|--------------------------------------------------------------------------
+*/
+
+@media (prefers-reduced-motion: reduce) {
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration:
+            0.001ms;
+    }
+
 }

@@ -1,40 +1,64 @@
 import {
+
   Component,
-  OnInit,
+  HostListener,
   inject,
-  signal
+  signal,
+  OnInit
+
 } from '@angular/core';
 
 import {
+
   CommonModule
+
 } from '@angular/common';
 
 import {
-  Router,
-  RouterLink
+
+  RouterLink,
+  RouterLinkActive
+
 } from '@angular/router';
 
 import {
+
   ChevronDown,
+  Languages,
+  LockKeyhole,
   LucideAngularModule,
   Menu,
   X
+
 } from 'lucide-angular';
 
 import {
+
   LanguageService
+
 } from '../../../core/services/language.service';
 
 import {
-  EmpresaPublicaService
-} from '../../../core/services/publico/empresa-publica.service';
+
+  ImageWithFallback
+
+} from '../image-with-fallback/image-with-fallback';
 
 import {
-  EmpresaPublica
-} from '../../../shared/models/empresa-publica.model';
+
+  CatalogoPublicoService
+
+} from '../../../core/services/publico/catalogo-publico.service';
+
+import {
+
+  CategoriaPublica
+
+} from '../../models/catalogo-publico.model';
 
 
 @Component({
+
   selector:
     'app-navbar',
 
@@ -42,9 +66,13 @@ import {
     true,
 
   imports: [
+
     CommonModule,
     RouterLink,
-    LucideAngularModule
+    RouterLinkActive,
+    LucideAngularModule,
+    ImageWithFallback
+
   ],
 
   templateUrl:
@@ -52,9 +80,67 @@ import {
 
   styleUrl:
     './navbar.css'
+
 })
-export class Navbar
-  implements OnInit {
+export class Navbar implements OnInit{
+
+
+  /*
+|--------------------------------------------------------------------------
+| Inicio
+|--------------------------------------------------------------------------
+*/
+
+ngOnInit(): void {
+
+  this.cargarCategorias();
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Categorías
+|--------------------------------------------------------------------------
+*/
+
+private cargarCategorias(): void {
+
+  this.catalogoService
+      .listar()
+      .subscribe({
+
+          next:
+              response => {
+
+                  this.categorias.set(
+
+                      response
+                          .data
+                          .categorias
+                      ?? []
+
+                  );
+
+              },
+
+
+          error:
+              () => {
+
+                  /*
+                   * El Navbar debe seguir funcionando
+                   * aunque el catálogo no esté disponible.
+                   */
+
+                  this.categorias.set(
+                      []
+                  );
+
+              }
+
+      });
+
+}
 
   /*
   |--------------------------------------------------------------------------
@@ -62,52 +148,60 @@ export class Navbar
   |--------------------------------------------------------------------------
   */
 
-  private readonly router =
-    inject(
-      Router
-    );
-
-
-  private readonly languageService =
+  readonly languageService =
     inject(
       LanguageService
     );
 
-
-  private readonly empresaService =
+    private readonly catalogoService =
     inject(
-      EmpresaPublicaService
+        CatalogoPublicoService
     );
 
 
   /*
   |--------------------------------------------------------------------------
-  | Empresa
+  | Estado
   |--------------------------------------------------------------------------
   */
 
-  readonly empresa =
-    signal<
-      EmpresaPublica | null
-    >(
-      null
+  readonly menuOpen =
+    signal(
+      false
     );
 
+  readonly productsOpen =
+    signal(
+      false
+    );
+
+  readonly scrolled =
+    signal(
+      false
+    );
+
+    /*
+|--------------------------------------------------------------------------
+| Categorías
+|--------------------------------------------------------------------------
+*/
+
+readonly categorias =
+signal<
+    CategoriaPublica[]
+>([]);
 
   /*
   |--------------------------------------------------------------------------
-  | Estado visual
+  | Logo
   |--------------------------------------------------------------------------
   */
 
-  isMenuOpen =
-    false;
+  readonly logo =
+    '/images/brand/irriterra-logo.webp';
 
 
-  isProductsOpen =
-    false;
-
-
+  
   /*
   |--------------------------------------------------------------------------
   | Iconos
@@ -120,145 +214,31 @@ export class Navbar
   readonly XIcon =
     X;
 
+  readonly LanguagesIcon =
+    Languages;
+
+  readonly LockIcon =
+    LockKeyhole;
+
   readonly ChevronDownIcon =
     ChevronDown;
 
 
   /*
   |--------------------------------------------------------------------------
-  | Productos
+  | Scroll
   |--------------------------------------------------------------------------
   */
 
-  readonly products = [
+  @HostListener(
+    'window:scroll'
+  )
+  onWindowScroll(): void {
 
-    {
-      es:
-        'Riego por goteo',
-
-      en:
-        'Drip Irrigation'
-    },
-
-    {
-      es:
-        'Aspersores',
-
-      en:
-        'Sprinklers'
-    },
-
-    {
-      es:
-        'Filtros',
-
-      en:
-        'Filters'
-    },
-
-    {
-      es:
-        'Controladores',
-
-      en:
-        'Controllers'
-    },
-
-    {
-      es:
-        'Válvulas',
-
-      en:
-        'Valves'
-    },
-
-    {
-      es:
-        'Sensores',
-
-      en:
-        'Sensors'
-    },
-
-    {
-      es:
-        'Accesorios',
-
-      en:
-        'Accessories'
-    }
-
-  ];
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Inicio
-  |--------------------------------------------------------------------------
-  */
-
-  ngOnInit(): void {
-
-    this.cargarEmpresa();
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Cargar empresa
-  |--------------------------------------------------------------------------
-  */
-
-  private cargarEmpresa(): void {
-
-    this.empresaService
-      .obtener()
-      .subscribe({
-
-        next:
-          response => {
-
-            this.empresa.set(
-              response.data
-            );
-
-          },
-
-
-        error:
-          error => {
-
-            /*
-             * El Navbar puede seguir funcionando
-             * aunque la información corporativa
-             * no esté disponible.
-             */
-
-            console.error(
-              'No fue posible cargar la empresa en Navbar:',
-              error
-            );
-
-          }
-
-      });
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Nombre
-  |--------------------------------------------------------------------------
-  */
-
-  nombreEmpresa(): string {
-
-    return this.empresa()
-      ?.nombre
-      ??
-      'IRRITERRA';
+    this.scrolled.set(
+      window.scrollY
+      > 16
+    );
 
   }
 
@@ -269,24 +249,13 @@ export class Navbar
   |--------------------------------------------------------------------------
   */
 
-  get language() {
+  get language():
+    'es'
+    | 'en' {
 
-    return this.languageService
+    return this
+      .languageService
       .language();
-
-  }
-
-
-  t(
-    es: string,
-    en: string
-  ): string {
-
-    return this.languageService
-      .t(
-        es,
-        en
-      );
 
   }
 
@@ -301,27 +270,86 @@ export class Navbar
 
   /*
   |--------------------------------------------------------------------------
-  | Navegación
+  | Productos
   |--------------------------------------------------------------------------
   */
 
-  isActive(
-    path: string
-  ): boolean {
+  openProducts(): void {
 
-    return this.router.url
-      === path;
+    this.productsOpen.set(
+      true
+    );
 
   }
 
 
-  closeMobileMenu(): void {
+  closeProducts(): void {
 
-    this.isMenuOpen =
-      false;
+    this.productsOpen.set(
+      false
+    );
 
-    this.isProductsOpen =
-      false;
+  }
+
+
+  toggleProducts(): void {
+
+    this.productsOpen.update(
+      current =>
+        !current
+    );
+
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Mobile
+  |--------------------------------------------------------------------------
+  */
+
+  toggleMenu(): void {
+
+    this.menuOpen.update(
+      current =>
+        !current
+    );
+
+  }
+
+
+  closeMenu(): void {
+
+    this.menuOpen.set(
+      false
+    );
+
+    this.productsOpen.set(
+      false
+    );
+
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Traducción
+  |--------------------------------------------------------------------------
+  */
+
+  t(
+    es:
+      string,
+
+    en:
+      string
+  ): string {
+
+    return this.languageService
+      .t(
+        es,
+        en
+      );
 
   }
 

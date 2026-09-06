@@ -1,0 +1,46 @@
+:host {
+    display: block;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Hero
+|--------------------------------------------------------------------------
+*/
+
+.hero-background-image {
+    animation:
+        heroZoom 12s ease-out infinite alternate;
+}
+
+
+@keyframes heroZoom {
+
+    from {
+        transform:
+            scale(1);
+    }
+
+    to {
+        transform:
+            scale(1.04);
+    }
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Accesibilidad
+|--------------------------------------------------------------------------
+*/
+
+@media (prefers-reduced-motion: reduce) {
+
+    .hero-background-image {
+        animation:
+            none;
+    }
+
+}

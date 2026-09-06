@@ -1,7 +1,8 @@
 import {
   Component,
   computed,
-  inject
+  inject,
+  OnInit
 } from '@angular/core';
 
 import {
@@ -54,6 +55,11 @@ import {
   finalize
 } from 'rxjs/operators';
 
+import {
+  SeoService
+} from '../../core/services/seo.service';
+
+
 
 interface MenuItem {
 
@@ -101,7 +107,31 @@ interface MenuItem {
     './dashboard-layout.css'
   ]
 })
-export class DashboardLayout {
+export class DashboardLayout implements OnInit {
+
+
+
+  ngOnInit(): void {
+
+    this.seoService
+      .configurar(
+        {
+          title:
+            'Sistema de gestión | Irriterra S.R.L.',
+
+          description:
+            'Área privada de gestión de Irriterra S.R.L.',
+
+          path:
+            '/dashboard',
+
+          robots:
+            'noindex, nofollow'
+        }
+      );
+
+  }
+
 
   /*
   |--------------------------------------------------------------------------
@@ -129,6 +159,11 @@ export class DashboardLayout {
   private readonly authService =
     inject(
       AuthService
+    );
+
+  private readonly seoService =
+    inject(
+      SeoService
     );
 
   /*

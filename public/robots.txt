@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
 
-Disallow: /dashboard
-Disallow: /login
-
 Sitemap: https://irriterrasrl.com/sitemap.xml

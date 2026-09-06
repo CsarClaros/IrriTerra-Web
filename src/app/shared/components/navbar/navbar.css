@@ -1,0 +1,165 @@
+:host {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Desktop links
+|--------------------------------------------------------------------------
+*/
+
+.navbar-link {
+    position:
+        relative;
+
+    padding-top:
+        0.75rem;
+
+    padding-bottom:
+        0.75rem;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.01em;
+
+    color:
+        rgb(55 65 81);
+
+    transition:
+        color 200ms ease;
+}
+
+
+.navbar-link:hover {
+    color:
+        rgb(22 163 74);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Línea inferior
+|--------------------------------------------------------------------------
+*/
+
+.navbar-link::after {
+    content: '';
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0.25rem;
+
+    width: 0;
+    height: 2px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius:
+        9999px;
+
+    background:
+        currentColor;
+
+    transition:
+        width 250ms ease;
+}
+
+
+.navbar-link:hover::after {
+    width:
+        65%;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Mobile
+|--------------------------------------------------------------------------
+*/
+
+.mobile-link {
+    display: block;
+
+    border-radius:
+        0.5rem;
+
+    padding:
+        0.75rem 1rem;
+
+    font-weight:
+        500;
+
+    color:
+        rgb(55 65 81);
+
+    transition:
+        background-color 200ms ease,
+        color 200ms ease;
+}
+
+
+.mobile-link:hover {
+    background:
+        rgb(243 244 246);
+}
+
+
+.mobile-sub-link {
+    display: block;
+
+    border-radius:
+        0.5rem;
+
+    padding:
+        0.625rem 1rem;
+
+    font-size:
+        0.875rem;
+
+    color:
+        rgb(75 85 99);
+
+    transition:
+        background-color 200ms ease,
+        color 200ms ease,
+        padding-left 200ms ease;
+}
+
+
+.mobile-sub-link:hover {
+    padding-left:
+        1.25rem;
+
+    background:
+        rgb(243 244 246);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Accesibilidad
+|--------------------------------------------------------------------------
+*/
+
+@media (prefers-reduced-motion: reduce) {
+
+    .navbar-link,
+    .navbar-link::after,
+    .mobile-link,
+    .mobile-sub-link {
+        transition:
+            none;
+    }
+
+}

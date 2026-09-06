@@ -1,0 +1,40 @@
+:host {
+    display: block;
+}
+
+
+.footer-link {
+    position: relative;
+
+    color:
+        rgb(156 163 175);
+
+    font-size:
+        0.925rem;
+
+    transition:
+        color 200ms ease,
+        transform 200ms ease;
+}
+
+
+.footer-link:hover {
+    color:
+        white;
+
+    transform:
+        translateX(3px);
+}
+
+
+@media (
+    prefers-reduced-motion:
+        reduce
+) {
+
+    .footer-link {
+        transition:
+            none;
+    }
+
+}

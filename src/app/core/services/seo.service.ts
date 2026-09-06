@@ -16,6 +16,12 @@ import {
     environment
 } from '../../../environments/environment';
 
+import {
+
+    StructuredDataService
+
+} from './structured-data.service';
+
 
 export interface SeoConfig {
 
@@ -61,6 +67,12 @@ export class SeoService {
         );
 
 
+    private readonly structuredDataService =
+        inject(
+            StructuredDataService
+        );
+
+
     /*
     |--------------------------------------------------------------------------
     | Configuración
@@ -90,6 +102,16 @@ export class SeoService {
     configurar(
         config: SeoConfig
     ): void {
+
+        /*
+    |--------------------------------------------------------------------------
+    | Limpiar datos estructurados de la página anterior
+    |--------------------------------------------------------------------------
+    */
+
+        this.structuredDataService
+            .limpiar();
+
 
         const url =
             this.construirUrl(
@@ -238,28 +260,28 @@ export class SeoService {
     |--------------------------------------------------------------------------
     */
 
-    noIndex(
-        title:
-            string = 'Irriterra S.R.L.'
-    ): void {
+    // noIndex(
+    //     title:
+    //         string = 'Irriterra S.R.L.'
+    // ): void {
 
-        this.titleService
-            .setTitle(
-                title
-            );
+    //     this.titleService
+    //         .setTitle(
+    //             title
+    //         );
 
 
-        this.metaService.updateTag(
-            {
-                name:
-                    'robots',
+    //     this.metaService.updateTag(
+    //         {
+    //             name:
+    //                 'robots',
 
-                content:
-                    'noindex, nofollow'
-            }
-        );
+    //             content:
+    //                 'noindex, nofollow'
+    //         }
+    //     );
 
-    }
+    // }
 
 
     /*
