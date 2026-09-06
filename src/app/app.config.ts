@@ -1,105 +1,61 @@
-import {
-  ApplicationConfig,
-  provideBrowserGlobalErrorListeners
-} from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 
-import {
-  provideRouter,
-  withViewTransitions,
-  withInMemoryScrolling
-} from '@angular/router';
+import { provideRouter, withViewTransitions, withInMemoryScrolling } from '@angular/router';
 
-import {
-  provideHttpClient,
-  withInterceptors
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
-import {
-  provideEchartsCore
-} from 'ngx-echarts';
+import { provideEchartsCore } from 'ngx-echarts';
 
-import {
-  routes
-} from './app.routes';
+import { routes } from './app.routes';
 
-import {
-  authInterceptor
-} from './core/interceptors/auth-interceptor';
+import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
-
-export const appConfig:
-  ApplicationConfig = {
-
-      providers: [
-
-          /*
+export const appConfig: ApplicationConfig = {
+  providers: [
+    /*
           |--------------------------------------------------------------------------
           | Errores globales
           |--------------------------------------------------------------------------
           */
 
-          provideBrowserGlobalErrorListeners(),
+    provideBrowserGlobalErrorListeners(),
 
-
-          /*
+    /*
           |--------------------------------------------------------------------------
           | Router
           |--------------------------------------------------------------------------
           */
 
-          provideRouter(
+    provideRouter(
+      routes,
 
-            routes,
-        
-            withViewTransitions({
-        
-                skipInitialTransition:
-                    true
-        
-            }),
-        
-            withInMemoryScrolling({
-        
-                scrollPositionRestoration:
-                    'top'
-        
-            })
-        
-        ),
+      withViewTransitions({
+        skipInitialTransition: true,
+      }),
 
-          /*
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top',
+      }),
+    ),
+
+    /*
           |--------------------------------------------------------------------------
           | HTTP
           |--------------------------------------------------------------------------
           */
 
-          provideHttpClient(
+    provideHttpClient(withInterceptors([authInterceptor])),
 
-              withInterceptors([
-
-                  authInterceptor
-
-              ])
-
-          ),
-
-
-          /*
+    /*
           |--------------------------------------------------------------------------
           | ECharts
           |--------------------------------------------------------------------------
           */
 
-          provideEchartsCore({
-
-              echarts:
-                  () =>
-                      import(
-                          'echarts'
-                      )
-
-          })
-
-      ]
-
-  };
+    provideEchartsCore({
+      echarts: () => import('echarts'),
+    }),
+    provideClientHydration(withEventReplay()),
+  ],
+};

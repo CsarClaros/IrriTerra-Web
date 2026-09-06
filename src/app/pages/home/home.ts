@@ -544,7 +544,7 @@ export class Home
       `${this.siteUrl}/`;
 
     const logoUrl =
-      `${this.siteUrl}/images/brand/irriterra-logo.png`;
+      `${this.siteUrl}/images/brand/irriterra-logo.webp`;
 
 
     this.structuredDataService

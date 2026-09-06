@@ -40,6 +40,10 @@ import {
     permissionGuard
 } from './core/guards/permission-guard';
 
+import {
+    NotFound
+} from './pages/not-found/not-found';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -1090,9 +1094,11 @@ export const routes: Routes = [
     */
 
     {
-        path: '**',
+        path:
+            '**',
 
-        redirectTo: ''
+        component:
+            NotFound
     }
 
 ];

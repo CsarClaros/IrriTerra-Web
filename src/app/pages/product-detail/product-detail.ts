@@ -3,7 +3,8 @@ import {
   OnInit,
   computed,
   inject,
-  signal
+  signal,
+  RESPONSE_INIT
 } from '@angular/core';
 
 import {
@@ -108,11 +109,15 @@ export class ProductDetail
       SeoService
     );
 
-    private readonly structuredDataService =
+  private readonly structuredDataService =
     inject(
-        StructuredDataService
+      StructuredDataService
     );
 
+  private readonly responseInit =
+    inject(
+      RESPONSE_INIT
+    );
 
   /*
   |--------------------------------------------------------------------------
@@ -127,13 +132,13 @@ export class ProductDetail
         ''
       );
 
-      private readonly siteUrl =
-      environment
-          .siteUrl
-          .replace(
-              /\/+$/,
-              ''
-          );
+  private readonly siteUrl =
+    environment
+      .siteUrl
+      .replace(
+        /\/+$/,
+        ''
+      );
 
 
   /*
@@ -396,6 +401,8 @@ export class ProductDetail
       id < 1
     ) {
 
+      this.marcarComoNoEncontrado();
+
       this.configurarSeoNoDisponible();
 
       this.errorMensaje.set(
@@ -406,7 +413,6 @@ export class ProductDetail
       );
 
       return;
-
     }
 
 
@@ -568,7 +574,7 @@ export class ProductDetail
 
             this.configurarDatosEstructuradosProducto(
               producto
-          );
+            );
 
           },
 
@@ -583,6 +589,8 @@ export class ProductDetail
               error.status === 404
             ) {
 
+              this.marcarComoNoEncontrado();
+
               this.configurarSeoNoDisponible();
 
               this
@@ -595,7 +603,6 @@ export class ProductDetail
                 );
 
               return;
-
             }
 
 
@@ -624,36 +631,65 @@ export class ProductDetail
 
   private configurarDatosEstructuradosProducto(
     producto:
-        ProductoPublico
-): void {
+      ProductoPublico
+  ): void {
 
     const url =
-        `${this.siteUrl}/productos/${producto.id_producto}`;
+      `${this.siteUrl}/productos/${producto.id_producto}`;
 
 
     const descripcion =
-        this.construirDescripcionSeo(
-            producto
-        );
+      this.construirDescripcionSeo(
+        producto
+      );
 
 
     const imagenes =
-        (
-            producto.imagenes
-            ?? []
-        )
-            .map(
-                imagen =>
-                    this.rutaImagen(
-                        imagen
-                    )
+      (
+        producto.imagenes
+        ?? []
+      )
+        .map(
+          imagen =>
+            this.rutaImagen(
+              imagen
             )
-            .filter(
-                (
-                    ruta
-                ): ruta is string =>
-                    !!ruta
+        )
+        .filter(
+          (
+            ruta
+          ): ruta is string =>
+            !!ruta
+        )
+        .map(
+          ruta => {
+
+            if (
+              /^https?:\/\//i
+                .test(
+                  ruta
+                )
+            ) {
+
+              return ruta;
+
+            }
+
+
+            return (
+              this.siteUrl
+              +
+              (
+                ruta.startsWith(
+                  '/'
+                )
+                  ? ruta
+                  : `/${ruta}`
+              )
             );
+
+          }
+        );
 
 
     /*
@@ -663,110 +699,110 @@ export class ProductDetail
     */
 
     if (
-        producto.variantes.length === 0
+      producto.variantes.length === 0
     ) {
 
-        const product:
-            JsonLdNode = {
+      const product:
+        JsonLdNode = {
 
-            '@context':
-                'https://schema.org',
+        '@context':
+          'https://schema.org',
 
-            '@type':
-                'Product',
+        '@type':
+          'Product',
 
-            '@id':
-                `${url}#product`,
+        '@id':
+          `${url}#product`,
 
-            name:
-                producto.nombre,
+        name:
+          producto.nombre,
 
-            url:
-                url,
+        url:
+          url,
 
-            description:
-                descripcion
+        description:
+          descripcion
+
+      };
+
+
+      if (
+        imagenes.length > 0
+      ) {
+
+        product['image'] =
+          imagenes;
+
+      }
+
+
+      if (
+        producto.marca
+      ) {
+
+        product['brand'] = {
+
+          '@type':
+            'Brand',
+
+          name:
+            producto.marca
 
         };
 
-
-        if (
-            imagenes.length > 0
-        ) {
-
-            product['image'] =
-                imagenes;
-
-        }
+      }
 
 
-        if (
-            producto.marca
-        ) {
+      if (
+        producto.categoria
+          ?.nombre
+      ) {
 
-            product['brand'] = {
+        product['category'] =
+          producto
+            .categoria
+            .nombre;
 
-                '@type':
-                    'Brand',
-
-                name:
-                    producto.marca
-
-            };
-
-        }
+      }
 
 
-        if (
-            producto.categoria
-                ?.nombre
-        ) {
-
-            product['category'] =
-                producto
-                    .categoria
-                    .nombre;
-
-        }
+      const precio =
+        this.precioVisible();
 
 
-        const precio =
-            this.precioVisible();
+      if (
+        precio !== null
+      ) {
+
+        product['offers'] = {
+
+          '@type':
+            'Offer',
+
+          url:
+            url,
+
+          price:
+            precio,
+
+          priceCurrency:
+            'BOB',
+
+          itemCondition:
+            'https://schema.org/NewCondition'
+
+        };
+
+      }
 
 
-        if (
-            precio !== null
-        ) {
-
-            product['offers'] = {
-
-                '@type':
-                    'Offer',
-
-                url:
-                    url,
-
-                price:
-                    precio,
-
-                priceCurrency:
-                    'BOB',
-
-                itemCondition:
-                    'https://schema.org/NewCondition'
-
-            };
-
-        }
+      this.structuredDataService
+        .configurar(
+          product
+        );
 
 
-        this.structuredDataService
-            .configurar(
-                product
-            );
-
-
-        return;
+      return;
 
     }
 
@@ -778,166 +814,166 @@ export class ProductDetail
     */
 
     const variantes:
-        JsonLdNode[] =
-        producto
-            .variantes
-            .map(
-                variante => {
+      JsonLdNode[] =
+      producto
+        .variantes
+        .map(
+          variante => {
 
-                    const variant:
-                        JsonLdNode = {
+            const variant:
+              JsonLdNode = {
 
-                        '@type':
-                            'Product',
+              '@type':
+                'Product',
 
-                        name:
-                            `${producto.nombre} - ${variante.nombre}`,
+              name:
+                `${producto.nombre} - ${variante.nombre}`,
 
-                        url:
-                            url,
+              url:
+                url,
 
-                        description:
-                            variante.descripcion
-                            ??
-                            descripcion
+              description:
+                variante.descripcion
+                ??
+                descripcion
 
-                    };
-
-
-                    if (
-                        imagenes.length > 0
-                    ) {
-
-                        variant['image'] =
-                            imagenes;
-
-                    }
+            };
 
 
-                    if (
-                        producto.marca
-                    ) {
+            if (
+              imagenes.length > 0
+            ) {
 
-                        variant['brand'] = {
+              variant['image'] =
+                imagenes;
 
-                            '@type':
-                                'Brand',
-
-                            name:
-                                producto.marca
-
-                        };
-
-                    }
+            }
 
 
-                    if (
-                        variante.precio_venta
-                        !== null
-                    ) {
+            if (
+              producto.marca
+            ) {
 
-                        variant['offers'] = {
+              variant['brand'] = {
 
-                            '@type':
-                                'Offer',
+                '@type':
+                  'Brand',
 
-                            url:
-                                url,
+                name:
+                  producto.marca
 
-                            price:
-                                variante
-                                    .precio_venta,
+              };
 
-                            priceCurrency:
-                                'BOB',
-
-                            itemCondition:
-                                'https://schema.org/NewCondition'
-
-                        };
-
-                    }
+            }
 
 
-                    return variant;
+            if (
+              variante.precio_venta
+              !== null
+            ) {
 
-                }
-            );
+              variant['offers'] = {
+
+                '@type':
+                  'Offer',
+
+                url:
+                  url,
+
+                price:
+                  variante
+                    .precio_venta,
+
+                priceCurrency:
+                  'BOB',
+
+                itemCondition:
+                  'https://schema.org/NewCondition'
+
+              };
+
+            }
+
+
+            return variant;
+
+          }
+        );
 
 
     const productGroup:
-        JsonLdNode = {
+      JsonLdNode = {
 
-        '@context':
-            'https://schema.org',
+      '@context':
+        'https://schema.org',
 
-        '@type':
-            'ProductGroup',
+      '@type':
+        'ProductGroup',
 
-        '@id':
-            `${url}#product-group`,
+      '@id':
+        `${url}#product-group`,
 
-        name:
-            producto.nombre,
+      name:
+        producto.nombre,
 
-        url:
-            url,
+      url:
+        url,
 
-        description:
-            descripcion,
+      description:
+        descripcion,
 
-        hasVariant:
-            variantes
+      hasVariant:
+        variantes
 
     };
 
 
     if (
-        imagenes.length > 0
+      imagenes.length > 0
     ) {
 
-        productGroup['image'] =
-            imagenes;
+      productGroup['image'] =
+        imagenes;
 
     }
 
 
     if (
-        producto.marca
+      producto.marca
     ) {
 
-        productGroup['brand'] = {
+      productGroup['brand'] = {
 
-            '@type':
-                'Brand',
+        '@type':
+          'Brand',
 
-            name:
-                producto.marca
+        name:
+          producto.marca
 
-        };
+      };
 
     }
 
 
     if (
-        producto.categoria
-            ?.nombre
+      producto.categoria
+        ?.nombre
     ) {
 
-        productGroup['category'] =
-            producto
-                .categoria
-                .nombre;
+      productGroup['category'] =
+        producto
+          .categoria
+          .nombre;
 
     }
 
 
     this.structuredDataService
-        .configurar(
-            productGroup
-        );
+      .configurar(
+        productGroup
+      );
 
-}
+  }
 
 
   /*
@@ -1557,6 +1593,25 @@ export class ProductDetail
         'noindex, nofollow'
 
     });
+
+  }
+
+  /*
+|--------------------------------------------------------------------------
+| Respuesta 404 SSR
+|--------------------------------------------------------------------------
+*/
+
+  private marcarComoNoEncontrado(): void {
+
+    if (
+      this.responseInit
+    ) {
+
+      this.responseInit.status =
+        404;
+
+    }
 
   }
 
