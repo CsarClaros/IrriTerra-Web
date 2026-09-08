@@ -168,6 +168,24 @@ export class ProductDetail
       null
     );
 
+  /*
+|--------------------------------------------------------------------------
+| Marca visible
+|--------------------------------------------------------------------------
+|
+| La marca pertenece a la variante seleccionada.
+|
+*/
+
+  readonly marcaVisible =
+    computed(
+      () =>
+        this
+          .varianteSeleccionada()
+          ?.marca
+        ?? null
+    );
+
 
   /*
   |--------------------------------------------------------------------------
@@ -350,6 +368,7 @@ export class ProductDetail
 
       }
     );
+
 
 
   /*

@@ -26,10 +26,39 @@ export interface ImagenProductoPublica {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| Marca pública
+|--------------------------------------------------------------------------
+*/
+
+export interface MarcaPublica {
+
+    id_marca:
+    number;
+
+    nombre:
+    string;
+
+    sitio_web:
+    string | null;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Variante pública
+|--------------------------------------------------------------------------
+*/
+
 export interface VarianteProductoPublica {
 
     id_producto_variante:
     number;
+
+    id_marca:
+    number | null;
 
     nombre:
     string;
@@ -46,11 +75,20 @@ export interface VarianteProductoPublica {
     precio_venta:
     number | null;
 
+    marca:
+    MarcaPublica | null;
+
     imagenes:
     ImagenProductoPublica[];
 
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| Producto público
+|--------------------------------------------------------------------------
+*/
 
 export interface ProductoPublico {
 
@@ -63,8 +101,20 @@ export interface ProductoPublico {
     nombre:
     string;
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Campo legado
+    |--------------------------------------------------------------------------
+    |
+    | Se mantiene temporalmente.
+    | La marca real se obtiene ahora desde cada variante.
+    |
+    */
+
     marca:
     string | null;
+
 
     modelo:
     string | null;
@@ -78,6 +128,7 @@ export interface ProductoPublico {
     categoria:
     CategoriaPublica | null;
 
+
     /*
     |--------------------------------------------------------------------------
     | Imágenes generales
@@ -86,6 +137,7 @@ export interface ProductoPublico {
 
     imagenes:
     ImagenProductoPublica[];
+
 
     /*
     |--------------------------------------------------------------------------
@@ -99,6 +151,12 @@ export interface ProductoPublico {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| Catálogo
+|--------------------------------------------------------------------------
+*/
+
 export interface CatalogoPublico {
 
     categorias:
@@ -109,6 +167,12 @@ export interface CatalogoPublico {
 
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| Respuestas
+|--------------------------------------------------------------------------
+*/
 
 export interface CatalogoPublicoResponse {
 

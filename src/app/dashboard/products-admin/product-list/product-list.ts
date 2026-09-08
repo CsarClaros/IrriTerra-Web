@@ -30,6 +30,8 @@ import {
     Plus,
     RefreshCw,
     Search,
+    RotateCcw,
+    Trash2,
     LucideAngularModule
 } from 'lucide-angular';
 
@@ -52,6 +54,11 @@ import {
 import {
     Categoria
 } from '../../../shared/models/categoria.model';
+
+type FiltroEstado =
+    'TODOS'
+    | 'A'
+    | 'I';
 
 
 @Component({
@@ -121,6 +128,13 @@ export class ProductList
     readonly errorMensaje =
         signal('');
 
+    readonly procesandoId =
+        signal<
+            number | null
+        >(
+            null
+        );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -137,6 +151,12 @@ export class ProductList
             null
         );
 
+    readonly filtroEstado =
+        signal<
+            FiltroEstado
+        >(
+            'TODOS'
+        );
 
     /*
     |--------------------------------------------------------------------------
@@ -163,6 +183,23 @@ export class ProductList
                     )
         );
 
+    readonly puedeEliminar =
+        computed(
+            () =>
+                this.sessionService
+                    .tienePermiso(
+                        'producto.eliminar'
+                    )
+        );
+
+    readonly puedeGestionar =
+        computed(
+            () =>
+                this.puedeEditar()
+                ||
+                this.puedeEliminar()
+        );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -183,10 +220,28 @@ export class ProductList
                 const categoria =
                     this.categoriaSeleccionada();
 
+                const estado =
+                    this.filtroEstado();
+
 
                 return this.productos()
                     .filter(
                         producto => {
+
+                            /*
+ * Filtro estado
+ */
+
+                            if (
+                                estado !== 'TODOS'
+                                &&
+                                producto.estado_registro
+                                !== estado
+                            ) {
+
+                                return false;
+
+                            }
 
                             /*
                              * Filtro categoría
@@ -211,7 +266,7 @@ export class ProductList
                              */
 
                             if (
-                                ! texto
+                                !texto
                             ) {
 
                                 return true;
@@ -270,6 +325,33 @@ export class ProductList
                     .length
         );
 
+    readonly totalActivos =
+        computed(
+            () =>
+                this.productos()
+                    .filter(
+                        producto =>
+                            producto
+                                .estado_registro
+                            === 'A'
+                    )
+                    .length
+        );
+
+
+    readonly totalInactivos =
+        computed(
+            () =>
+                this.productos()
+                    .filter(
+                        producto =>
+                            producto
+                                .estado_registro
+                            === 'I'
+                    )
+                    .length
+        );
+
 
     readonly totalFiltrados =
         computed(
@@ -308,6 +390,11 @@ export class ProductList
     readonly CircleAlert =
         CircleAlert;
 
+    readonly RotateCcw =
+        RotateCcw;
+
+    readonly Trash2 =
+        Trash2;
 
     /*
     |--------------------------------------------------------------------------
@@ -353,7 +440,7 @@ export class ProductList
 
             productos:
                 this.productoService
-                    .listar(),
+                    .listar(true),
 
             categorias:
                 this.categoriaService
@@ -446,7 +533,7 @@ export class ProductList
 
 
         if (
-            ! select.value
+            !select.value
         ) {
 
             this.categoriaSeleccionada
@@ -468,6 +555,27 @@ export class ProductList
 
     }
 
+    /*
+|--------------------------------------------------------------------------
+| Estado
+|--------------------------------------------------------------------------
+*/
+
+    actualizarEstado(
+        event:
+            Event
+    ): void {
+
+        const select =
+            event.target as HTMLSelectElement;
+
+
+        this.filtroEstado.set(
+            select.value as FiltroEstado
+        );
+
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -486,6 +594,10 @@ export class ProductList
             .set(
                 null
             );
+
+        this.filtroEstado.set(
+            'TODOS'
+        );
 
     }
 
@@ -599,7 +711,7 @@ export class ProductList
 
 
         switch (
-            error.status
+        error.status
         ) {
 
             case 0:
@@ -632,5 +744,220 @@ export class ProductList
         }
 
     }
+
+    /*
+|--------------------------------------------------------------------------
+| Desactivar
+|--------------------------------------------------------------------------
+*/
+
+    desactivar(
+        producto:
+            Producto
+    ): void {
+
+        if (
+            !this.puedeEliminar()
+            ||
+            this.procesandoId()
+            !== null
+            ||
+            producto.estado_registro
+            !== 'A'
+        ) {
+
+            return;
+
+        }
+
+
+        const confirmar =
+            window.confirm(
+
+                `¿Desactivar el producto "${producto.nombre}"?\n\n`
+                +
+                'Dejará de mostrarse en el catálogo público, '
+                +
+                'pero su información permanecerá almacenada.'
+
+            );
+
+
+        if (
+            !confirmar
+        ) {
+
+            return;
+
+        }
+
+
+        this.procesandoId.set(
+            producto.id_producto
+        );
+
+
+        this.errorMensaje.set(
+            ''
+        );
+
+
+        this.productoService
+            .eliminar(
+                producto.id_producto
+            )
+            .pipe(
+
+                finalize(
+                    () => {
+
+                        this.procesandoId
+                            .set(
+                                null
+                            );
+
+                    }
+                )
+
+            )
+            .subscribe({
+
+                next: response => {
+
+                    window.alert(
+                        response.message
+                        ||
+                        'Producto desactivado correctamente.'
+                    );
+
+
+                    this.cargarDatos();
+
+                },
+
+
+                error: (
+                    error:
+                        HttpErrorResponse
+                ) => {
+
+                    this.errorMensaje.set(
+                        this.obtenerMensajeError(
+                            error
+                        )
+                    );
+
+                }
+
+            });
+
+    }
+
+
+    /*
+|--------------------------------------------------------------------------
+| Reactivar
+|--------------------------------------------------------------------------
+*/
+
+reactivar(
+    producto:
+        Producto
+): void {
+
+    if (
+        !this.puedeEditar()
+        ||
+        this.procesandoId()
+        !== null
+        ||
+        producto.estado_registro
+        !== 'I'
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmar =
+        window.confirm(
+
+            `¿Reactivar el producto "${producto.nombre}"?\n\n`
+            +
+            'Volverá a estar disponible para el catálogo público.'
+
+        );
+
+
+    if (
+        !confirmar
+    ) {
+
+        return;
+
+    }
+
+
+    this.procesandoId.set(
+        producto.id_producto
+    );
+
+
+    this.errorMensaje.set(
+        ''
+    );
+
+
+    this.productoService
+        .reactivar(
+            producto.id_producto
+        )
+        .pipe(
+
+            finalize(
+                () => {
+
+                    this.procesandoId
+                        .set(
+                            null
+                        );
+
+                }
+            )
+
+        )
+        .subscribe({
+
+            next: response => {
+
+                window.alert(
+                    response.message
+                    ||
+                    'Producto reactivado correctamente.'
+                );
+
+
+                this.cargarDatos();
+
+            },
+
+
+            error: (
+                error:
+                    HttpErrorResponse
+            ) => {
+
+                this.errorMensaje.set(
+                    this.obtenerMensajeError(
+                        error
+                    )
+                );
+
+            }
+
+        });
+
+}
 
 }

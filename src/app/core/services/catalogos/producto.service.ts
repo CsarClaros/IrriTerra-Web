@@ -23,38 +23,72 @@ import {
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn:
+        'root'
 })
 export class ProductoService {
 
     private readonly api =
-        inject(ApiService);
+        inject(
+            ApiService
+        );
 
 
-    listar():
-        Observable<
-            ApiCollectionResponse<Producto>
-        > {
+    /*
+    |--------------------------------------------------------------------------
+    | Listar
+    |--------------------------------------------------------------------------
+    */
+
+    listar(
+        incluirInactivos:
+            boolean = false
+    ): Observable<
+        ApiCollectionResponse<
+            Producto
+        >
+    > {
+
+        const endpoint =
+            incluirInactivos
+
+                ? 'producto?incluir_inactivas=1'
+
+                : 'producto';
+
 
         return this.api
             .get<
-                ApiCollectionResponse<Producto>
+                ApiCollectionResponse<
+                    Producto
+                >
             >(
-                'producto'
+                endpoint
             );
 
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Obtener
+    |--------------------------------------------------------------------------
+    */
+
     obtener(
-        id: number
+        id:
+            number
     ): Observable<
-        ApiResourceResponse<Producto>
+        ApiResourceResponse<
+            Producto
+        >
     > {
 
         return this.api
             .get<
-                ApiResourceResponse<Producto>
+                ApiResourceResponse<
+                    Producto
+                >
             >(
                 `producto/${id}`
             );
@@ -62,15 +96,26 @@ export class ProductoService {
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Crear
+    |--------------------------------------------------------------------------
+    */
+
     crear(
-        data: ProductoRequest
+        data:
+            ProductoRequest
     ): Observable<
-        ApiResourceResponse<Producto>
+        ApiResourceResponse<
+            Producto
+        >
     > {
 
         return this.api
             .post<
-                ApiResourceResponse<Producto>
+                ApiResourceResponse<
+                    Producto
+                >
             >(
                 'producto',
                 data
@@ -79,16 +124,29 @@ export class ProductoService {
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Actualizar
+    |--------------------------------------------------------------------------
+    */
+
     actualizar(
-        id: number,
-        data: ProductoRequest
+        id:
+            number,
+
+        data:
+            ProductoRequest
     ): Observable<
-        ApiResourceResponse<Producto>
+        ApiResourceResponse<
+            Producto
+        >
     > {
 
         return this.api
             .put<
-                ApiResourceResponse<Producto>
+                ApiResourceResponse<
+                    Producto
+                >
             >(
                 `producto/${id}`,
                 data
@@ -97,13 +155,52 @@ export class ProductoService {
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Desactivar
+    |--------------------------------------------------------------------------
+    */
+
     eliminar(
-        id: number
-    ): Observable<void> {
+        id:
+            number
+    ): Observable<{
+        message:
+            string;
+    }> {
 
         return this.api
-            .delete<void>(
+            .delete<{
+                message:
+                    string;
+            }>(
                 `producto/${id}`
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reactivar
+    |--------------------------------------------------------------------------
+    */
+
+    reactivar(
+        id:
+            number
+    ): Observable<{
+        message:
+            string;
+    }> {
+
+        return this.api
+            .patch<{
+                message:
+                    string;
+            }>(
+                `producto/${id}/reactivar`,
+                {}
             );
 
     }
