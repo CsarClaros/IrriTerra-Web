@@ -268,7 +268,7 @@
         cargando()
         ) {
 
-        <section class="mt-10">
+        <section id="catalogo-productos" class="mt-10 scroll-mt-24">
 
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-7">
 
@@ -308,7 +308,10 @@
 
                 }
 
+
             </div>
+
+
 
         </section>
 
@@ -384,7 +387,7 @@
         productosFiltrados().length > 0
         ) {
 
-        <section class="mt-10">
+        <section id="catalogo-productos" class="mt-10 scroll-mt-24">
 
             <div class="mb-6">
 
@@ -425,7 +428,7 @@
 
                 @for (
                 producto
-                of productosFiltrados();
+                of productosPaginados();
                 track producto.id_producto
                 ) {
 
@@ -775,6 +778,192 @@
                 }
 
             </div>
+
+            <!-- ===================================================== -->
+            <!-- PAGINACIÓN -->
+            <!-- ===================================================== -->
+
+            @if (
+            totalPaginas() > 1
+            ) {
+
+            <div
+                class="mt-10 flex flex-col items-center justify-between gap-5 border-t border-gray-200 pt-6 sm:flex-row">
+
+
+                <!-- Información -->
+
+                <p class="text-sm text-gray-500">
+
+                    {{
+                    t(
+                    'Mostrando',
+                    'Showing'
+                    )
+                    }}
+
+                    <span class="font-semibold text-gray-900">
+
+                        {{ primerResultado() }}
+
+                    </span>
+
+                    –
+
+                    <span class="font-semibold text-gray-900">
+
+                        {{ ultimoResultado() }}
+
+                    </span>
+
+                    {{
+                    t(
+                    'de',
+                    'of'
+                    )
+                    }}
+
+                    <span class="font-semibold text-gray-900">
+
+                        {{
+                        productosFiltrados()
+                        .length
+                        }}
+
+                    </span>
+
+                    {{
+                    t(
+                    'productos',
+                    'products'
+                    )
+                    }}
+
+                </p>
+
+
+                <!-- Navegación -->
+
+                <nav class="flex items-center gap-1" [attr.aria-label]="
+                t(
+                    'Paginación del catálogo',
+                    'Catalog pagination'
+                )
+            ">
+
+
+                    <!-- Anterior -->
+
+                    <button type="button" (click)="paginaAnterior()" [disabled]="
+                    paginaActual()
+                    ===
+                    1
+                " [attr.aria-label]="
+                    t(
+                        'Página anterior',
+                        'Previous page'
+                    )
+                " class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:border-primary/40 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600">
+
+                        <lucide-angular [img]="ChevronLeft" class="h-4 w-4">
+
+                        </lucide-angular>
+
+                    </button>
+
+
+                    <!-- Números -->
+
+                    @for (
+                    elemento
+                    of elementosPaginacion();
+                    track $index
+                    ) {
+
+                    @if (
+                    elemento === 'ellipsis'
+                    ) {
+
+                    <span class="flex h-10 min-w-8 items-center justify-center px-1 text-sm text-gray-400">
+
+                        …
+
+                    </span>
+
+                    } @else {
+
+                    <button type="button" (click)="
+                            irAPagina(
+                                elemento
+                            )
+                        " [attr.aria-current]="
+                            paginaActual()
+                            ===
+                            elemento
+
+                                ? 'page'
+                                : null
+                        "
+                        class="flex h-10 min-w-10 items-center justify-center rounded-lg border px-3 text-sm font-medium transition"
+                        [class.border-primary]="
+                            paginaActual()
+                            ===
+                            elemento
+                        " [class.bg-primary]="
+                            paginaActual()
+                            ===
+                            elemento
+                        " [class.text-white]="
+                            paginaActual()
+                            ===
+                            elemento
+                        " [class.border-gray-200]="
+                            paginaActual()
+                            !==
+                            elemento
+                        " [class.bg-white]="
+                            paginaActual()
+                            !==
+                            elemento
+                        " [class.text-gray-600]="
+                            paginaActual()
+                            !==
+                            elemento
+                        ">
+
+                        {{ elemento }}
+
+                    </button>
+
+                    }
+
+                    }
+
+
+                    <!-- Siguiente -->
+
+                    <button type="button" (click)="paginaSiguiente()" [disabled]="
+                    paginaActual()
+                    ===
+                    totalPaginas()
+                " [attr.aria-label]="
+                    t(
+                        'Página siguiente',
+                        'Next page'
+                    )
+                " class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:border-primary/40 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600">
+
+                        <lucide-angular [img]="ChevronRight" class="h-4 w-4">
+
+                        </lucide-angular>
+
+                    </button>
+
+                </nav>
+
+            </div>
+
+            }
 
         </section>
 

@@ -24,6 +24,8 @@ import {
 
 import {
     ArrowRight,
+    ChevronLeft,
+    ChevronRight,
     CircleAlert,
     ImageOff,
     Package,
@@ -147,6 +149,259 @@ export class Products
         >(
             null
         );
+
+        /*
+|--------------------------------------------------------------------------
+| Paginación
+|--------------------------------------------------------------------------
+*/
+
+readonly productosPorPagina =
+12;
+
+
+readonly paginaActual =
+signal(
+    1
+);
+
+
+readonly totalPaginas =
+computed(
+    () => {
+
+        const total =
+            this.productosFiltrados()
+                .length;
+
+
+        if (
+            total === 0
+        ) {
+
+            return 1;
+
+        }
+
+
+        return Math.ceil(
+            total
+            /
+            this.productosPorPagina
+        );
+
+    }
+);
+
+
+readonly productosPaginados =
+computed(
+    () => {
+
+        const pagina =
+            Math.min(
+                this.paginaActual(),
+                this.totalPaginas()
+            );
+
+
+        const inicio =
+            (
+                pagina
+                -
+                1
+            )
+            *
+            this.productosPorPagina;
+
+
+        return this
+            .productosFiltrados()
+            .slice(
+                inicio,
+                inicio
+                +
+                this.productosPorPagina
+            );
+
+    }
+);
+
+
+readonly primerResultado =
+computed(
+    () => {
+
+        if (
+            this.productosFiltrados()
+                .length === 0
+        ) {
+
+            return 0;
+
+        }
+
+
+        return (
+            (
+                this.paginaActual()
+                -
+                1
+            )
+            *
+            this.productosPorPagina
+        )
+        +
+        1;
+
+    }
+);
+
+
+readonly ultimoResultado =
+computed(
+    () => {
+
+        return Math.min(
+
+            this.paginaActual()
+            *
+            this.productosPorPagina,
+
+            this.productosFiltrados()
+                .length
+
+        );
+
+    }
+);
+
+
+readonly elementosPaginacion =
+computed<
+    Array<
+        number
+        |
+        'ellipsis'
+    >
+>(
+    () => {
+
+        const total =
+            this.totalPaginas();
+
+
+        const actual =
+            this.paginaActual();
+
+
+        /*
+         * Pocas páginas:
+         *
+         * 1 2 3 4 5
+         */
+
+        if (
+            total <= 7
+        ) {
+
+            return Array
+                .from(
+                    {
+                        length:
+                            total
+                    },
+                    (
+                        _,
+                        indice
+                    ) =>
+                        indice + 1
+                );
+
+        }
+
+
+        const elementos:
+            Array<
+                number
+                |
+                'ellipsis'
+            > = [];
+
+
+        /*
+         * Cerca del inicio:
+         *
+         * 1 2 3 4 5 ... 21
+         */
+
+        if (
+            actual <= 4
+        ) {
+
+            elementos.push(
+                1,
+                2,
+                3,
+                4,
+                5,
+                'ellipsis',
+                total
+            );
+
+
+            return elementos;
+
+        }
+
+
+        /*
+         * Cerca del final:
+         *
+         * 1 ... 17 18 19 20 21
+         */
+
+        if (
+            actual >= total - 3
+        ) {
+
+            elementos.push(
+                1,
+                'ellipsis',
+                total - 4,
+                total - 3,
+                total - 2,
+                total - 1,
+                total
+            );
+
+
+            return elementos;
+
+        }
+
+
+        /*
+         * Zona intermedia:
+         *
+         * 1 ... 8 9 10 ... 21
+         */
+
+        elementos.push(
+            1,
+            'ellipsis',
+            actual - 1,
+            actual,
+            actual + 1,
+            'ellipsis',
+            total
+        );
+
+
+        return elementos;
+
+    }
+);
 
 
     /*
@@ -344,6 +599,13 @@ export class Products
     readonly ArrowRight =
         ArrowRight;
 
+        readonly ChevronLeft =
+    ChevronLeft;
+
+
+readonly ChevronRight =
+    ChevronRight;
+
     readonly CircleAlert =
         CircleAlert;
 
@@ -484,6 +746,10 @@ export class Products
 
                         );
 
+                        this.paginaActual.set(
+                            1
+                        );
+
 
                         this.erroresImagen.set(
                             {}
@@ -530,15 +796,20 @@ export class Products
     actualizarBusqueda(
         event: Event
     ): void {
-
+    
         const input =
             event.target as HTMLInputElement;
-
-
+    
+    
         this.busqueda.set(
             input.value
         );
-
+    
+    
+        this.paginaActual.set(
+            1
+        );
+    
     }
 
 
@@ -552,11 +823,16 @@ export class Products
         id:
             number | null
     ): void {
-
+    
         this.idCategoria.set(
             id
         );
-
+    
+    
+        this.paginaActual.set(
+            1
+        );
+    
     }
 
 
@@ -571,13 +847,106 @@ export class Products
         this.busqueda.set(
             ''
         );
-
-
+    
+    
         this.idCategoria.set(
             null
         );
+    
+    
+        this.paginaActual.set(
+            1
+        );
+    
+    }
+
+    /*
+|--------------------------------------------------------------------------
+| Navegación de páginas
+|--------------------------------------------------------------------------
+*/
+
+irAPagina(
+    pagina: number
+): void {
+
+    if (
+        pagina < 1
+        ||
+        pagina > this.totalPaginas()
+        ||
+        pagina === this.paginaActual()
+    ) {
+
+        return;
 
     }
+
+
+    this.paginaActual.set(
+        pagina
+    );
+
+
+    this.volverAlCatalogo();
+
+}
+
+
+paginaAnterior(): void {
+
+    this.irAPagina(
+        this.paginaActual()
+        -
+        1
+    );
+
+}
+
+
+paginaSiguiente(): void {
+
+    this.irAPagina(
+        this.paginaActual()
+        +
+        1
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Volver al inicio del listado
+|--------------------------------------------------------------------------
+*/
+
+private volverAlCatalogo(): void {
+
+    if (
+        typeof document
+        ===
+        'undefined'
+    ) {
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            'catalogo-productos'
+        )
+        ?.scrollIntoView({
+            behavior:
+                'smooth',
+
+            block:
+                'start'
+        });
+
+}
 
 
     /*
