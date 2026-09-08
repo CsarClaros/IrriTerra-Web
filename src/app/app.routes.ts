@@ -951,6 +951,71 @@ export const routes: Routes = [
                 ]
             },
 
+            /*
+|--------------------------------------------------------------------------
+| Marcas
+|--------------------------------------------------------------------------
+*/
+
+            {
+                path:
+                    'marcas',
+
+                loadComponent: () =>
+                    import(
+                        './dashboard/products-admin/brands/brand-list/brand-list'
+                    ).then(
+                        m =>
+                            m.BrandList
+                    ),
+
+                canActivate: [
+                    permissionGuard(
+                        'marca.ver'
+                    )
+                ]
+            },
+
+
+            {
+                path:
+                    'marcas/crear',
+
+                loadComponent: () =>
+                    import(
+                        './dashboard/products-admin/brands/brand-form/brand-form'
+                    ).then(
+                        m =>
+                            m.BrandForm
+                    ),
+
+                canActivate: [
+                    permissionGuard(
+                        'marca.crear'
+                    )
+                ]
+            },
+
+
+            {
+                path:
+                    'marcas/:id/editar',
+
+                loadComponent: () =>
+                    import(
+                        './dashboard/products-admin/brands/brand-form/brand-form'
+                    ).then(
+                        m =>
+                            m.BrandForm
+                    ),
+
+                canActivate: [
+                    permissionGuard(
+                        'marca.editar'
+                    )
+                ]
+            },
+
 
             /*
             |--------------------------------------------------------------------------

@@ -34,7 +34,8 @@ import {
   MapPinned,
   Tags,
   Truck,
-  ContactRound
+  ContactRound,
+  BadgeCheck
 } from 'lucide-angular';
 
 import {
@@ -233,6 +234,9 @@ export class DashboardLayout implements OnInit {
   readonly ContactRound =
     ContactRound;
 
+  readonly BadgeCheck =
+    BadgeCheck;
+
 
   /*
   |--------------------------------------------------------------------------
@@ -416,6 +420,28 @@ export class DashboardLayout implements OnInit {
 
         permisos: [
           'categoria.ver'
+        ]
+      },
+
+      {
+        path:
+          '/dashboard/marcas',
+
+        icon:
+          BadgeCheck,
+
+        label: {
+
+          es:
+            'Marcas',
+
+          en:
+            'Brands'
+
+        },
+
+        permisos: [
+          'marca.ver'
         ]
       },
 
