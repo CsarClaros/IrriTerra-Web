@@ -1,10 +1,21 @@
 <div class="min-h-screen bg-muted flex">
 
     <!-- SIDEBAR -->
-    <aside
-        class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300"
-        [class.translate-x-0]="isSidebarOpen" [class.-translate-x-full]="!isSidebarOpen"
-        [class.lg:translate-x-0]="true">
+    <aside class="
+        fixed inset-y-0 left-0 z-50
+        h-screen w-64
+        bg-white shadow-lg
+        transform transition-transform duration-300
+
+        lg:sticky
+        lg:top-0
+        lg:self-start
+        lg:translate-x-0
+    " [class.translate-x-0]="
+        isSidebarOpen
+    " [class.-translate-x-full]="
+        !isSidebarOpen
+    ">
 
         <div class="h-full flex flex-col">
 
@@ -57,17 +68,6 @@
 
             </nav>
 
-            <!-- LOGOUT -->
-            <div class="p-4 border-t border-gray-200">
-
-                <button (click)="logout()"
-                    class="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                    <lucide-icon [img]="LogOut" class="w-5 h-5"></lucide-icon>
-                    <span>{{ t('Cerrar sesión', 'Logout') }}</span>
-                </button>
-
-            </div>
-
         </div>
 
     </aside>
@@ -86,57 +86,246 @@
 
             <div class="flex items-center space-x-4">
 
-                
-
-                <!-- USER -->
-                <a routerLink="/dashboard/settings"
-                    class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-
-                    <!-- PHOTO -->
-                    @if (
-                    fotoActual()
-                    ) {
-
-                    <img [src]="fotoActual()!" [alt]="nombreCompleto()"
-                        class="w-9 h-9 rounded-full object-cover border border-gray-200" />
-
-                    }
-                    @else {
-
-                    <div
-                        class="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white text-xs font-semibold">
-
-                        {{
-                        iniciales()
-                        }}
-
-                    </div>
-
-                    }
 
 
-                    <!-- INFO -->
-                    <div class="hidden sm:block min-w-0">
+                <!-- ================================================= -->
+                <!-- USER MENU -->
+                <!-- ================================================= -->
 
-                        <p class="text-sm font-medium text-gray-800 truncate max-w-48">
+                <div class="relative" (click)="
+    $event.stopPropagation()
+">
+
+
+                    <!-- Botón usuario -->
+
+                    <button type="button" (click)="
+        toggleUserMenu(
+            $event
+        )
+    " [attr.aria-expanded]="
+        userMenuOpen()
+    " aria-haspopup="menu"
+                        class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-100 sm:px-3">
+
+
+                        <!-- Foto -->
+
+                        @if (
+                        fotoActual()
+                        ) {
+
+                        <img [src]="
+                fotoActual()!
+            " [alt]="
+                nombreCompleto()
+            " class="h-9 w-9 rounded-full border border-gray-200 object-cover" />
+
+                        } @else {
+
+                        <div
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
 
                             {{
-                            nombreCompleto()
+                            iniciales()
                             }}
 
-                        </p>
+                        </div>
 
-                        <p class="text-xs text-gray-500 truncate max-w-48">
+                        }
 
-                            {{
+
+                        <!-- Información -->
+
+                        <div class="hidden min-w-0 text-left sm:block">
+
+                            <p class="max-w-48 truncate text-sm font-medium text-gray-800">
+
+                                {{
+                                nombreCompleto()
+                                }}
+
+                            </p>
+
+
+                            <p class="max-w-48 truncate text-xs text-gray-500">
+
+                                {{
+                                rolActual()
+                                }}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- Flecha -->
+
+                        <lucide-icon [img]="ChevronDown" class="
+        h-4 w-4
+        text-gray-400
+        transition-transform
+        duration-200
+        ease-out
+    " [class.rotate-180]="
+        userMenuOpen()
+    ">
+                        </lucide-icon>
+
+                    </button>
+
+
+                    <!-- ================================================= -->
+                    <!-- DROPDOWN -->
+                    <!-- ================================================= -->
+
+
+
+                    <div role="menu" [attr.aria-hidden]="
+        !userMenuOpen()
+    " [attr.inert]="
+        userMenuOpen()
+            ? null
+            : ''
+    " class="
+        absolute right-0 top-full z-50 mt-2
+        w-72
+        origin-top-right
+        overflow-hidden
+        rounded-xl
+        border border-gray-200
+        bg-white
+        shadow-lg
+
+        transform-gpu
+
+        transition-all
+        duration-200
+        ease-out
+    " [class.opacity-100]="
+        userMenuOpen()
+    " [class.translate-y-0]="
+        userMenuOpen()
+    " [class.scale-100]="
+        userMenuOpen()
+    " [class.pointer-events-auto]="
+        userMenuOpen()
+    " [class.opacity-0]="
+        !userMenuOpen()
+    " [class.-translate-y-2]="
+        !userMenuOpen()
+    " [class.scale-95]="
+        !userMenuOpen()
+    " [class.pointer-events-none]="
+        !userMenuOpen()
+    ">
+
+
+                        <!-- Información del usuario -->
+
+                        <div class="border-b border-gray-100 px-4 py-4">
+
+                            <p class="truncate text-sm font-semibold text-gray-900">
+
+                                {{
+                                nombreCompleto()
+                                }}
+
+                            </p>
+
+
+                            @if (
+                            correoActual()
+                            ) {
+
+                            <p class="mt-1 truncate text-xs text-gray-500">
+
+                                {{
+                                correoActual()
+                                }}
+
+                            </p>
+
+                            }
+
+
+                            @if (
                             rolActual()
-                            }}
+                            ) {
 
-                        </p>
+                            <span
+                                class="mt-2 inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+
+                                {{
+                                rolActual()
+                                }}
+
+                            </span>
+
+                            }
+
+                        </div>
+
+
+                        <!-- Opciones -->
+
+                        <div class="p-2">
+
+
+                            <!-- Configuración -->
+
+                            <a routerLink="/dashboard/settings" role="menuitem" (click)="
+                    closeUserMenu()
+                " class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
+
+                                <lucide-icon [img]="Settings" class="h-4 w-4 text-gray-500">
+                                </lucide-icon>
+
+
+                                <span>
+
+                                    {{
+                                    t(
+                                    'Configuración',
+                                    'Settings'
+                                    )
+                                    }}
+
+                                </span>
+
+                            </a>
+
+
+                            <!-- Cerrar sesión -->
+
+                            <button type="button" role="menuitem" (click)="
+                    logout()
+                " class="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-red-600 transition hover:bg-red-50">
+
+                                <lucide-icon [img]="LogOut" class="h-4 w-4">
+                                </lucide-icon>
+
+
+                                <span>
+
+                                    {{
+                                    t(
+                                    'Cerrar sesión',
+                                    'Logout'
+                                    )
+                                    }}
+
+                                </span>
+
+                            </button>
+
+                        </div>
 
                     </div>
 
-                </a>
+
+
+                </div>
 
             </div>
 

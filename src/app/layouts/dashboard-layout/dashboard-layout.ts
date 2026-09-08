@@ -2,7 +2,9 @@ import {
   Component,
   computed,
   inject,
-  OnInit
+  OnInit,
+  HostListener,
+  signal
 } from '@angular/core';
 
 import {
@@ -35,7 +37,8 @@ import {
   Tags,
   Truck,
   ContactRound,
-  BadgeCheck
+  BadgeCheck,
+  ChevronDown
 } from 'lucide-angular';
 
 import {
@@ -176,6 +179,17 @@ export class DashboardLayout implements OnInit {
   isSidebarOpen =
     false;
 
+  /*
+|--------------------------------------------------------------------------
+| Menú de usuario
+|--------------------------------------------------------------------------
+*/
+
+  readonly userMenuOpen =
+    signal(
+      false
+    );
+
 
   /*
   |--------------------------------------------------------------------------
@@ -236,6 +250,9 @@ export class DashboardLayout implements OnInit {
 
   readonly BadgeCheck =
     BadgeCheck;
+
+  readonly ChevronDown =
+    ChevronDown;
 
 
   /*
@@ -547,26 +564,6 @@ export class DashboardLayout implements OnInit {
       },
 
 
-      {
-
-        path:
-          '/dashboard/settings',
-
-        icon:
-          Settings,
-
-        label: {
-
-          es:
-            'Configuración',
-
-          en:
-            'Settings'
-
-        }
-
-      }
-
     ];
 
 
@@ -744,12 +741,67 @@ export class DashboardLayout implements OnInit {
 
 
   /*
+|--------------------------------------------------------------------------
+| Menú de usuario
+|--------------------------------------------------------------------------
+*/
+
+  toggleUserMenu(
+    event:
+      MouseEvent
+  ): void {
+
+    /*
+     * Evita que el click llegue al
+     * listener global y cierre
+     * inmediatamente el menú.
+     */
+
+    event.stopPropagation();
+
+
+    this.userMenuOpen.update(
+      abierto =>
+        !abierto
+    );
+
+  }
+
+
+  closeUserMenu(): void {
+
+    this.userMenuOpen.set(
+      false
+    );
+
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Cerrar al hacer click fuera
+  |--------------------------------------------------------------------------
+  */
+
+  @HostListener(
+    'document:click'
+  )
+  onDocumentClick(): void {
+
+    this.closeUserMenu();
+
+  }
+
+
+  /*
   |--------------------------------------------------------------------------
   | Logout
   |--------------------------------------------------------------------------
   */
 
   logout(): void {
+
+    this.closeUserMenu();
 
     this.authService
       .logout()
