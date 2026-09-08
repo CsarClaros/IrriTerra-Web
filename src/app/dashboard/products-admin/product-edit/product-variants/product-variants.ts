@@ -58,6 +58,14 @@ import {
     PrecioProductoVarianteRequest
 } from '../../../../shared/models/precio-producto-variante.model';
 
+import {
+    MarcaService
+} from '../../../../core/services/catalogos/marca.service';
+
+import {
+    Marca
+} from '../../../../shared/models/marca.model';
+
 
 @Component({
     selector: 'app-product-variants',
@@ -104,6 +112,11 @@ export class ProductVariants
             PrecioProductoVarianteService
         );
 
+    private readonly marcaService =
+        inject(
+            MarcaService
+        );
+
 
     private readonly sessionService =
         inject(
@@ -128,6 +141,10 @@ export class ProductVariants
             PrecioProductoVariante[]
         >([]);
 
+    readonly marcas =
+        signal<
+            Marca[]
+        >([]);
 
     /*
     |--------------------------------------------------------------------------
@@ -186,6 +203,9 @@ export class ProductVariants
 
 
     formVariante = {
+
+        id_marca:
+            null as number | null,
 
         nombre: '',
 
@@ -357,8 +377,11 @@ export class ProductVariants
 
             precios:
                 this.precioService
-                    .listar()
+                    .listar(),
 
+            marcas:
+                this.marcaService
+                    .listar()
         })
             .pipe(
 
@@ -376,6 +399,19 @@ export class ProductVariants
             .subscribe({
 
                 next: response => {
+
+                    /*
+    |--------------------------------------------------------------------------
+    | Marcas
+    |--------------------------------------------------------------------------
+    */
+
+    this.marcas.set(
+        response
+            .marcas
+            .data
+        ?? []
+    );
 
                     /*
                     |--------------------------------------------------------------------------
@@ -559,6 +595,10 @@ export class ProductVariants
 
         this.formVariante = {
 
+            id_marca:
+                variante.id_marca
+                ?? null,
+
             nombre:
                 variante.nombre
                 ?? '',
@@ -678,21 +718,21 @@ export class ProductVariants
         */
 
         if (
-            ! this.formVariante
+            !this.formVariante
                 .nombre
                 .trim()
         ) {
 
             this.agregarErrorVariante(
-                'nombre',
-                'El nombre de la variante es obligatorio.'
+                'sku',
+                'El código interno de inventario (SKU) es obligatorio.'
             );
 
         }
 
 
         if (
-            ! this.formVariante
+            !this.formVariante
                 .sku
                 .trim()
         ) {
@@ -706,7 +746,7 @@ export class ProductVariants
 
 
         if (
-            ! this.formVariante
+            !this.formVariante
                 .unidad_medida
                 .trim()
         ) {
@@ -741,6 +781,10 @@ export class ProductVariants
 
             id_producto:
                 this.idProducto(),
+
+            id_marca:
+                this.formVariante
+                    .id_marca,
 
             nombre:
                 this.formVariante
@@ -1011,7 +1055,7 @@ export class ProductVariants
 
 
         if (
-            ! variante
+            !variante
         ) {
 
             return;
@@ -1198,7 +1242,7 @@ export class ProductVariants
             data.costo_compra =
                 this.formPrecio
                     .costo_compra
-                === null
+                    === null
 
                     ? null
 
@@ -1546,7 +1590,7 @@ export class ProductVariants
 
 
         switch (
-            error.status
+        error.status
         ) {
 
             case 0:
@@ -1598,6 +1642,9 @@ export class ProductVariants
 
         this.formVariante = {
 
+            id_marca:
+                null,
+
             nombre: '',
 
             sku: '',
@@ -1631,6 +1678,49 @@ export class ProductVariants
 
             })
         );
+
+    }
+
+
+
+    nombreMarca(
+        variante:
+            ProductoVariante
+    ): string {
+
+        if (
+            variante.marca
+                ?.nombre
+        ) {
+
+            return variante
+                .marca
+                .nombre;
+
+        }
+
+
+        if (
+            variante.id_marca
+            === null
+            ||
+            variante.id_marca
+            === undefined
+        ) {
+
+            return 'Sin marca';
+
+        }
+
+
+        return this.marcas()
+            .find(
+                marca =>
+                    marca.id_marca
+                    === variante.id_marca
+            )
+            ?.nombre
+            ?? 'Sin marca';
 
     }
 

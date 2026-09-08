@@ -2,52 +2,85 @@ import {
     Producto
 } from './producto.model';
 
+import {
+    Marca
+} from './marca.model';
+
 
 export interface ProductoVariante {
 
-    id_producto_variante: number;
+    id_producto_variante:
+    number;
 
-    id_producto?: number | null;
+    id_producto?:
+    number | null;
 
-    nombre: string;
+    id_marca?:
+    number | null;
 
-    sku: string;
+    nombre:
+    string;
 
-    codigo_comercial?: string | null;
+    sku:
+    string;
 
-    unidad_medida: string;
+    codigo_comercial?:
+    string | null;
 
-    descripcion?: string | null;
+    unidad_medida:
+    string;
 
-    observaciones?: string | null;
+    descripcion?:
+    string | null;
 
-    estado_registro: string;
+    observaciones?:
+    string | null;
 
-    producto?: Producto | null;
+    estado_registro:
+    string;
 
-    created_at?: string | null;
+    marca?:
+    Marca | null;
 
-    updated_at?: string | null;
+    producto?:
+    Producto | null;
+
+    created_at?:
+    string | null;
+
+    updated_at?:
+    string | null;
 
 }
 
 
 export interface ProductoVarianteRequest {
 
-    id_producto: number;
+    id_producto:
+    number;
 
-    nombre: string;
+    id_marca?:
+    number | null;
 
-    sku: string;
+    nombre:
+    string;
 
-    codigo_comercial?: string | null;
+    sku:
+    string;
 
-    unidad_medida: string;
+    codigo_comercial?:
+    string | null;
 
-    descripcion?: string | null;
+    unidad_medida:
+    string;
 
-    observaciones?: string | null;
+    descripcion?:
+    string | null;
 
-    estado_registro?: string;
+    observaciones?:
+    string | null;
+
+    estado_registro?:
+    string;
 
 }

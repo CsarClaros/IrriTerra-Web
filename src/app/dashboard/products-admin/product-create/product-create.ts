@@ -1,647 +1,650 @@
 import {
-  Component,
-  OnInit,
-  inject,
-  signal
+    Component,
+    OnInit,
+    inject,
+    signal
 } from '@angular/core';
 
 import {
-  CommonModule
+    CommonModule
 } from '@angular/common';
 
 import {
-  FormsModule
+    FormsModule
 } from '@angular/forms';
 
 import {
-  Router,
-  RouterLink
+    Router,
+    RouterLink
 } from '@angular/router';
 
 import {
-  HttpErrorResponse
+    HttpErrorResponse
 } from '@angular/common/http';
 
 import {
-  finalize
+    finalize
 } from 'rxjs';
 
 import {
-  ArrowLeft,
-  CircleAlert,
-  FileText,
-  PackagePlus,
-  Save,
-  LucideAngularModule
+    ArrowLeft,
+    CircleAlert,
+    FileText,
+    PackagePlus,
+    Save,
+    LucideAngularModule
 } from 'lucide-angular';
 
 import {
-  CategoriaService
+    CategoriaService
 } from '../../../core/services/catalogos/categoria.service';
 
 import {
-  ProductoService
+    ProductoService
 } from '../../../core/services/catalogos/producto.service';
 
 import {
-  Categoria
+    Categoria
 } from '../../../shared/models/categoria.model';
 
 import {
-  ProductoRequest
+    ProductoRequest
 } from '../../../shared/models/producto.model';
 
 
 @Component({
-  selector: 'app-product-create',
+    selector: 'app-product-create',
 
-  imports: [
-      CommonModule,
-      FormsModule,
-      RouterLink,
-      LucideAngularModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterLink,
+        LucideAngularModule
+    ],
 
-  templateUrl: './product-create.html',
+    templateUrl: './product-create.html',
 
-  styleUrl: './product-create.css'
+    styleUrl: './product-create.css'
 })
 export class ProductCreate
-  implements OnInit {
+    implements OnInit {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Dependencias
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Dependencias
+    |--------------------------------------------------------------------------
+    */
 
-  private readonly categoriaService =
-      inject(
-          CategoriaService
-      );
+    private readonly categoriaService =
+        inject(
+            CategoriaService
+        );
 
 
-  private readonly productoService =
-      inject(
-          ProductoService
-      );
+    private readonly productoService =
+        inject(
+            ProductoService
+        );
 
 
-  private readonly router =
-      inject(
-          Router
-      );
+    private readonly router =
+        inject(
+            Router
+        );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Formulario
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Formulario
+    |--------------------------------------------------------------------------
+    */
 
-  formData = {
+    formData = {
 
-      id_categoria:
-          null as number | null,
+        id_categoria:
+            null as number | null,
 
-      nombre: '',
+        nombre: '',
 
-      marca: '',
+        // marca: '',
 
-      modelo: '',
+        modelo: '',
 
-      descripcion: '',
+        descripcion: '',
 
-      catalogo_pdf: '',
+        catalogo_pdf: '',
 
-      observaciones: ''
+        observaciones: ''
 
-  };
+    };
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Datos
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Datos
+    |--------------------------------------------------------------------------
+    */
 
-  readonly categorias =
-      signal<Categoria[]>([]);
+    readonly categorias =
+        signal<Categoria[]>([]);
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Estado
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Estado
+    |--------------------------------------------------------------------------
+    */
 
-  readonly cargandoCategorias =
-      signal(false);
+    readonly cargandoCategorias =
+        signal(false);
 
 
-  readonly guardando =
-      signal(false);
+    readonly guardando =
+        signal(false);
 
 
-  readonly errorMensaje =
-      signal('');
+    readonly errorMensaje =
+        signal('');
 
 
-  readonly erroresCampos =
-      signal<
-          Record<string, string>
-      >({});
+    readonly erroresCampos =
+        signal<
+            Record<string, string>
+        >({});
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Iconos
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos
+    |--------------------------------------------------------------------------
+    */
 
-  readonly ArrowLeft =
-      ArrowLeft;
+    readonly ArrowLeft =
+        ArrowLeft;
 
 
-  readonly CircleAlert =
-      CircleAlert;
+    readonly CircleAlert =
+        CircleAlert;
 
 
-  readonly FileText =
-      FileText;
+    readonly FileText =
+        FileText;
 
 
-  readonly PackagePlus =
-      PackagePlus;
+    readonly PackagePlus =
+        PackagePlus;
 
 
-  readonly Save =
-      Save;
+    readonly Save =
+        Save;
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Inicio
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Inicio
+    |--------------------------------------------------------------------------
+    */
 
-  ngOnInit(): void {
+    ngOnInit(): void {
 
-      this.cargarCategorias();
+        this.cargarCategorias();
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Categorías
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Categorías
+    |--------------------------------------------------------------------------
+    */
 
-  cargarCategorias(): void {
+    cargarCategorias(): void {
 
-      this.cargandoCategorias.set(
-          true
-      );
+        this.cargandoCategorias.set(
+            true
+        );
 
 
-      this.errorMensaje.set(
-          ''
-      );
+        this.errorMensaje.set(
+            ''
+        );
 
 
-      this.categoriaService
-          .listar()
-          .pipe(
+        this.categoriaService
+            .listar()
+            .pipe(
 
-              finalize(
-                  () => {
+                finalize(
+                    () => {
 
-                      this.cargandoCategorias
-                          .set(
-                              false
-                          );
+                        this.cargandoCategorias
+                            .set(
+                                false
+                            );
 
-                  }
-              )
+                    }
+                )
 
-          )
-          .subscribe({
+            )
+            .subscribe({
 
-              next: response => {
+                next: response => {
 
-                  this.categorias.set(
-                      response.data
-                      ?? []
-                  );
+                    this.categorias.set(
+                        response.data
+                        ?? []
+                    );
 
-              },
+                },
 
 
-              error: (
-                  error:
-                      HttpErrorResponse
-              ) => {
+                error: (
+                    error:
+                        HttpErrorResponse
+                ) => {
 
-                  this.errorMensaje.set(
-                      this.obtenerMensajeError(
-                          error
-                      )
-                  );
+                    this.errorMensaje.set(
+                        this.obtenerMensajeError(
+                            error
+                        )
+                    );
 
-              }
+                }
 
-          });
+            });
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Guardar
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Guardar
+    |--------------------------------------------------------------------------
+    */
 
-  guardar(): void {
+    guardar(): void {
 
-      if (
-          this.guardando()
-      ) {
+        if (
+            this.guardando()
+        ) {
 
-          return;
+            return;
 
-      }
+        }
 
 
-      this.limpiarErrores();
+        this.limpiarErrores();
 
 
-      /*
-      |--------------------------------------------------------------------------
-      | Validación básica frontend
-      |--------------------------------------------------------------------------
-      */
+        /*
+        |--------------------------------------------------------------------------
+        | Validación básica frontend
+        |--------------------------------------------------------------------------
+        */
 
-      if (
-          this.formData
-              .id_categoria
-          === null
-      ) {
+        if (
+            this.formData
+                .id_categoria
+            === null
+        ) {
 
-          this.agregarErrorCampo(
-              'id_categoria',
-              'Seleccione una categoría.'
-          );
+            this.agregarErrorCampo(
+                'id_categoria',
+                'Seleccione una categoría.'
+            );
 
-      }
+        }
 
 
-      if (
-          ! this.formData
-              .nombre
-              .trim()
-      ) {
+        if (
+            !this.formData
+                .nombre
+                .trim()
+        ) {
 
-          this.agregarErrorCampo(
-              'nombre',
-              'El nombre del producto es obligatorio.'
-          );
+            this.agregarErrorCampo(
+                'nombre',
+                'El nombre del producto es obligatorio.'
+            );
 
-      }
+        }
 
 
-      if (
-          Object.keys(
-              this.erroresCampos()
-          ).length > 0
-      ) {
+        if (
+            Object.keys(
+                this.erroresCampos()
+            ).length > 0
+        ) {
 
-          return;
+            return;
 
-      }
+        }
 
 
-      /*
-      |--------------------------------------------------------------------------
-      | Payload
-      |--------------------------------------------------------------------------
-      */
+        /*
+        |--------------------------------------------------------------------------
+        | Payload
+        |--------------------------------------------------------------------------
+        */
 
-      const data:
-          ProductoRequest = {
+        const data:
+            ProductoRequest = {
 
-          id_categoria:
-              this.formData
-                  .id_categoria!,
+            id_categoria:
+                this.formData
+                    .id_categoria!,
 
-          nombre:
-              this.formData
-                  .nombre
-                  .trim(),
+            nombre:
+                this.formData
+                    .nombre
+                    .trim(),
 
-          marca:
-              this.normalizarTexto(
-                  this.formData
-                      .marca
-              ),
+            // marca:
+            //     this.normalizarTexto(
+            //         this.formData
+            //             .marca
+            //     ),
 
-          modelo:
-              this.normalizarTexto(
-                  this.formData
-                      .modelo
-              ),
+            modelo:
+                this.normalizarTexto(
+                    this.formData
+                        .modelo
+                ),
 
-          descripcion:
-              this.normalizarTexto(
-                  this.formData
-                      .descripcion
-              ),
+            descripcion:
+                this.normalizarTexto(
+                    this.formData
+                        .descripcion
+                ),
 
-          catalogo_pdf:
-              this.normalizarTexto(
-                  this.formData
-                      .catalogo_pdf
-              ),
+            catalogo_pdf:
+                this.normalizarTexto(
+                    this.formData
+                        .catalogo_pdf
+                ),
 
-          observaciones:
-              this.normalizarTexto(
-                  this.formData
-                      .observaciones
-              )
+            observaciones:
+                this.normalizarTexto(
+                    this.formData
+                        .observaciones
+                )
 
-      };
+        };
 
 
-      /*
-      |--------------------------------------------------------------------------
-      | API
-      |--------------------------------------------------------------------------
-      */
+        /*
+        |--------------------------------------------------------------------------
+        | API
+        |--------------------------------------------------------------------------
+        */
 
-      this.guardando.set(
-          true
-      );
+        this.guardando.set(
+            true
+        );
 
 
-      this.productoService
-          .crear(
-              data
-          )
-          .pipe(
+        this.productoService
+            .crear(
+                data
+            )
+            .pipe(
 
-              finalize(
-                  () => {
+                finalize(
+                    () => {
 
-                      this.guardando.set(
-                          false
-                      );
+                        this.guardando.set(
+                            false
+                        );
 
-                  }
-              )
+                    }
+                )
 
-          )
-          .subscribe({
+            )
+            .subscribe({
 
-              next: () => {
+                next: response => {
 
-                  void this.router
-                      .navigate([
-                          '/dashboard/products'
-                      ]);
+                    void this.router
+                        .navigate([
+                            '/dashboard/products/edit',
+                            response
+                                .data
+                                .id_producto
+                        ]);
 
-              },
+                },
 
 
-              error: (
-                  error:
-                      HttpErrorResponse
-              ) => {
+                error: (
+                    error:
+                        HttpErrorResponse
+                ) => {
 
-                  this.procesarError(
-                      error
-                  );
+                    this.procesarError(
+                        error
+                    );
 
-              }
+                }
 
-          });
+            });
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Error de campo
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Error de campo
+    |--------------------------------------------------------------------------
+    */
 
-  errorCampo(
-      campo: string
-  ): string | null {
+    errorCampo(
+        campo: string
+    ): string | null {
 
-      return this.erroresCampos()[
-          campo
-      ] ?? null;
+        return this.erroresCampos()[
+            campo
+        ] ?? null;
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Procesar errores Laravel
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Procesar errores Laravel
+    |--------------------------------------------------------------------------
+    */
 
-  private procesarError(
-      error: HttpErrorResponse
-  ): void {
+    private procesarError(
+        error: HttpErrorResponse
+    ): void {
 
-      /*
-       * Laravel ValidationException
-       */
+        /*
+         * Laravel ValidationException
+         */
 
-      if (
-          error.status === 422
-          &&
-          error.error
-              ?.errors
-          &&
-          typeof error.error
-              .errors
-          === 'object'
-      ) {
+        if (
+            error.status === 422
+            &&
+            error.error
+                ?.errors
+            &&
+            typeof error.error
+                .errors
+            === 'object'
+        ) {
 
-          const errores:
-              Record<string, string> =
-              {};
+            const errores:
+                Record<string, string> =
+                {};
 
 
-          Object.entries(
-              error.error.errors
-          )
-              .forEach(
-                  (
-                      [
-                          campo,
-                          mensajes
-                      ]
-                  ) => {
+            Object.entries(
+                error.error.errors
+            )
+                .forEach(
+                    (
+                        [
+                            campo,
+                            mensajes
+                        ]
+                    ) => {
 
-                      if (
-                          Array.isArray(
-                              mensajes
-                          )
-                          &&
-                          mensajes.length > 0
-                      ) {
+                        if (
+                            Array.isArray(
+                                mensajes
+                            )
+                            &&
+                            mensajes.length > 0
+                        ) {
 
-                          errores[campo] =
-                              String(
-                                  mensajes[0]
-                              );
+                            errores[campo] =
+                                String(
+                                    mensajes[0]
+                                );
 
-                      }
+                        }
 
-                  }
-              );
+                    }
+                );
 
 
-          this.erroresCampos.set(
-              errores
-          );
+            this.erroresCampos.set(
+                errores
+            );
 
 
-          this.errorMensaje.set(
-              'Revise los campos marcados en el formulario.'
-          );
+            this.errorMensaje.set(
+                'Revise los campos marcados en el formulario.'
+            );
 
 
-          return;
+            return;
 
-      }
+        }
 
 
-      this.errorMensaje.set(
-          this.obtenerMensajeError(
-              error
-          )
-      );
+        this.errorMensaje.set(
+            this.obtenerMensajeError(
+                error
+            )
+        );
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Mensaje HTTP
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Mensaje HTTP
+    |--------------------------------------------------------------------------
+    */
 
-  private obtenerMensajeError(
-      error: HttpErrorResponse
-  ): string {
+    private obtenerMensajeError(
+        error: HttpErrorResponse
+    ): string {
 
-      const mensaje =
-          error.error
-              ?.message;
+        const mensaje =
+            error.error
+                ?.message;
 
 
-      if (
-          typeof mensaje === 'string'
-          &&
-          mensaje.trim()
-      ) {
+        if (
+            typeof mensaje === 'string'
+            &&
+            mensaje.trim()
+        ) {
 
-          return mensaje;
+            return mensaje;
 
-      }
+        }
 
 
-      switch (
-          error.status
-      ) {
+        switch (
+        error.status
+        ) {
 
-          case 0:
+            case 0:
 
-              return (
-                  'No se pudo conectar con el servidor.'
-              );
+                return (
+                    'No se pudo conectar con el servidor.'
+                );
 
 
-          case 403:
+            case 403:
 
-              return (
-                  'No tiene permiso para registrar productos.'
-              );
+                return (
+                    'No tiene permiso para registrar productos.'
+                );
 
 
-          case 422:
+            case 422:
 
-              return (
-                  'Verifique los datos ingresados.'
-              );
+                return (
+                    'Verifique los datos ingresados.'
+                );
 
 
-          default:
+            default:
 
-              return (
-                  'No fue posible registrar el producto.'
-              );
+                return (
+                    'No fue posible registrar el producto.'
+                );
 
-      }
+        }
 
-  }
+    }
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Helpers
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Helpers
+    |--------------------------------------------------------------------------
+    */
 
-  private normalizarTexto(
-      value: string
-  ): string | null {
+    private normalizarTexto(
+        value: string
+    ): string | null {
 
-      const texto =
-          value.trim();
+        const texto =
+            value.trim();
 
 
-      return texto
-          ? texto
-          : null;
+        return texto
+            ? texto
+            : null;
 
-  }
+    }
 
 
-  private limpiarErrores(): void {
+    private limpiarErrores(): void {
 
-      this.errorMensaje.set(
-          ''
-      );
+        this.errorMensaje.set(
+            ''
+        );
 
 
-      this.erroresCampos.set(
-          {}
-      );
+        this.erroresCampos.set(
+            {}
+        );
 
-  }
+    }
 
 
-  private agregarErrorCampo(
-      campo: string,
-      mensaje: string
-  ): void {
+    private agregarErrorCampo(
+        campo: string,
+        mensaje: string
+    ): void {
 
-      this.erroresCampos.update(
-          errores => ({
+        this.erroresCampos.update(
+            errores => ({
 
-              ...errores,
+                ...errores,
 
-              [campo]:
-                  mensaje
+                [campo]:
+                    mensaje
 
-          })
-      );
+            })
+        );
 
-  }
+    }
 
 }

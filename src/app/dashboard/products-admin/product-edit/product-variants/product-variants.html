@@ -1,5 +1,4 @@
-<div
-    class="space-y-6">
+<div class="space-y-6">
 
 
     <!--
@@ -8,21 +7,18 @@
     ========================================================================
     -->
 
-    <div
-        class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
         <div>
 
-            <h2
-                class="text-lg font-semibold text-gray-900">
+            <h2 class="text-lg font-semibold text-gray-900">
 
                 Variantes y precios
 
             </h2>
 
 
-            <p
-                class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-gray-500">
 
                 Administre presentaciones, códigos y precios del producto.
 
@@ -31,24 +27,12 @@
         </div>
 
 
-        <div
-            class="flex gap-2">
+        <div class="flex gap-2">
 
-            <button
-                type="button"
-
-                (click)="cargarDatos()"
-
-                [disabled]="cargando()"
-
+            <button type="button" (click)="cargarDatos()" [disabled]="cargando()"
                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
 
-                <lucide-angular
-                    [img]="RefreshCw"
-
-                    class="h-4 w-4"
-
-                    [class.animate-spin]="
+                <lucide-angular [img]="RefreshCw" class="h-4 w-4" [class.animate-spin]="
                         cargando()
                     ">
 
@@ -60,25 +44,19 @@
 
 
             @if (
-                ! mostrarFormularioVariante()
+            ! mostrarFormularioVariante()
             ) {
 
-                <button
-                    type="button"
+            <button type="button" (click)="nuevaVariante()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
 
-                    (click)="nuevaVariante()"
+                <lucide-angular [img]="Plus" class="h-4 w-4">
 
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90">
+                </lucide-angular>
 
-                    <lucide-angular
-                        [img]="Plus"
-                        class="h-4 w-4">
+                Nueva variante
 
-                    </lucide-angular>
-
-                    Nueva variante
-
-                </button>
+            </button>
 
             }
 
@@ -95,25 +73,20 @@
 
     @if (errorMensaje()) {
 
-        <div
-            role="alert"
+    <div role="alert" class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
 
-            class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5 flex-shrink-0">
 
-            <lucide-angular
-                [img]="CircleAlert"
-                class="mt-0.5 h-5 w-5 flex-shrink-0">
-
-            </lucide-angular>
+        </lucide-angular>
 
 
-            <p class="text-sm">
+        <p class="text-sm">
 
-                {{ errorMensaje() }}
+            {{ errorMensaje() }}
 
-            </p>
+        </p>
 
-        </div>
+    </div>
 
     }
 
@@ -126,353 +99,320 @@
 
     @if (mostrarFormularioVariante()) {
 
-        <form
-            #varianteForm="ngForm"
-
-            (ngSubmit)="guardarVariante()"
-
-            class="rounded-xl border border-primary/20 bg-primary/5 p-5">
+    <form #varianteForm="ngForm" (ngSubmit)="guardarVariante()"
+        class="rounded-xl border border-primary/20 bg-primary/5 p-5">
 
 
-            <div
-                class="mb-5 flex items-center justify-between">
+        <div class="mb-5 flex items-center justify-between">
 
-                <div>
+            <div>
 
-                    <h3
-                        class="font-semibold text-gray-900">
+                <h3 class="font-semibold text-gray-900">
 
-                        {{
-                            editandoVariante()
-                            ? 'Editar variante'
-                            : 'Nueva variante'
-                        }}
+                    {{
+                    editandoVariante()
+                    ? 'Editar variante'
+                    : 'Nueva variante'
+                    }}
 
-                    </h3>
+                </h3>
 
 
-                    <p
-                        class="mt-1 text-sm text-gray-500">
+                <p class="mt-1 text-sm text-gray-500">
 
-                        Información comercial de la presentación.
+                    Información comercial de la presentación.
 
-                    </p>
-
-                </div>
-
-
-                <button
-                    type="button"
-
-                    (click)="cancelarVariante()"
-
-                    [disabled]="guardandoVariante()"
-
-                    class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-white">
-
-                    <lucide-angular
-                        [img]="X"
-                        class="h-5 w-5">
-
-                    </lucide-angular>
-
-                </button>
+                </p>
 
             </div>
 
 
-            <div
-                class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <button type="button" (click)="cancelarVariante()" [disabled]="guardandoVariante()"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-white">
+
+                <lucide-angular [img]="X" class="h-5 w-5">
+
+                </lucide-angular>
+
+            </button>
+
+        </div>
 
 
-                <!-- Nombre -->
-
-                <div>
-
-                    <label
-                        for="variante_nombre"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Nombre
-                        <span class="text-red-500">*</span>
-
-                    </label>
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
 
 
-                    <input
-                        id="variante_nombre"
-                        name="variante_nombre"
-                        type="text"
+            <!-- Nombre -->
 
-                        [(ngModel)]="
+            <div>
+
+                <label for="variante_nombre" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Nombre
+                    <span class="text-red-500">*</span>
+
+                </label>
+
+
+                <input id="variante_nombre" name="variante_nombre" type="text" [(ngModel)]="
                             formVariante.nombre
-                        "
+                        " required [disabled]="guardandoVariante()" placeholder="Ej. 3 pulgadas"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
 
-                        required
 
-                        [disabled]="guardandoVariante()"
+                @if (
+                errorVariante('nombre');
+                as error
+                ) {
 
-                        placeholder="Ej. 3 pulgadas"
+                <p class="mt-1.5 text-sm text-red-600">
 
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
+                    {{ error }}
 
+                </p>
 
-                    @if (
-                        errorVariante('nombre');
-                        as error
-                    ) {
-
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
-
-                            {{ error }}
-
-                        </p>
-
-                    }
-
-                </div>
-
-
-                <!-- SKU -->
-
-                <div>
-
-                    <label
-                        for="sku"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        SKU
-                        <span class="text-red-500">*</span>
-
-                    </label>
-
-
-                    <input
-                        id="sku"
-                        name="sku"
-                        type="text"
-
-                        [(ngModel)]="
-                            formVariante.sku
-                        "
-
-                        required
-
-                        [disabled]="guardandoVariante()"
-
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
-
-
-                    @if (
-                        errorVariante('sku');
-                        as error
-                    ) {
-
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
-
-                            {{ error }}
-
-                        </p>
-
-                    }
-
-                </div>
-
-
-                <!-- Código comercial -->
-
-                <div>
-
-                    <label
-                        for="codigo_comercial"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Código comercial
-
-                    </label>
-
-
-                    <input
-                        id="codigo_comercial"
-                        name="codigo_comercial"
-                        type="text"
-
-                        [(ngModel)]="
-                            formVariante.codigo_comercial
-                        "
-
-                        [disabled]="guardandoVariante()"
-
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
-
-                </div>
-
-
-                <!-- Unidad -->
-
-                <div>
-
-                    <label
-                        for="unidad_medida"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Unidad
-                        <span class="text-red-500">*</span>
-
-                    </label>
-
-
-                    <input
-                        id="unidad_medida"
-                        name="unidad_medida"
-                        type="text"
-
-                        [(ngModel)]="
-                            formVariante.unidad_medida
-                        "
-
-                        required
-
-                        maxlength="20"
-
-                        [disabled]="guardandoVariante()"
-
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm uppercase outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
-
-                </div>
-
-
-                <!-- Descripción -->
-
-                <div
-                    class="md:col-span-2">
-
-                    <label
-                        for="variante_descripcion"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Descripción
-
-                    </label>
-
-
-                    <textarea
-                        id="variante_descripcion"
-                        name="variante_descripcion"
-
-                        [(ngModel)]="
-                            formVariante.descripcion
-                        "
-
-                        [disabled]="guardandoVariante()"
-
-                        rows="3"
-
-                        class="w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-
-                    </textarea>
-
-                </div>
-
-
-                <!-- Observaciones -->
-
-                <div
-                    class="md:col-span-2">
-
-                    <label
-                        for="variante_observaciones"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Observaciones
-
-                    </label>
-
-
-                    <textarea
-                        id="variante_observaciones"
-                        name="variante_observaciones"
-
-                        [(ngModel)]="
-                            formVariante.observaciones
-                        "
-
-                        [disabled]="guardandoVariante()"
-
-                        rows="2"
-
-                        class="w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-
-                    </textarea>
-
-                </div>
+                }
 
             </div>
 
 
-            <div
-                class="mt-5 flex justify-end gap-3 border-t border-primary/10 pt-5">
+            <!-- Marca -->
 
-                <button
-                    type="button"
+            <div>
 
-                    (click)="cancelarVariante()"
+                <label for="id_marca" class="mb-2 block text-sm font-medium text-gray-700">
 
-                    [disabled]="guardandoVariante()"
+                    Marca
 
-                    class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700">
-
-                    Cancelar
-
-                </button>
+                </label>
 
 
-                <button
-                    type="submit"
+                <select id="id_marca" name="id_marca" [(ngModel)]="
+            formVariante.id_marca
+        " [disabled]="guardandoVariante()"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
 
-                    [disabled]="
+                    <option [ngValue]="null">
+
+                        Sin marca
+
+                    </option>
+
+
+                    @for (
+                    marca
+                    of marcas();
+                    track marca.id_marca
+                    ) {
+
+                    <option [ngValue]="
+                    marca.id_marca
+                ">
+
+                        {{ marca.nombre }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+
+                @if (
+                errorVariante(
+                'id_marca'
+                );
+                as error
+                ) {
+
+                <p class="mt-1.5 text-sm text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- SKU -->
+
+            <!-- Código interno / SKU -->
+
+            <div>
+
+                <label for="sku" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Código interno de inventario (SKU)
+                    <span class="text-red-500">*</span>
+
+                </label>
+
+
+                <input id="sku" name="sku" type="text" [(ngModel)]="
+            formVariante.sku
+        " required [disabled]="guardandoVariante()" placeholder="Ingrese un código único para esta variante"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+
+                <p class="mt-1.5 text-xs leading-5 text-gray-500">
+
+                    Identificador único para controlar esta variante
+                    en el inventario. Debe ser diferente para cada variante.
+
+                </p>
+
+
+                @if (
+                errorVariante('sku');
+                as error
+                ) {
+
+                <p class="mt-1.5 text-sm text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- Código comercial -->
+
+            <div>
+
+                <label for="codigo_comercial" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Código comercial
+
+                </label>
+
+
+                <input id="codigo_comercial" name="codigo_comercial" type="text" [(ngModel)]="
+                            formVariante.codigo_comercial
+                        " [disabled]="guardandoVariante()"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                <p class="mt-1.5 text-xs leading-5 text-gray-500">
+
+                    Código utilizado comercialmente por el fabricante
+                    o proveedor, si corresponde.
+
+                </p>
+
+            </div>
+
+
+            <!-- Unidad -->
+
+            <div>
+
+                <label for="unidad_medida" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Unidad
+                    <span class="text-red-500">*</span>
+
+                </label>
+
+
+                <input id="unidad_medida" name="unidad_medida" type="text" [(ngModel)]="
+                            formVariante.unidad_medida
+                        " required maxlength="20" [disabled]="guardandoVariante()"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm uppercase outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+            </div>
+
+
+            <!-- Descripción -->
+
+            <div class="md:col-span-2">
+
+                <label for="variante_descripcion" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Descripción
+
+                </label>
+
+
+                <textarea id="variante_descripcion" name="variante_descripcion" [(ngModel)]="
+                            formVariante.descripcion
+                        " [disabled]="guardandoVariante()" rows="3"
+                    class="w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    </textarea>
+
+            </div>
+
+
+            <!-- Observaciones -->
+
+            <div class="md:col-span-2">
+
+                <label for="variante_observaciones" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Observaciones
+
+                </label>
+
+
+                <textarea id="variante_observaciones" name="variante_observaciones" [(ngModel)]="
+                            formVariante.observaciones
+                        " [disabled]="guardandoVariante()" rows="2"
+                    class="w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+
+                    </textarea>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-5 flex justify-end gap-3 border-t border-primary/10 pt-5">
+
+            <button type="button" (click)="cancelarVariante()" [disabled]="guardandoVariante()"
+                class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700">
+
+                Cancelar
+
+            </button>
+
+
+            <button type="submit" [disabled]="
                         guardandoVariante()
                         ||
                         varianteForm.invalid
                     "
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
 
-                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
 
+                @if (
+                guardandoVariante()
+                ) {
 
-                    @if (
-                        guardandoVariante()
-                    ) {
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
 
-                        <span
-                            class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+                </span>
 
-                        </span>
+                Guardando...
 
-                        Guardando...
+                } @else {
 
-                    } @else {
+                <lucide-angular [img]="Save" class="h-4 w-4">
 
-                        <lucide-angular
-                            [img]="Save"
-                            class="h-4 w-4">
+                </lucide-angular>
 
-                        </lucide-angular>
+                Guardar
 
-                        Guardar
+                }
 
-                    }
+            </button>
 
-                </button>
+        </div>
 
-            </div>
-
-        </form>
+    </form>
 
     }
 
@@ -484,375 +424,283 @@
     -->
 
     @if (
-        mostrarFormularioPrecio()
-        &&
-        variantePrecio()
+    mostrarFormularioPrecio()
+    &&
+    variantePrecio()
     ) {
 
-        <form
-            #precioForm="ngForm"
-
-            (ngSubmit)="guardarPrecio()"
-
-            class="rounded-xl border border-gray-200 bg-gray-50 p-5">
+    <form #precioForm="ngForm" (ngSubmit)="guardarPrecio()" class="rounded-xl border border-gray-200 bg-gray-50 p-5">
 
 
-            <div
-                class="mb-5 flex items-start justify-between">
+        <div class="mb-5 flex items-start justify-between">
 
-                <div
-                    class="flex items-center gap-3">
+            <div class="flex items-center gap-3">
 
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-primary shadow-sm">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-primary shadow-sm">
 
-                        <lucide-angular
-                            [img]="BadgeDollarSign"
-                            class="h-5 w-5">
+                    <lucide-angular [img]="BadgeDollarSign" class="h-5 w-5">
 
-                        </lucide-angular>
-
-                    </div>
-
-
-                    <div>
-
-                        <h3
-                            class="font-semibold text-gray-900">
-
-                            {{
-                                editandoPrecio()
-                                ? 'Editar precio'
-                                : 'Configurar precio'
-                            }}
-
-                        </h3>
-
-
-                        <p
-                            class="mt-1 text-sm text-gray-500">
-
-                            {{ variantePrecio()!.nombre }}
-
-                            ·
-
-                            {{ variantePrecio()!.sku }}
-
-                        </p>
-
-                    </div>
+                    </lucide-angular>
 
                 </div>
 
 
-                <button
-                    type="button"
+                <div>
 
-                    (click)="cerrarFormularioPrecio()"
+                    <h3 class="font-semibold text-gray-900">
 
-                    [disabled]="guardandoPrecio()"
+                        {{
+                        editandoPrecio()
+                        ? 'Editar precio'
+                        : 'Configurar precio'
+                        }}
 
-                    class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-white">
+                    </h3>
 
-                    <lucide-angular
-                        [img]="X"
-                        class="h-5 w-5">
 
-                    </lucide-angular>
+                    <p class="mt-1 text-sm text-gray-500">
 
-                </button>
+                        {{ variantePrecio()!.nombre }}
+
+                        ·
+
+                        {{ variantePrecio()!.sku }}
+
+                    </p>
+
+                </div>
 
             </div>
 
 
-            @if (
-                errorPrecioMensaje()
-            ) {
+            <button type="button" (click)="cerrarFormularioPrecio()" [disabled]="guardandoPrecio()"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-white">
 
-                <div
-                    role="alert"
+                <lucide-angular [img]="X" class="h-5 w-5">
 
-                    class="mb-5 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                </lucide-angular>
 
-                    <lucide-angular
-                        [img]="CircleAlert"
-                        class="h-4 w-4">
+            </button>
 
-                    </lucide-angular>
-
-                    {{ errorPrecioMensaje() }}
-
-                </div>
-
-            }
+        </div>
 
 
-            <div
-                class="grid grid-cols-1 gap-5 md:grid-cols-3">
+        @if (
+        errorPrecioMensaje()
+        ) {
+
+        <div role="alert"
+            class="mb-5 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+
+            <lucide-angular [img]="CircleAlert" class="h-4 w-4">
+
+            </lucide-angular>
+
+            {{ errorPrecioMensaje() }}
+
+        </div>
+
+        }
 
 
-                <!-- Precio venta -->
-
-                <div>
-
-                    <label
-                        for="precio_venta"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Precio de venta
-                        <span class="text-red-500">*</span>
-
-                    </label>
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
 
 
-                    <div
-                        class="relative">
+            <!-- Precio venta -->
 
-                        <span
-                            class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+            <div>
 
-                            Bs
+                <label for="precio_venta" class="mb-2 block text-sm font-medium text-gray-700">
 
-                        </span>
+                    Precio de venta
+                    <span class="text-red-500">*</span>
+
+                </label>
 
 
-                        <input
-                            id="precio_venta"
-                            name="precio_venta"
-                            type="number"
+                <div class="relative">
 
-                            [(ngModel)]="
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+
+                        Bs
+
+                    </span>
+
+
+                    <input id="precio_venta" name="precio_venta" type="number" [(ngModel)]="
                                 formPrecio.precio_venta
-                            "
-
-                            required
-                            min="0.01"
-                            step="0.01"
-
-                            [disabled]="guardandoPrecio()"
-
-                            class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                        />
-
-                    </div>
-
-
-                    @if (
-                        errorPrecio(
-                            'precio_venta'
-                        );
-                        as error
-                    ) {
-
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
-
-                            {{ error }}
-
-                        </p>
-
-                    }
+                            " required min="0.01" step="0.01" [disabled]="guardandoPrecio()"
+                        class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
 
                 </div>
 
-
-                <!-- Precio mínimo -->
-
-                <div>
-
-                    <label
-                        for="precio_minimo"
-                        class="mb-2 block text-sm font-medium text-gray-700">
-
-                        Precio mínimo
-                        <span class="text-red-500">*</span>
-
-                    </label>
-
-
-                    <div
-                        class="relative">
-
-                        <span
-                            class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-
-                            Bs
-
-                        </span>
-
-
-                        <input
-                            id="precio_minimo"
-                            name="precio_minimo"
-                            type="number"
-
-                            [(ngModel)]="
-                                formPrecio.precio_minimo
-                            "
-
-                            required
-                            min="0"
-                            step="0.01"
-
-                            [disabled]="guardandoPrecio()"
-
-                            class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                        />
-
-                    </div>
-
-
-                    @if (
-                        errorPrecio(
-                            'precio_minimo'
-                        );
-                        as error
-                    ) {
-
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
-
-                            {{ error }}
-
-                        </p>
-
-                    }
-
-                </div>
-
-
-                <!-- Costo compra -->
 
                 @if (
-                    puedeVerCostoCompra()
+                errorPrecio(
+                'precio_venta'
+                );
+                as error
                 ) {
 
-                    <div>
+                <p class="mt-1.5 text-sm text-red-600">
 
-                        <label
-                            for="costo_compra"
-                            class="mb-2 block text-sm font-medium text-gray-700">
+                    {{ error }}
 
-                            Costo de compra
-
-                        </label>
-
-
-                        <div
-                            class="relative">
-
-                            <span
-                                class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-
-                                Bs
-
-                            </span>
-
-
-                            <input
-                                id="costo_compra"
-                                name="costo_compra"
-                                type="number"
-
-                                [(ngModel)]="
-                                    formPrecio.costo_compra
-                                "
-
-                                min="0"
-                                step="0.01"
-
-                                [disabled]="guardandoPrecio()"
-
-                                class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                            />
-
-                        </div>
-
-
-                        @if (
-                            errorPrecio(
-                                'costo_compra'
-                            );
-                            as error
-                        ) {
-
-                            <p
-                                class="mt-1.5 text-sm text-red-600">
-
-                                {{ error }}
-
-                            </p>
-
-                        }
-
-                    </div>
+                </p>
 
                 }
 
             </div>
 
 
-            <div
-                class="mt-5 flex justify-end gap-3 border-t border-gray-200 pt-5">
+            <!-- Precio mínimo -->
 
-                <button
-                    type="button"
+            <div>
 
-                    (click)="cerrarFormularioPrecio()"
+                <label for="precio_minimo" class="mb-2 block text-sm font-medium text-gray-700">
 
-                    [disabled]="guardandoPrecio()"
+                    Precio mínimo
+                    <span class="text-red-500">*</span>
 
-                    class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700">
-
-                    Cancelar
-
-                </button>
+                </label>
 
 
-                <button
-                    type="submit"
+                <div class="relative">
 
-                    [disabled]="
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+
+                        Bs
+
+                    </span>
+
+
+                    <input id="precio_minimo" name="precio_minimo" type="number" [(ngModel)]="
+                                formPrecio.precio_minimo
+                            " required min="0" step="0.01" [disabled]="guardandoPrecio()"
+                        class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+
+                @if (
+                errorPrecio(
+                'precio_minimo'
+                );
+                as error
+                ) {
+
+                <p class="mt-1.5 text-sm text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+
+            <!-- Costo compra -->
+
+            @if (
+            puedeVerCostoCompra()
+            ) {
+
+            <div>
+
+                <label for="costo_compra" class="mb-2 block text-sm font-medium text-gray-700">
+
+                    Costo de compra
+
+                </label>
+
+
+                <div class="relative">
+
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+
+                        Bs
+
+                    </span>
+
+
+                    <input id="costo_compra" name="costo_compra" type="number" [(ngModel)]="
+                                    formPrecio.costo_compra
+                                " min="0" step="0.01" [disabled]="guardandoPrecio()"
+                        class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+
+                </div>
+
+
+                @if (
+                errorPrecio(
+                'costo_compra'
+                );
+                as error
+                ) {
+
+                <p class="mt-1.5 text-sm text-red-600">
+
+                    {{ error }}
+
+                </p>
+
+                }
+
+            </div>
+
+            }
+
+        </div>
+
+
+        <div class="mt-5 flex justify-end gap-3 border-t border-gray-200 pt-5">
+
+            <button type="button" (click)="cerrarFormularioPrecio()" [disabled]="guardandoPrecio()"
+                class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700">
+
+                Cancelar
+
+            </button>
+
+
+            <button type="submit" [disabled]="
                         guardandoPrecio()
                         ||
                         precioForm.invalid
                     "
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
 
-                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white disabled:opacity-60">
 
+                @if (
+                guardandoPrecio()
+                ) {
 
-                    @if (
-                        guardandoPrecio()
-                    ) {
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
 
-                        <span
-                            class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+                </span>
 
-                        </span>
+                Guardando...
 
-                        Guardando...
+                } @else {
 
-                    } @else {
+                <lucide-angular [img]="Save" class="h-4 w-4">
 
-                        <lucide-angular
-                            [img]="Save"
-                            class="h-4 w-4">
+                </lucide-angular>
 
-                        </lucide-angular>
+                {{
+                editandoPrecio()
+                ? 'Guardar precio'
+                : 'Registrar precio'
+                }}
 
-                        {{
-                            editandoPrecio()
-                            ? 'Guardar precio'
-                            : 'Registrar precio'
-                        }}
+                }
 
-                    }
+            </button>
 
-                </button>
+        </div>
 
-            </div>
-
-        </form>
+    </form>
 
     }
 
@@ -865,23 +713,20 @@
 
     @if (cargando()) {
 
-        <div
-            class="rounded-xl border border-gray-200 bg-white p-10 text-center">
+    <div class="rounded-xl border border-gray-200 bg-white p-10 text-center">
 
-            <div
-                class="mx-auto mb-3 h-7 w-7 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
-
-            </div>
-
-
-            <p
-                class="text-sm text-gray-500">
-
-                Cargando variantes y precios...
-
-            </p>
+        <div class="mx-auto mb-3 h-7 w-7 animate-spin rounded-full border-4 border-gray-200 border-t-primary">
 
         </div>
+
+
+        <p class="text-sm text-gray-500">
+
+            Cargando variantes y precios...
+
+        </p>
+
+    </div>
 
     }
 
@@ -893,335 +738,312 @@
     -->
 
     @else if (
-        variantes().length > 0
+    variantes().length > 0
     ) {
 
-        <div
-            class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
 
-            <div
-                class="overflow-x-auto">
+        <div class="overflow-x-auto">
 
-                <table
-                    class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
 
 
-                    <thead
-                        class="bg-gray-50">
+                <thead class="bg-gray-50">
 
-                        <tr>
+                    <tr>
 
-                            <th
-                                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
 
-                                Variante
+                            Variante
 
-                            </th>
+                        </th>
 
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
 
-                            <th
-                                class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Marca
 
-                                SKU
-
-                            </th>
+                        </th>
 
 
-                            <th
-                                class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
 
-                                Precio venta
+                            SKU
 
-                            </th>
-
-
-                            <th
-                                class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
-
-                                Precio mínimo
-
-                            </th>
+                        </th>
 
 
-                            @if (
-                                puedeVerCostoCompra()
-                            ) {
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
 
-                                <th
-                                    class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Precio venta
 
-                                    Costo compra
+                        </th>
 
-                                </th>
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Precio mínimo
+
+                        </th>
+
+
+                        @if (
+                        puedeVerCostoCompra()
+                        ) {
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Costo compra
+
+                        </th>
+
+                        }
+
+
+                        <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+
+                            Acciones
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-200">
+
+                    @for (
+                    variante
+                    of variantes();
+                    track variante.id_producto_variante
+                    ) {
+
+                    @let precio =
+                    precioDeVariante(
+                    variante
+                    );
+
+
+                    <tr class="transition hover:bg-gray-50">
+
+
+                        <!-- Variante -->
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex items-center gap-3">
+
+                                <div
+                                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+
+                                    <lucide-angular [img]="Barcode" class="h-4 w-4">
+
+                                    </lucide-angular>
+
+                                </div>
+
+
+                                <div>
+
+                                    <p class="font-medium text-gray-900">
+
+                                        {{ variante.nombre }}
+
+                                    </p>
+
+
+                                    <p class="text-xs text-gray-500">
+
+                                        {{
+                                        variante.codigo_comercial
+                                        || 'Sin código comercial'
+                                        }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- Marca -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+
+                            {{
+                            nombreMarca(
+                            variante
+                            )
+                            }}
+
+                        </td>
+
+
+                        <!-- SKU -->
+
+                        <td class="whitespace-nowrap px-5 py-4">
+
+                            <span class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-700">
+
+                                {{ variante.sku }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Venta -->
+
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm">
+
+                            @if (precio) {
+
+                            <span class="font-medium text-gray-900">
+
+                                Bs
+                                {{
+                                precio.precio_venta
+                                | number:'1.2-2'
+                                }}
+
+                            </span>
+
+                            } @else {
+
+                            <span class="text-gray-400">
+
+                                Sin definir
+
+                            </span>
 
                             }
 
-
-                            <th
-                                class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
-
-                                Acciones
-
-                            </th>
-
-                        </tr>
-
-                    </thead>
+                        </td>
 
 
-                    <tbody
-                        class="divide-y divide-gray-200">
+                        <!-- Mínimo -->
 
-                        @for (
-                            variante
-                            of variantes();
-                            track variante.id_producto_variante
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm">
+
+                            @if (precio) {
+
+                            Bs
+                            {{
+                            precio.precio_minimo
+                            | number:'1.2-2'
+                            }}
+
+                            } @else {
+
+                            <span class="text-gray-400">
+
+                                —
+
+                            </span>
+
+                            }
+
+                        </td>
+
+
+                        <!-- Costo -->
+
+                        @if (
+                        puedeVerCostoCompra()
                         ) {
 
-                            @let precio =
-                                precioDeVariante(
-                                    variante
-                                );
+                        <td class="whitespace-nowrap px-5 py-4 text-right text-sm">
 
+                            @if (
+                            precio
+                            &&
+                            precio.costo_compra
+                            !== undefined
+                            &&
+                            precio.costo_compra
+                            !== null
+                            ) {
 
-                            <tr
-                                class="transition hover:bg-gray-50">
+                            Bs
+                            {{
+                            precio.costo_compra
+                            | number:'1.2-2'
+                            }}
 
+                            } @else {
 
-                                <!-- Variante -->
+                            <span class="text-gray-400">
 
-                                <td
-                                    class="px-5 py-4">
+                                —
 
-                                    <div
-                                        class="flex items-center gap-3">
+                            </span>
 
-                                        <div
-                                            class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+                            }
 
-                                            <lucide-angular
-                                                [img]="Barcode"
-                                                class="h-4 w-4">
+                        </td>
 
-                                            </lucide-angular>
+                        }
 
-                                        </div>
 
+                        <!-- Acciones -->
 
-                                        <div>
+                        <td class="whitespace-nowrap px-5 py-4 text-right">
 
-                                            <p
-                                                class="font-medium text-gray-900">
+                            <div class="flex justify-end gap-1">
 
-                                                {{ variante.nombre }}
 
-                                            </p>
-
-
-                                            <p
-                                                class="text-xs text-gray-500">
-
-                                                {{
-                                                    variante.codigo_comercial
-                                                    || 'Sin código comercial'
-                                                }}
-
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- SKU -->
-
-                                <td
-                                    class="whitespace-nowrap px-5 py-4">
-
-                                    <span
-                                        class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-700">
-
-                                        {{ variante.sku }}
-
-                                    </span>
-
-                                </td>
-
-
-                                <!-- Venta -->
-
-                                <td
-                                    class="whitespace-nowrap px-5 py-4 text-right text-sm">
-
-                                    @if (precio) {
-
-                                        <span
-                                            class="font-medium text-gray-900">
-
-                                            Bs
-                                            {{
-                                                precio.precio_venta
-                                                | number:'1.2-2'
-                                            }}
-
-                                        </span>
-
-                                    } @else {
-
-                                        <span
-                                            class="text-gray-400">
-
-                                            Sin definir
-
-                                        </span>
-
-                                    }
-
-                                </td>
-
-
-                                <!-- Mínimo -->
-
-                                <td
-                                    class="whitespace-nowrap px-5 py-4 text-right text-sm">
-
-                                    @if (precio) {
-
-                                        Bs
-                                        {{
-                                            precio.precio_minimo
-                                            | number:'1.2-2'
-                                        }}
-
-                                    } @else {
-
-                                        <span
-                                            class="text-gray-400">
-
-                                            —
-
-                                        </span>
-
-                                    }
-
-                                </td>
-
-
-                                <!-- Costo -->
-
-                                @if (
-                                    puedeVerCostoCompra()
-                                ) {
-
-                                    <td
-                                        class="whitespace-nowrap px-5 py-4 text-right text-sm">
-
-                                        @if (
-                                            precio
-                                            &&
-                                            precio.costo_compra
-                                                !== undefined
-                                            &&
-                                            precio.costo_compra
-                                                !== null
-                                        ) {
-
-                                            Bs
-                                            {{
-                                                precio.costo_compra
-                                                | number:'1.2-2'
-                                            }}
-
-                                        } @else {
-
-                                            <span
-                                                class="text-gray-400">
-
-                                                —
-
-                                            </span>
-
-                                        }
-
-                                    </td>
-
-                                }
-
-
-                                <!-- Acciones -->
-
-                                <td
-                                    class="whitespace-nowrap px-5 py-4 text-right">
-
-                                    <div
-                                        class="flex justify-end gap-1">
-
-
-                                        <button
-                                            type="button"
-
-                                            (click)="
+                                <button type="button" (click)="
                                                 configurarPrecio(
                                                     variante
                                                 )
                                             "
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
 
-                                            class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
+                                    <lucide-angular [img]="BadgeDollarSign" class="h-4 w-4">
 
-                                            <lucide-angular
-                                                [img]="BadgeDollarSign"
-                                                class="h-4 w-4">
-
-                                            </lucide-angular>
+                                    </lucide-angular>
 
 
-                                            {{
-                                                precio
-                                                ? 'Precio'
-                                                : 'Definir precio'
-                                            }}
+                                    {{
+                                    precio
+                                    ? 'Precio'
+                                    : 'Definir precio'
+                                    }}
 
-                                        </button>
+                                </button>
 
 
-                                        <button
-                                            type="button"
-
-                                            (click)="
+                                <button type="button" (click)="
                                                 editarVariante(
                                                     variante
                                                 )
                                             "
+                                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-primary transition hover:bg-primary/10">
 
-                                            class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-primary transition hover:bg-primary/10">
+                                    <lucide-angular [img]="Pencil" class="h-4 w-4">
 
-                                            <lucide-angular
-                                                [img]="Pencil"
-                                                class="h-4 w-4">
+                                    </lucide-angular>
 
-                                            </lucide-angular>
+                                    Editar
 
-                                            Editar
+                                </button>
 
-                                        </button>
+                            </div>
 
-                                    </div>
+                        </td>
 
-                                </td>
+                    </tr>
 
-                            </tr>
+                    }
 
-                        }
+                </tbody>
 
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         </div>
+
+    </div>
 
     }
 
@@ -1233,58 +1055,47 @@
     -->
 
     @else if (
-        ! errorMensaje()
+    ! errorMensaje()
     ) {
 
+    <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
+
         <div
-            class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
+            class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm">
 
-            <div
-                class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm">
+            <lucide-angular [img]="Barcode" class="h-6 w-6">
 
-                <lucide-angular
-                    [img]="Barcode"
-                    class="h-6 w-6">
-
-                </lucide-angular>
-
-            </div>
-
-
-            <h3
-                class="font-medium text-gray-900">
-
-                Sin variantes
-
-            </h3>
-
-
-            <p
-                class="mt-1 text-sm text-gray-500">
-
-                Registre primero una variante para poder configurar sus precios.
-
-            </p>
-
-
-            <button
-                type="button"
-
-                (click)="nuevaVariante()"
-
-                class="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white">
-
-                <lucide-angular
-                    [img]="Plus"
-                    class="h-4 w-4">
-
-                </lucide-angular>
-
-                Registrar primera variante
-
-            </button>
+            </lucide-angular>
 
         </div>
+
+
+        <h3 class="font-medium text-gray-900">
+
+            Sin variantes
+
+        </h3>
+
+
+        <p class="mt-1 text-sm text-gray-500">
+
+            Registre primero una variante para poder configurar sus precios.
+
+        </p>
+
+
+        <button type="button" (click)="nuevaVariante()"
+            class="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white">
+
+            <lucide-angular [img]="Plus" class="h-4 w-4">
+
+            </lucide-angular>
+
+            Registrar primera variante
+
+        </button>
+
+    </div>
 
     }
 

@@ -17,32 +17,22 @@ import {
 } from '../../../shared/models/api-response.model';
 
 import {
-    ProductoVariante
+    ProductoVariante,
+    ProductoVarianteRequest
 } from '../../../shared/models/producto-variante.model';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn:
+        'root'
 })
 export class ProductoVarianteService {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Dependencias
-    |--------------------------------------------------------------------------
-    */
 
     private readonly api =
         inject(
             ApiService
         );
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Listar
-    |--------------------------------------------------------------------------
-    */
 
     listar():
         Observable<
@@ -63,21 +53,13 @@ export class ProductoVarianteService {
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Obtener
-    |--------------------------------------------------------------------------
-    */
-
     obtener(
-        id:
-            number
-    ):
-        Observable<
-            ApiResourceResponse<
-                ProductoVariante
-            >
-        > {
+        id: number
+    ): Observable<
+        ApiResourceResponse<
+            ProductoVariante
+        >
+    > {
 
         return this.api
             .get<
@@ -86,6 +68,51 @@ export class ProductoVarianteService {
                 >
             >(
                 `producto-variante/${id}`
+            );
+
+    }
+
+
+    crear(
+        data:
+            ProductoVarianteRequest
+    ): Observable<
+        ApiResourceResponse<
+            ProductoVariante
+        >
+    > {
+
+        return this.api
+            .post<
+                ApiResourceResponse<
+                    ProductoVariante
+                >
+            >(
+                'producto-variante',
+                data
+            );
+
+    }
+
+
+    actualizar(
+        id: number,
+        data:
+            ProductoVarianteRequest
+    ): Observable<
+        ApiResourceResponse<
+            ProductoVariante
+        >
+    > {
+
+        return this.api
+            .put<
+                ApiResourceResponse<
+                    ProductoVariante
+                >
+            >(
+                `producto-variante/${id}`,
+                data
             );
 
     }

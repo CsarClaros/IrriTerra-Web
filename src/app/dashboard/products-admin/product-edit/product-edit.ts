@@ -146,7 +146,7 @@ export class ProductEdit
 
         nombre: '',
 
-        marca: '',
+        // marca: '',
 
         modelo: '',
 
@@ -459,11 +459,11 @@ export class ProductEdit
                     .nombre
                     .trim(),
 
-            marca:
-                this.normalizarTexto(
-                    this.formData
-                        .marca
-                ),
+            // marca:
+            //     this.normalizarTexto(
+            //         this.formData
+            //             .marca
+            //     ),
 
             modelo:
                 this.normalizarTexto(
@@ -578,9 +578,9 @@ export class ProductEdit
                 producto.nombre
                 ?? '',
 
-            marca:
-                producto.marca
-                ?? '',
+            // marca:
+            //     producto.marca
+            //     ?? '',
 
             modelo:
                 producto.modelo

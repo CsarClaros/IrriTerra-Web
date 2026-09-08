@@ -1,5 +1,4 @@
-<div
-    class="mx-auto max-w-4xl space-y-6">
+<div class="mx-auto max-w-4xl space-y-6">
 
 
     <!--
@@ -8,17 +7,12 @@
     ========================================================================
     -->
 
-    <div
-        class="flex items-center gap-4">
+    <div class="flex items-center gap-4">
 
-        <a
-            routerLink="/dashboard/products"
-
+        <a routerLink="/dashboard/products"
             class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-600 transition hover:bg-gray-50">
 
-            <lucide-angular
-                [img]="ArrowLeft"
-                class="h-5 w-5">
+            <lucide-angular [img]="ArrowLeft" class="h-5 w-5">
 
             </lucide-angular>
 
@@ -27,18 +21,17 @@
 
         <div>
 
-            <h1
-                class="text-2xl font-semibold text-gray-900">
+            <h1 class="text-2xl font-semibold text-gray-900">
 
                 Nuevo producto
 
             </h1>
 
 
-            <p
-                class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-gray-500">
 
-                Registre la información general del producto.
+                Registre la información general. Luego podrá agregar variantes,
+                marcas, precios e imágenes.
 
             </p>
 
@@ -55,26 +48,20 @@
 
     @if (errorMensaje()) {
 
-        <div
-            role="alert"
+    <div role="alert" class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
 
-            class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <lucide-angular [img]="CircleAlert" class="mt-0.5 h-5 w-5 flex-shrink-0">
 
-            <lucide-angular
-                [img]="CircleAlert"
-                class="mt-0.5 h-5 w-5 flex-shrink-0">
-
-            </lucide-angular>
+        </lucide-angular>
 
 
-            <p
-                class="text-sm">
+        <p class="text-sm">
 
-                {{ errorMensaje() }}
+            {{ errorMensaje() }}
 
-            </p>
+        </p>
 
-        </div>
+    </div>
 
     }
 
@@ -85,28 +72,19 @@
     ========================================================================
     -->
 
-    <form
-        #productoForm="ngForm"
-
-        (ngSubmit)="guardar()"
-
+    <form #productoForm="ngForm" (ngSubmit)="guardar()"
         class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
 
         <!-- Información principal -->
 
-        <div
-            class="border-b border-gray-200 p-6">
+        <div class="border-b border-gray-200 p-6">
 
-            <div
-                class="mb-6 flex items-center gap-3">
+            <div class="mb-6 flex items-center gap-3">
 
-                <div
-                    class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
 
-                    <lucide-angular
-                        [img]="PackagePlus"
-                        class="h-5 w-5">
+                    <lucide-angular [img]="PackagePlus" class="h-5 w-5">
 
                     </lucide-angular>
 
@@ -115,16 +93,14 @@
 
                 <div>
 
-                    <h2
-                        class="font-semibold text-gray-900">
+                    <h2 class="font-semibold text-gray-900">
 
                         Información general
 
                     </h2>
 
 
-                    <p
-                        class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500">
 
                         Datos principales del producto.
 
@@ -135,17 +111,14 @@
             </div>
 
 
-            <div
-                class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
 
                 <!-- Categoría -->
 
                 <div>
 
-                    <label
-                        for="id_categoria"
-                        class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="id_categoria" class="mb-2 block text-sm font-medium text-gray-700">
 
                         Categoría
                         <span class="text-red-500">*</span>
@@ -153,50 +126,39 @@
                     </label>
 
 
-                    <select
-                        id="id_categoria"
-                        name="id_categoria"
-
-                        [(ngModel)]="
+                    <select id="id_categoria" name="id_categoria" [(ngModel)]="
                             formData.id_categoria
-                        "
-
-                        required
-
-                        [disabled]="
+                        " required [disabled]="
                             cargandoCategorias()
                             ||
                             guardando()
                         "
-
                         class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
 
-                        <option
-                            [ngValue]="null">
+                        <option [ngValue]="null">
 
                             {{
-                                cargandoCategorias()
-                                ? 'Cargando categorías...'
-                                : 'Seleccione una categoría'
+                            cargandoCategorias()
+                            ? 'Cargando categorías...'
+                            : 'Seleccione una categoría'
                             }}
 
                         </option>
 
 
                         @for (
-                            categoria
-                            of categorias();
-                            track categoria.id_categoria
+                        categoria
+                        of categorias();
+                        track categoria.id_categoria
                         ) {
 
-                            <option
-                                [ngValue]="
+                        <option [ngValue]="
                                     categoria.id_categoria
                                 ">
 
-                                {{ categoria.nombre }}
+                            {{ categoria.nombre }}
 
-                            </option>
+                        </option>
 
                         }
 
@@ -204,18 +166,17 @@
 
 
                     @if (
-                        errorCampo(
-                            'id_categoria'
-                        );
-                        as error
+                    errorCampo(
+                    'id_categoria'
+                    );
+                    as error
                     ) {
 
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
+                    <p class="mt-1.5 text-sm text-red-600">
 
-                            {{ error }}
+                        {{ error }}
 
-                        </p>
+                    </p>
 
                     }
 
@@ -226,9 +187,7 @@
 
                 <div>
 
-                    <label
-                        for="nombre"
-                        class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="nombre" class="mb-2 block text-sm font-medium text-gray-700">
 
                         Nombre
                         <span class="text-red-500">*</span>
@@ -236,38 +195,24 @@
                     </label>
 
 
-                    <input
-                        id="nombre"
-                        name="nombre"
-                        type="text"
-
-                        [(ngModel)]="
+                    <input id="nombre" name="nombre" type="text" [(ngModel)]="
                             formData.nombre
-                        "
-
-                        required
-
-                        [disabled]="guardando()"
-
-                        placeholder="Nombre del producto"
-
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
+                        " required [disabled]="guardando()" placeholder="Nombre del producto"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
 
 
                     @if (
-                        errorCampo(
-                            'nombre'
-                        );
-                        as error
+                    errorCampo(
+                    'nombre'
+                    );
+                    as error
                     ) {
 
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
+                    <p class="mt-1.5 text-sm text-red-600">
 
-                            {{ error }}
+                        {{ error }}
 
-                        </p>
+                    </p>
 
                     }
 
@@ -276,7 +221,7 @@
 
                 <!-- Marca -->
 
-                <div>
+                <!-- <div>
 
                     <label
                         for="marca"
@@ -320,52 +265,38 @@
 
                     }
 
-                </div>
+                </div> -->
 
 
                 <!-- Modelo -->
 
                 <div>
 
-                    <label
-                        for="modelo"
-                        class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="modelo" class="mb-2 block text-sm font-medium text-gray-700">
 
                         Modelo
 
                     </label>
 
 
-                    <input
-                        id="modelo"
-                        name="modelo"
-                        type="text"
-
-                        [(ngModel)]="
+                    <input id="modelo" name="modelo" type="text" [(ngModel)]="
                             formData.modelo
-                        "
-
-                        [disabled]="guardando()"
-
-                        placeholder="Modelo del producto"
-
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
+                        " [disabled]="guardando()" placeholder="Modelo del producto"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
 
 
                     @if (
-                        errorCampo(
-                            'modelo'
-                        );
-                        as error
+                    errorCampo(
+                    'modelo'
+                    );
+                    as error
                     ) {
 
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
+                    <p class="mt-1.5 text-sm text-red-600">
 
-                            {{ error }}
+                        {{ error }}
 
-                        </p>
+                    </p>
 
                     }
 
@@ -374,50 +305,35 @@
 
                 <!-- Descripción -->
 
-                <div
-                    class="md:col-span-2">
+                <div class="md:col-span-2">
 
-                    <label
-                        for="descripcion"
-                        class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="descripcion" class="mb-2 block text-sm font-medium text-gray-700">
 
                         Descripción
 
                     </label>
 
 
-                    <textarea
-                        id="descripcion"
-                        name="descripcion"
-
-                        [(ngModel)]="
+                    <textarea id="descripcion" name="descripcion" [(ngModel)]="
                             formData.descripcion
-                        "
-
-                        [disabled]="guardando()"
-
-                        rows="4"
-
-                        placeholder="Descripción general del producto"
-
+                        " [disabled]="guardando()" rows="4" placeholder="Descripción general del producto"
                         class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
 
                     </textarea>
 
 
                     @if (
-                        errorCampo(
-                            'descripcion'
-                        );
-                        as error
+                    errorCampo(
+                    'descripcion'
+                    );
+                    as error
                     ) {
 
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
+                    <p class="mt-1.5 text-sm text-red-600">
 
-                            {{ error }}
+                        {{ error }}
 
-                        </p>
+                    </p>
 
                     }
 
@@ -430,18 +346,13 @@
 
         <!-- Información adicional -->
 
-        <div
-            class="p-6">
+        <div class="p-6">
 
-            <div
-                class="mb-6 flex items-center gap-3">
+            <div class="mb-6 flex items-center gap-3">
 
-                <div
-                    class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
 
-                    <lucide-angular
-                        [img]="FileText"
-                        class="h-5 w-5">
+                    <lucide-angular [img]="FileText" class="h-5 w-5">
 
                     </lucide-angular>
 
@@ -450,16 +361,14 @@
 
                 <div>
 
-                    <h2
-                        class="font-semibold text-gray-900">
+                    <h2 class="font-semibold text-gray-900">
 
                         Información adicional
 
                     </h2>
 
 
-                    <p
-                        class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500">
 
                         Datos opcionales del catálogo.
 
@@ -470,61 +379,46 @@
             </div>
 
 
-            <div
-                class="space-y-6">
+            <div class="space-y-6">
 
 
                 <!-- Catálogo PDF -->
 
                 <div>
 
-                    <label
-                        for="catalogo_pdf"
-                        class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="catalogo_pdf" class="mb-2 block text-sm font-medium text-gray-700">
 
                         Ruta del catálogo PDF
 
                     </label>
 
 
-                    <input
-                        id="catalogo_pdf"
-                        name="catalogo_pdf"
-                        type="text"
-
-                        [(ngModel)]="
+                    <input id="catalogo_pdf" name="catalogo_pdf" type="text" [(ngModel)]="
                             formData.catalogo_pdf
-                        "
-
-                        [disabled]="guardando()"
-
-                        placeholder="/catalogos/producto.pdf"
-
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
+                        " [disabled]="guardando()" placeholder="/catalogos/producto.pdf"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
 
 
-                    <p
-                        class="mt-1.5 text-xs text-gray-500">
+                    <p class="mt-1.5 text-xs text-gray-500">
 
-                        Por ahora se almacena la ruta del archivo. La carga física del PDF se configurará posteriormente.
+                        Por ahora se almacena la ruta del archivo. La carga física del PDF se configurará
+                        posteriormente.
 
                     </p>
 
 
                     @if (
-                        errorCampo(
-                            'catalogo_pdf'
-                        );
-                        as error
+                    errorCampo(
+                    'catalogo_pdf'
+                    );
+                    as error
                     ) {
 
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
+                    <p class="mt-1.5 text-sm text-red-600">
 
-                            {{ error }}
+                        {{ error }}
 
-                        </p>
+                    </p>
 
                     }
 
@@ -535,47 +429,33 @@
 
                 <div>
 
-                    <label
-                        for="observaciones"
-                        class="mb-2 block text-sm font-medium text-gray-700">
+                    <label for="observaciones" class="mb-2 block text-sm font-medium text-gray-700">
 
                         Observaciones
 
                     </label>
 
 
-                    <textarea
-                        id="observaciones"
-                        name="observaciones"
-
-                        [(ngModel)]="
+                    <textarea id="observaciones" name="observaciones" [(ngModel)]="
                             formData.observaciones
-                        "
-
-                        [disabled]="guardando()"
-
-                        rows="3"
-
-                        placeholder="Información interna adicional"
-
+                        " [disabled]="guardando()" rows="3" placeholder="Información interna adicional"
                         class="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
 
                     </textarea>
 
 
                     @if (
-                        errorCampo(
-                            'observaciones'
-                        );
-                        as error
+                    errorCampo(
+                    'observaciones'
+                    );
+                    as error
                     ) {
 
-                        <p
-                            class="mt-1.5 text-sm text-red-600">
+                    <p class="mt-1.5 text-sm text-red-600">
 
-                            {{ error }}
+                        {{ error }}
 
-                        </p>
+                    </p>
 
                     }
 
@@ -591,9 +471,7 @@
         <div
             class="flex flex-col-reverse gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
 
-            <a
-                routerLink="/dashboard/products"
-
+            <a routerLink="/dashboard/products"
                 class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
 
                 Cancelar
@@ -601,38 +479,31 @@
             </a>
 
 
-            <button
-                type="submit"
-
-                [disabled]="
+            <button type="submit" [disabled]="
                     guardando()
                     ||
                     productoForm.invalid
                     ||
                     cargandoCategorias()
                 "
-
                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60">
 
 
                 @if (guardando()) {
 
-                    <span
-                        class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+                <span class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
 
-                    </span>
+                </span>
 
-                    Guardando...
+                Guardando...
 
                 } @else {
 
-                    <lucide-angular
-                        [img]="Save"
-                        class="h-4 w-4">
+                <lucide-angular [img]="Save" class="h-4 w-4">
 
-                    </lucide-angular>
+                </lucide-angular>
 
-                    Guardar producto
+                Guardar y continuar
 
                 }
 
