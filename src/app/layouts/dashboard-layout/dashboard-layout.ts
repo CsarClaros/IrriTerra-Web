@@ -284,115 +284,115 @@ export class DashboardLayout implements OnInit {
 
       },
 
-      {
+      // {
 
-        path:
-          '/dashboard/sales',
+      //   path:
+      //     '/dashboard/sales',
 
-        icon:
-          ShoppingCart,
+      //   icon:
+      //     ShoppingCart,
 
-        label: {
+      //   label: {
 
-          es:
-            'Ventas',
+      //     es:
+      //       'Ventas',
 
-          en:
-            'Sales'
+      //     en:
+      //       'Sales'
 
-        },
+      //   },
 
-        permisos: [
-          'venta.ver'
-        ]
+      //   permisos: [
+      //     'venta.ver'
+      //   ]
 
-      },
+      // },
 
-      {
-        path:
-          '/dashboard/clientes',
+      // {
+      //   path:
+      //     '/dashboard/clientes',
 
-        icon:
-          ContactRound,
+      //   icon:
+      //     ContactRound,
 
-        label: {
+      //   label: {
 
-          es:
-            'Clientes',
+      //     es:
+      //       'Clientes',
 
-          en:
-            'Clients'
+      //     en:
+      //       'Clients'
 
-        },
+      //   },
 
-        permisos: [
-          'cliente.ver'
-        ]
-      },
+      //   permisos: [
+      //     'cliente.ver'
+      //   ]
+      // },
 
-      {
+      // {
 
-        path:
-          '/dashboard/transfers',
+      //   path:
+      //     '/dashboard/transfers',
 
-        icon:
-          ArrowRightLeft,
+      //   icon:
+      //     ArrowRightLeft,
 
-        label: {
+      //   label: {
 
-          es:
-            'Transferencias',
+      //     es:
+      //       'Transferencias',
 
-          en:
-            'Transfers'
+      //     en:
+      //       'Transfers'
 
-        },
+      //   },
 
-        permisos: [
-          'transferencia.ver'
-        ]
+      //   permisos: [
+      //     'transferencia.ver'
+      //   ]
 
-      },
+      // },
 
-      {
-        path:
-          '/dashboard/purchases',
+      // {
+      //   path:
+      //     '/dashboard/purchases',
 
-        icon:
-          ShoppingCart,
+      //   icon:
+      //     ShoppingCart,
 
-        label: {
-          es: 'Compras',
+      //   label: {
+      //     es: 'Compras',
 
-          en: 'Purchases'
-        },
+      //     en: 'Purchases'
+      //   },
 
-        permisos: [
-          'compra.ver'
-        ]
-      },
+      //   permisos: [
+      //     'compra.ver'
+      //   ]
+      // },
 
-      {
-        path:
-          '/dashboard/proveedores',
+      // {
+      //   path:
+      //     '/dashboard/proveedores',
 
-        icon:
-          Truck,
+      //   icon:
+      //     Truck,
 
-        label: {
+      //   label: {
 
-          es:
-            'Proveedores',
+      //     es:
+      //       'Proveedores',
 
-          en:
-            'Providers'
+      //     en:
+      //       'Providers'
 
-        },
+      //   },
 
-        permisos: [
-          'proveedor.ver'
-        ]
-      },
+      //   permisos: [
+      //     'proveedor.ver'
+      //   ]
+      // },
 
       {
 
@@ -462,49 +462,49 @@ export class DashboardLayout implements OnInit {
         ]
       },
 
-      {
-        path:
-          '/dashboard/empresa',
+      // {
+      //   path:
+      //     '/dashboard/empresa',
 
-        icon:
-          Building2,
+      //   icon:
+      //     Building2,
 
-        label: {
+      //   label: {
 
-          es:
-            'Empresa',
+      //     es:
+      //       'Empresa',
 
-          en:
-            'Company'
+      //     en:
+      //       'Company'
 
-        },
+      //   },
 
-        permisos: [
-          'empresa.ver'
-        ]
-      },
+      //   permisos: [
+      //     'empresa.ver'
+      //   ]
+      // },
 
-      {
-        path:
-          '/dashboard/sucursales',
+      // {
+      //   path:
+      //     '/dashboard/sucursales',
 
-        icon:
-          MapPinned,
+      //   icon:
+      //     MapPinned,
 
-        label: {
+      //   label: {
 
-          es:
-            'Sucursales',
+      //     es:
+      //       'Sucursales',
 
-          en:
-            'Branches'
+      //     en:
+      //       'Branches'
 
-        },
+      //   },
 
-        permisos: [
-          'sucursal.ver'
-        ]
-      },
+      //   permisos: [
+      //     'sucursal.ver'
+      //   ]
+      // },
 
 
       {

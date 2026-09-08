@@ -1,172 +1,172 @@
 import {
-  Component,
-  computed,
-  inject
+    Component,
+    computed,
+    inject
 } from '@angular/core';
 
 import {
-  CommonModule
+    CommonModule
 } from '@angular/common';
 
 import {
-  RouterLink
+    RouterLink
 } from '@angular/router';
 
 import {
-  ArrowLeftRight,
-  BarChart3,
-  Boxes,
-  ChevronRight,
-  LucideAngularModule,
-  ShoppingCart
+    ArrowLeftRight,
+    BarChart3,
+    Boxes,
+    ChevronRight,
+    LucideAngularModule,
+    ShoppingCart
 } from 'lucide-angular';
 
 import {
-  SessionService
+    SessionService
 } from '../../../core/services/session.service';
 
 
 @Component({
-  selector:
-      'app-report-center',
+    selector:
+        'app-report-center',
 
-  standalone:
-      true,
+    standalone:
+        true,
 
-  imports: [
-      CommonModule,
-      RouterLink,
-      LucideAngularModule
-  ],
+    imports: [
+        CommonModule,
+        RouterLink,
+        LucideAngularModule
+    ],
 
-  templateUrl:
-      './report-center.html',
+    templateUrl:
+        './report-center.html',
 
-  styleUrl:
-      './report-center.css'
+    styleUrl:
+        './report-center.css'
 })
 export class ReportCenter {
 
-  private readonly sessionService =
-      inject(
-          SessionService
-      );
+    private readonly sessionService =
+        inject(
+            SessionService
+        );
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Iconos
-  |--------------------------------------------------------------------------
-  */
+    /*
+    |--------------------------------------------------------------------------
+    | Iconos
+    |--------------------------------------------------------------------------
+    */
 
-  readonly BarChart3 =
-      BarChart3;
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Reportes disponibles
-  |--------------------------------------------------------------------------
-  */
-
-  readonly reportesDisponibles =
-      computed(
-          () => {
-
-              /*
-              |--------------------------------------------------------------------------
-              | Fuerza dependencia reactiva con la sesión
-              |--------------------------------------------------------------------------
-              */
-
-              this.sessionService
-                  .usuario();
+    readonly BarChart3 =
+        BarChart3;
 
 
-              return [
+    /*
+    |--------------------------------------------------------------------------
+    | Reportes disponibles
+    |--------------------------------------------------------------------------
+    */
 
-                  {
-                      titulo:
-                          'Inventario',
+    readonly reportesDisponibles =
+        computed(
+            () => {
 
-                      descripcion:
-                          'Stock, productos críticos, valoración y movimientos de inventario.',
+                /*
+                |--------------------------------------------------------------------------
+                | Fuerza dependencia reactiva con la sesión
+                |--------------------------------------------------------------------------
+                */
 
-                      ruta:
-                          '/dashboard/reports/inventory',
-
-                      permiso:
-                          'reporte_inventario.ver',
-
-                      icono:
-                          Boxes
-                  },
-
-                  {
-                      titulo:
-                          'Ventas',
-
-                      descripcion:
-                          'Resumen de ventas, importes, ticket promedio y productos más vendidos.',
-
-                      ruta:
-                          '/dashboard/reports/sales',
-
-                      permiso:
-                          'reporte_ventas.ver',
-
-                      icono:
-                          BarChart3
-                  },
-
-                  {
-                      titulo:
-                          'Compras',
-
-                      descripcion:
-                          'Compras realizadas, importes y productos con mayor volumen de compra.',
-
-                      ruta:
-                          '/dashboard/reports/purchases',
-
-                      permiso:
-                          'reporte_compras.ver',
-
-                      icono:
-                          ShoppingCart
-                  },
-
-                  {
-                      titulo:
-                          'Transferencias',
-
-                      descripcion:
-                          'Movimientos entre sucursales, estados y productos más transferidos.',
-
-                      ruta:
-                          '/dashboard/reports/transfers',
-
-                      permiso:
-                          'reporte_transferencias.ver',
-
-                      icono:
-                          ArrowLeftRight
-                  }
-
-              ]
-                  .filter(
-                      reporte =>
-                          this.sessionService
-                              .tienePermiso(
-                                  reporte.permiso
-                              )
-                  );
-
-          }
-      );
+                this.sessionService
+                    .usuario();
 
 
-  readonly ChevronRight =
-      ChevronRight;
+                return [
+
+                    {
+                        titulo:
+                            'Inventario',
+
+                        descripcion:
+                            'Stock, productos críticos, valoración y movimientos de inventario.',
+
+                        ruta:
+                            '/dashboard/reports/inventory',
+
+                        permiso:
+                            'reporte_inventario.ver',
+
+                        icono:
+                            Boxes
+                    },
+
+                    // {
+                    //     titulo:
+                    //         'Ventas',
+
+                    //     descripcion:
+                    //         'Resumen de ventas, importes, ticket promedio y productos más vendidos.',
+
+                    //     ruta:
+                    //         '/dashboard/reports/sales',
+
+                    //     permiso:
+                    //         'reporte_ventas.ver',
+
+                    //     icono:
+                    //         BarChart3
+                    // },
+
+                    // {
+                    //     titulo:
+                    //         'Compras',
+
+                    //     descripcion:
+                    //         'Compras realizadas, importes y productos con mayor volumen de compra.',
+
+                    //     ruta:
+                    //         '/dashboard/reports/purchases',
+
+                    //     permiso:
+                    //         'reporte_compras.ver',
+
+                    //     icono:
+                    //         ShoppingCart
+                    // },
+
+                    // {
+                    //     titulo:
+                    //         'Transferencias',
+
+                    //     descripcion:
+                    //         'Movimientos entre sucursales, estados y productos más transferidos.',
+
+                    //     ruta:
+                    //         '/dashboard/reports/transfers',
+
+                    //     permiso:
+                    //         'reporte_transferencias.ver',
+
+                    //     icono:
+                    //         ArrowLeftRight
+                    // }
+
+                ]
+                    .filter(
+                        reporte =>
+                            this.sessionService
+                                .tienePermiso(
+                                    reporte.permiso
+                                )
+                    );
+
+            }
+        );
+
+
+    readonly ChevronRight =
+        ChevronRight;
 
 }
